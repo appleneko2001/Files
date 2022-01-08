@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     
                     xmlns:viewModel="clr-namespace:Files.Views.Models.Browser"
-                    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+                    xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
                     xmlns:viewModel1="clr-namespace:Files.Views.Models"
                     xmlns:local="clr-namespace:Files.Views.Models.Browser.Files.Local"
