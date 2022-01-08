@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using Files.Models;
+using Files.Models.Devices.Enums;
 
 namespace Files.Windows.Models
 {
@@ -10,6 +11,7 @@ namespace Files.Windows.Models
         private string _entry;
         private string _label;
         private readonly bool _canUnmount;
+        private DeviceKind? _kind;
 
         public WindowsMediaEntryModel(DriveInfo di)
         {
@@ -26,7 +28,18 @@ namespace Files.Windows.Models
                 DriveType.CDRom => true,
                 _ => false
             };
+
+            _kind = di.DriveType switch
+            {
+                DriveType.CDRom => DeviceKind.CDROM,
+                DriveType.Fixed => DeviceKind.StaticStorage,
+                DriveType.Removable => DeviceKind.UsbStorage,
+                DriveType.Unknown => DeviceKind.Unknown,
+                _ => null
+            };
         }
+
+        public override DeviceKind? EntryKind => _kind;
         
         public override string ProcPath => _procPath;
         

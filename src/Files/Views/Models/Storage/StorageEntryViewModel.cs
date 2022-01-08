@@ -1,16 +1,20 @@
 ﻿using System;
 using Files.Commands;
 using Files.Models;
+using Files.Models.Devices.Enums;
+using Material.Icons;
 
 namespace Files.Views.Models.Storage
 {
     public class StorageEntryViewModel
     {
-        private StorageDeviceViewModel _parent;
         // Private fields
+        private StorageDeviceViewModel _parent;
         private StorageEntryModel _model;
+        private MaterialIconKind? _iconKind;
         
         // Public properties
+        public MaterialIconKind? IconKind => _iconKind;
         public StorageDeviceViewModel Parent => _parent;
         public string Label => _model.Label;
         public string Entry => _model.Entry;
@@ -27,6 +31,15 @@ namespace Files.Views.Models.Storage
         {
             _parent = parent;
             _model = entry;
+
+            _iconKind = entry.EntryKind switch
+            {
+                DeviceKind.StaticStorage => MaterialIconKind.Harddisk,
+                DeviceKind.UsbStorage => MaterialIconKind.UsbFlashDrive,
+                DeviceKind.CDROM => MaterialIconKind.Album,
+                DeviceKind.Unknown => MaterialIconKind.HelpCircleOutline,
+                _ => null
+            };
         }
 
         // Static commands -- Unmount

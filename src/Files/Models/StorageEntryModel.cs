@@ -1,7 +1,11 @@
-﻿namespace Files.Models
+﻿using Files.Models.Devices.Enums;
+
+namespace Files.Models
 {
     public abstract class StorageEntryModel
     {
+        public abstract DeviceKind? EntryKind { get; }
+        
         public abstract string ProcPath { get; }
         
         public abstract string Entry { get; }
