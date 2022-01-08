@@ -14,36 +14,34 @@ namespace Files.Extensions
         
         public static string HumanizeSizeString(this ulong v, CultureInfo? cultureInfo = null)
         {
-            if(cultureInfo == null)
-                cultureInfo = CultureInfo.InvariantCulture;
+            cultureInfo ??= CultureInfo.InvariantCulture;
 
-            if (v < BYTE_SIZE)
-                return $"{v.ToString(cultureInfo)} Bytes";
-            else if (v < KIB_SIZE)
-                return $"{Math.Round(v / (float)BYTE_SIZE, 2).ToString(cultureInfo)} KiB";
-            else if (v < MIB_SIZE)
-                return $"{Math.Round(v / (float)KIB_SIZE, 2).ToString(cultureInfo)} MiB";
-            else if (v < GIB_SIZE)
-                return $"{Math.Round(v / (float)MIB_SIZE, 2).ToString(cultureInfo)} GiB";
-            else
-                return $"{Math.Round(v / (float)GIB_SIZE, 2).ToString(cultureInfo)} TiB";
+            return v switch
+            {
+                < BYTE_SIZE => $"{v.ToString(cultureInfo)} Bytes",
+                < KIB_SIZE => $"{Math.Round(v / (float) BYTE_SIZE, 2).ToString(cultureInfo)} KiB",
+                < MIB_SIZE => $"{Math.Round(v / (float) KIB_SIZE, 2).ToString(cultureInfo)} MiB",
+                < GIB_SIZE => $"{Math.Round(v / (float) MIB_SIZE, 2).ToString(cultureInfo)} GiB",
+                < TIB_SIZE => $"{Math.Round(v / (float) GIB_SIZE, 2).ToString(cultureInfo)} TiB",
+                < PIB_SIZE => $"{Math.Round(v / (float) GIB_SIZE, 2).ToString(cultureInfo)} PiB",
+                _ => $"{Math.Round(v / (float) GIB_SIZE, 2).ToString(cultureInfo)} EiB"
+            };
         }
         
         public static string HumanizeSizeString(this long v, CultureInfo? cultureInfo = null)
         {
-            if(cultureInfo == null)
-                cultureInfo = CultureInfo.InvariantCulture;
-            
-            if (v < (long)BYTE_SIZE)
-                return $"{v.ToString(cultureInfo)} Bytes";
-            else if (v < (long)KIB_SIZE)
-                return $"{Math.Round(v / (float)BYTE_SIZE, 2).ToString(cultureInfo)} KiB";
-            else if (v < (long)MIB_SIZE)
-                return $"{Math.Round(v / (float)KIB_SIZE, 2).ToString(cultureInfo)} MiB";
-            else if (v < (long)GIB_SIZE)
-                return $"{Math.Round(v / (float)MIB_SIZE, 2).ToString(cultureInfo)} GiB";
-            else
-                return $"{Math.Round(v / (float)GIB_SIZE, 2).ToString(cultureInfo)} TiB";
+            cultureInfo ??= CultureInfo.InvariantCulture;
+
+            return v switch
+            {
+                < (long) BYTE_SIZE => $"{v.ToString(cultureInfo)} Bytes",
+                < (long) KIB_SIZE => $"{Math.Round(v / (float) BYTE_SIZE, 2).ToString(cultureInfo)} KiB",
+                < (long) MIB_SIZE => $"{Math.Round(v / (float) KIB_SIZE, 2).ToString(cultureInfo)} MiB",
+                < (long) GIB_SIZE => $"{Math.Round(v / (float) MIB_SIZE, 2).ToString(cultureInfo)} GiB",
+                < (long) TIB_SIZE => $"{Math.Round(v / (float) GIB_SIZE, 2).ToString(cultureInfo)} TiB",
+                < (long) PIB_SIZE => $"{Math.Round(v / (float) GIB_SIZE, 2).ToString(cultureInfo)} PiB",
+                _ => $"{Math.Round(v / (float) GIB_SIZE, 2).ToString(cultureInfo)} EiB"
+            };
         }
     }
 }
