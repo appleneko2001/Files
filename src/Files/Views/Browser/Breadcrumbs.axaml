@@ -1,0 +1,65 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    
+                    xmlns:viewModel="clr-namespace:Files.Views.Models.Breadcrumb"
+                    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+                    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+                    
+                    x:Class="Files.Views.Resources.Breadcrumbs">
+    <RecyclingElementFactory x:Key="BreadcrumbElementTemplate"
+                             RecyclePool="{StaticResource GlobalRecyclePool}"
+                             SelectTemplateKey="RecyclingElementFactory_OnSelectTemplateKey">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate x:Key="Node" DataType="viewModel:BreadcrumbNodeViewModel">
+                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                    <Button Classes="Flat" ClipToBounds="True"
+                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16"
+                            Command="{Binding Click}">
+                        <TextBlock Text="{CompiledBinding Header}" FontWeight="Normal"/>
+                    </Button>
+                </Border>
+            </DataTemplate>
+    
+            <DataTemplate x:Key="SchemeNode" DataType="viewModel:BreadcrumbNodeSchemeViewModel">
+                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                    <Button Classes="Flat" ClipToBounds="True"
+                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
+                        <StackPanel Orientation="Horizontal">
+                            <avalonia:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
+                                                   Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
+                                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="{CompiledBinding Header}"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="HostNode" DataType="viewModel:BreadcrumbNodeHostViewModel">
+                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                    <Button Classes="Flat" ClipToBounds="True"
+                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
+                        <TextBlock Text="{CompiledBinding Header}"/>
+                    </Button>
+                </Border>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="EditNode" DataType="viewModel:BreadcrumbNodeEditViewModel">
+                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                    <Button Classes="Flat" ClipToBounds="True"
+                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
+                        <StackPanel Orientation="Horizontal">
+                            <avalonia:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
+                                                   Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
+                                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="{CompiledBinding Header}"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
+</ResourceDictionary>

@@ -1,0 +1,26 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             
+             x:Class="Files.FilesApp">
+    <Application.Resources>
+        <ResourceDictionary>
+            <RecyclePool x:Key="GlobalRecyclePool"/>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Files/Views/Converters/Include.axaml"/>
+                <ResourceInclude Source="avares://Files/Views/Resources/Include.axaml"/>
+                <ResourceInclude Source="avares://Files/Views/Browser/Include.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    <Application.Styles>
+        <!-- Material.Avalonia style library -->
+        <StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml"/>
+        
+        <!-- Material.Icons library -->
+        <StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml"/>
+        
+        <!-- Internal styles -->
+        <StyleInclude Source="avares://Files/Styles/Include.axaml"/>
+    </Application.Styles>
+</Application>

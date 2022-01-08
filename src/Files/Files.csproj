@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Avalonia" Version="0.10.999-cibuild0017745-beta" />
+      <PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0017745-beta" />
+      <PackageReference Include="Material.Avalonia" Version="2.5.0.49-nightly" />
+      <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Enums" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\BrowserWindow.axaml.cs">
+        <DependentUpon>BrowserWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Browser\Breadcrumbs.axaml.cs">
+        <DependentUpon>Breadcrumbs.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\Resources\Breadcrumbs\BreadcrumbElementTemplate.axaml" />
+    </ItemGroup>
+
+</Project>

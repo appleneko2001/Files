@@ -1,0 +1,162 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:material="clr-namespace:Material.Styles;assembly=Material.Styles"
+        xmlns:assist="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:viewmodels="clr-namespace:Files.Views.Models"
+        xmlns:storage="clr-namespace:Files.Views.Models.Storage"
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+
+        x:Class="Files.Views.BrowserWindow"
+        x:DataType="viewmodels:BrowserWindowViewModel"
+        
+        Opacity="0.5"
+
+        Title="Files"
+        
+        TransparencyLevelHint="Transparent"
+        
+        SystemDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        ExtendClientAreaTitleBarHeightHint="-1">
+    <!--Window.Styles>
+        <Style Selector="Window:fullscreen material|NavigationDrawer#PART_NavDrawerHost">
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        
+        <Style Selector="Window:not(:fullscreen) material|NavigationDrawer#PART_NavDrawerHost">
+            <Setter Property="Margin" Value="0,32,0,0"/>
+        </Style>
+    </Window.Styles-->
+    
+    <!-- ReSharper disable file InconsistentNaming -->
+    <!-- ReSharper disable Xaml.StyleClassNotFound -->
+
+    <material:SnackbarHost HostName="RootSnackbarHost">
+        <material:NavigationDrawer Name="PART_NavDrawerHost"
+                                   LeftDrawerWidth="360"
+                                   LeftDrawerOpened="{CompiledBinding IsNavigationDrawerOpen, Mode=TwoWay}">
+            <material:NavigationDrawer.LeftDrawerContent>
+                <StackPanel Margin="0, 16">
+                    <Button Classes="Flat" 
+                            Content="Switch theme"
+                            assist:ButtonAssist.CornerRadius="0"
+                            Click="SwitchThemeButton_OnClick" />
+                    
+                    <ItemsControl Items="{CompiledBinding StorageDevices}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="storage:StorageDeviceViewModel">
+                                <StackPanel>
+                                    <Panel Margin="16, 8">
+                                        <icons:MaterialIcon HorizontalAlignment="Left" 
+                                                            Width="20" Height="20"
+                                                            Kind="{CompiledBinding IconKind}" />
+                                        <TextBlock Margin="28,0,0,0" Classes="Subtitle1" Text="{CompiledBinding Name}" />
+                                    </Panel>
+
+                                    <ItemsControl Items="{CompiledBinding StorageEntries}"
+                                                  KeyboardNavigation.TabNavigation="Continue">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="storage:StorageEntryViewModel">
+                                                <Panel Margin="0,0,16,0">
+                                                    <Button Classes="Flat" HorizontalContentAlignment="Stretch"
+                                                            UseLayoutRounding="True" ClipToBounds="True"
+                                                            
+                                                            Height="32" Margin="0,0,40,0" 
+                                                            assist:ButtonAssist.CornerRadius="0, 16, 16, 0"
+                                                            
+                                                            Command="{CompiledBinding OpenStorageEntryCommand}"
+                                                            CommandParameter="{CompiledBinding }">
+                                                    <Panel>
+                                                            <TextBlock Text="{CompiledBinding Entry}" />
+                                                            <TextBlock HorizontalAlignment="Right"
+                                                                       Text="{CompiledBinding Label}" />
+                                                        </Panel>
+                                                    </Button>
+
+                                                    <Button Classes="Flat" HorizontalAlignment="Right"
+                                                            ToolTip.Tip="Unmount entry"
+                                                            
+                                                            Padding="8" assist:ButtonAssist.CornerRadius="32"
+                                                            
+                                                            Content="{icons:MaterialIconExt Kind=Eject}"
+                                                            
+                                                            Command="{CompiledBinding UnmountCommand}"
+                                                            CommandParameter="{CompiledBinding }"
+                                                            
+                                                            IsVisible="{CompiledBinding IsRemovable}"/>
+                                                </Panel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </material:NavigationDrawer.LeftDrawerContent>
+            
+            <Grid Name="PART_BrowserViewRoot" RowDefinitions="Auto, *">
+                <ScrollViewer Grid.Row="1">
+                    <ContentControl Content="{CompiledBinding SelectedTab.Content}"
+                                    ContentTemplate="{StaticResource BrowserViewTemplate}" />
+                </ScrollViewer>
+
+                <!-- Appbar -->
+                <material:ColorZone  Mode="Standard"
+                                     ClipToBounds="False"
+                                     HorizontalAlignment="Stretch" 
+                                     Grid.Row="0" Height="128" 
+                                     PointerPressed="RootAppBar_OnPointerPressed">
+                    <!-- Layout: [*| |Header      |* * *] -->
+                    <!-- Layout: [  (Breadcrumbs       )] -->
+                    <Grid ClipToBounds="False" 
+                          Margin="8,8, 8,0" ZIndex="101"
+                          ColumnDefinitions="Auto, 16, *, Auto" RowDefinitions="*, Auto">
+                        <Button Name="NavDrawerButton" 
+                                Classes="Flat" 
+                                VerticalAlignment="Top"
+                                
+                                Grid.Column="0" Grid.Row="0" Width="32" Height="32"
+                                
+                                Foreground="{DynamicResource MaterialDesignBody}"
+                                Content="{icons:MaterialIconExt Kind=Menu, Size=24}"
+                                Click="NavDrawerButton_OnClick" />
+
+                        <DockPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Margin="16, 8">
+                            <ContentControl Margin="0,0,16,0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            
+                                            Content="{CompiledBinding SelectedTab.BreadcrumbNodeEdit}"
+                                            ContentTemplate="{StaticResource BreadcrumbElementTemplate}" />
+
+                            <controls:Scroller>
+                                <!-- TODO: Better opacity mask for gradient edges to transparent if needed -->
+                                <!--controls:Scroller.OpacityMask>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Color="Transparent" Offset="0"/>
+                                            <GradientStop Color="White" Offset="0.1"/>
+                                            <GradientStop Color="White" Offset="0.9"/>
+                                            <GradientStop Color="Transparent" Offset="1"/>
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </controls:Scroller.OpacityMask-->
+                                <ItemsControl Items="{CompiledBinding SelectedTab.BreadcrumbPath.Part}"
+                                              ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </controls:Scroller>
+                        </DockPanel>
+                    </Grid>
+                </material:ColorZone>
+            </Grid>
+        </material:NavigationDrawer>
+    </material:SnackbarHost>
+</Window>

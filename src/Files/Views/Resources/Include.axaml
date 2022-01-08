@@ -1,0 +1,5 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:parameters="clr-namespace:Files.Views.Converters.Parameters">
+    <parameters:BoolToDoubleConverterParameter x:Key="IsNotVisibleDoubleValue" ValueOnFalse="0.35" ValueOnTrue="1.0"/>
+</ResourceDictionary>
