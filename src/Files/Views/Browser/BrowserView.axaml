@@ -25,10 +25,18 @@
                                Opacity="{CompiledBinding IsVisible, 
                                Converter={StaticResource BoolToDoubleConverter}, 
                                ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                        <avalonia:MaterialIcon Kind="File" 
-                                               Width="48" Height="48"
-                                               VerticalAlignment="Top"
-                                               DockPanel.Dock="Left"/>
+                        <Panel Width="48" Height="48"
+                               VerticalAlignment="Top"
+                               DockPanel.Dock="Left">
+                            <icons:MaterialIcon Width="NaN" Height="NaN"
+                                                   
+                                                   Kind="File" 
+                                                   VerticalAlignment="Stretch" 
+                                                   HorizontalAlignment="Stretch"/>
+                            
+                            <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                            ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
+                        </Panel>
                         
                         <StackPanel Margin="8,0" DockPanel.Dock="Right">
                             <StackPanel.Styles>
@@ -62,10 +70,18 @@
                                Opacity="{CompiledBinding IsVisible, 
                                Converter={StaticResource BoolToDoubleConverter}, 
                                ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                        <avalonia:MaterialIcon Kind="Folder" 
-                                               Width="48" Height="48"
-                                               VerticalAlignment="Top"
-                                               DockPanel.Dock="Left"/>
+                        <Panel Width="48" Height="48"
+                               VerticalAlignment="Top"
+                               DockPanel.Dock="Left">
+                            <icons:MaterialIcon Width="NaN" Height="NaN"
+                                                   
+                                                   Kind="Folder" 
+                                                   VerticalAlignment="Stretch" 
+                                                   HorizontalAlignment="Stretch"/>
+                            
+                            <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                            ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
+                        </Panel>
                         
                         <StackPanel Margin="8,0" DockPanel.Dock="Right">
                             <StackPanel.Styles>
