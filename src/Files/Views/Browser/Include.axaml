@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://Files/Views/Browser/BrowserItemIcons.axaml"/>
+        <ResourceInclude Source="avares://Files/Views/Browser/BrowserDrawer.axaml"/>
         <ResourceInclude Source="avares://Files/Views/Browser/BrowserView.axaml"/>
         <ResourceInclude Source="avares://Files/Views/Browser/Breadcrumbs.axaml"/>
     </ResourceDictionary.MergedDictionaries>
