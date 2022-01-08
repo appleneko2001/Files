@@ -1,0 +1,48 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:storage="clr-namespace:Files.Views.Models.Storage"
+                    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+                    xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+    
+    <DataTemplate DataType="storage:StorageEntryViewModel" x:Key="BrowserDrawerStorageEntryTemplate">
+        <Panel Margin="0,0,16,0">
+            <Button Classes="Flat" HorizontalContentAlignment="Stretch"
+                    UseLayoutRounding="True" ClipToBounds="True"
+                    
+                    Height="40" Margin="0,0,40,0" 
+                    assists:ButtonAssist.CornerRadius="0, 32, 32, 0"
+                    
+                    Command="{CompiledBinding OpenStorageEntryCommand}"
+                    CommandParameter="{CompiledBinding }">
+                <Panel>
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <ContentControl Content="{CompiledBinding IconKind}"
+                                        ContentTemplate="{StaticResource BrowserDrawerStorageItemIconTemplate}"/>
+                        
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{CompiledBinding Entry}" />
+                    </StackPanel>
+                    
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Right"
+                               Text="{CompiledBinding Label}" />
+                </Panel>
+            </Button>
+
+            <Button Classes="Flat"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    ToolTip.Tip="Unmount entry"
+                    
+                    Padding="8" assists:ButtonAssist.CornerRadius="32"
+                    
+                    Content="{icons:MaterialIconExt Kind=Eject, Size=20}"
+                    
+                    Command="{CompiledBinding UnmountCommand}"
+                    CommandParameter="{CompiledBinding }"
+                    
+                    IsVisible="{CompiledBinding IsRemovable}"/>
+        </Panel>
+    </DataTemplate>
+</ResourceDictionary>
