@@ -50,7 +50,7 @@
                             </StackPanel.Styles>
                             
                             <TextBlock Text="{CompiledBinding DisplayName}"/>
-                            <TextBlock Text="{CompiledBinding Size}"/>
+                            <TextBlock Text="{CompiledBinding Size, Converter={StaticResource HumanizeSizeConverter}}"/>
                         </StackPanel>
                     </DockPanel>
                 </Button>
