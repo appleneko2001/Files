@@ -80,7 +80,6 @@ namespace Files.Windows.Services.Watchers
         {
             switch (msg)
             {
-                // Next message will never processed.
                 case MessageDefinitions.DeviceChanged:
                 {
                     WinDeviceStatus status = (WinDeviceStatus) wParam;
