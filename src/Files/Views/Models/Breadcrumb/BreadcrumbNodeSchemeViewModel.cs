@@ -42,8 +42,5 @@ namespace Files.Views.Models.Breadcrumb
                 } break;
             }
         }
-
-        private readonly MaterialIconKind? _iconKind;
-        public MaterialIconKind? IconKind => _iconKind;
     }
 }
