@@ -2,11 +2,8 @@
 
 namespace Files.Views.Models.Breadcrumb
 {
-    public class BreadcrumbNodeEditViewModel : BreadcrumbNodeViewModel
+    public class BreadcrumbNodeEditViewModel : BreadcrumbNodeWithIconViewModel
     {
-        private readonly MaterialIconKind? _iconKind;
-        public MaterialIconKind? IconKind => _iconKind;
-        
         public BreadcrumbNodeEditViewModel(BreadcrumbPathViewModel parent, int index) : base(parent, index)
         {
             _iconKind = MaterialIconKind.Edit;

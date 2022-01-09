@@ -12,11 +12,8 @@ namespace Files.Views.Resources
             switch (e.DataContext)
             {
                 case BreadcrumbNodeEditViewModel:
-                    e.TemplateKey = "EditNode";
-                    break;
-                
                 case BreadcrumbNodeSchemeViewModel:
-                    e.TemplateKey = "SchemeNode";
+                    e.TemplateKey = "NodeWithIcon";
                     break;
                 
                 case BreadcrumbNodeHostViewModel:

@@ -3,7 +3,7 @@ using Material.Icons;
 
 namespace Files.Views.Models.Breadcrumb
 {
-    public class BreadcrumbNodeSchemeViewModel : BreadcrumbNodeViewModel
+    public class BreadcrumbNodeSchemeViewModel : BreadcrumbNodeWithIconViewModel
     {
         private const string FileScheme = "file";
         private const string FtpScheme = "ftp";
@@ -20,25 +20,25 @@ namespace Files.Views.Models.Breadcrumb
                 case FileScheme:
                 {
                     Header = "File system";
-                    _iconKind = MaterialIconKind.Folder;
+                    IconKind = MaterialIconKind.Folder;
                 } break;
                 
                 case FtpScheme:
                 {
                     Header = "FTP";
-                    _iconKind = MaterialIconKind.FolderNetworkOutline;
+                    IconKind = MaterialIconKind.FolderNetworkOutline;
                 } break;
                 
                 case SftpScheme:
                 {
                     Header = "Secure FTP";
-                    _iconKind = MaterialIconKind.FolderKeyNetwork;
+                    IconKind = MaterialIconKind.FolderKeyNetwork;
                 } break;
                 
                 default:
                 {
                     Header = "Unknown";
-                    _iconKind = MaterialIconKind.HelpNetworkOutline;
+                    IconKind = MaterialIconKind.HelpNetworkOutline;
                 } break;
             }
         }

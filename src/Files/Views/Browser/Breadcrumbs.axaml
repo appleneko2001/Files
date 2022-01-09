@@ -11,7 +11,8 @@
                              SelectTemplateKey="RecyclingElementFactory_OnSelectTemplateKey">
         <RecyclingElementFactory.Templates>
             <DataTemplate x:Key="Node" DataType="viewModel:BreadcrumbNodeViewModel">
-                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+                <Border VerticalAlignment="Center"
+                        CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
                     <Button Classes="Flat" ClipToBounds="True"
                             Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16"
@@ -21,11 +22,13 @@
                 </Border>
             </DataTemplate>
     
-            <DataTemplate x:Key="SchemeNode" DataType="viewModel:BreadcrumbNodeSchemeViewModel">
-                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+            <DataTemplate x:Key="NodeWithIcon" DataType="viewModel:BreadcrumbNodeWithIconViewModel">
+                <Border VerticalAlignment="Center"
+                        CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
                     <Button Classes="Flat" ClipToBounds="True"
-                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
+                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16"
+                            Command="{Binding Click}">
                         <StackPanel Orientation="Horizontal">
                             <icons:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
                                                    Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
@@ -36,8 +39,9 @@
                 </Border>
             </DataTemplate>
             
-            <DataTemplate x:Key="HostNode" DataType="viewModel:BreadcrumbNodeHostViewModel">
-                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+            <!--DataTemplate x:Key="HostNode" DataType="viewModel:BreadcrumbNodeHostViewModel">
+                <Border VerticalAlignment="Center"
+                        CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
                     <Button Classes="Flat" ClipToBounds="True"
                             Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
@@ -47,7 +51,8 @@
             </DataTemplate>
             
             <DataTemplate x:Key="EditNode" DataType="viewModel:BreadcrumbNodeEditViewModel">
-                <Border CornerRadius="32" Margin="2,0" BorderThickness="1"
+                <Border VerticalAlignment="Center"
+                        CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
                     <Button Classes="Flat" ClipToBounds="True"
                             Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
@@ -59,7 +64,7 @@
                         </StackPanel>
                     </Button>
                 </Border>
-            </DataTemplate>
+            </DataTemplate-->
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
 </ResourceDictionary>
