@@ -3,25 +3,34 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Web;
 using Avalonia.Threading;
-using Material.Icons;
 
 namespace Files.Views.Models.Breadcrumb
 {
     public class BreadcrumbPathViewModel : ViewModelBase
     {
+        private Uri? _fullPath;
+        private bool _isInEditMode;
+        
         private BrowserWindowTabViewModel _parent;
         private ObservableCollection<BreadcrumbNodeViewModel> _part;
-        
-        
+
         public BrowserWindowTabViewModel Parent => _parent;
         public ObservableCollection<BreadcrumbNodeViewModel> Part => _part;
 
-        private Uri? _fullPath;
+        public bool IsInEditMode
+        {
+            get => _isInEditMode;
+            set
+            {
+                _isInEditMode = value;
+                RaiseOnPropertyChanged();
+            }
+        }
 
         public BreadcrumbPathViewModel(BrowserWindowTabViewModel parent)
         {
             _parent = parent;
-            
+
             _part = new ObservableCollection<BreadcrumbNodeViewModel>();
         }
 
@@ -35,17 +44,17 @@ namespace Files.Views.Models.Breadcrumb
         {
             if (_fullPath == null)
                 return;
-            
+
             UpdatePartCore(_fullPath);
         }
-        
+
         private void UpdatePartCore(Uri uri)
         {
             Dispatcher.UIThread.InvokeAsync(delegate
             {
                 Part.Clear();
 
-                int index = 0;
+                var index = 0;
                 foreach (var segment in GetSegments(uri))
                 {
                     if (index == 0)
@@ -56,11 +65,11 @@ namespace Files.Views.Models.Breadcrumb
                         index++;
                         continue;
                     }
+
                     if (index == 1)
                     {
                         var vm = new BreadcrumbNodeHostViewModel(this, index, uri.Host);
                         Part.Add(vm);
-                        
                     }
 
                     var header = segment;
@@ -78,15 +87,13 @@ namespace Files.Views.Models.Breadcrumb
 
             if (path.StartsWith(scheme))
                 path = path.Remove(0, scheme.Length);
-            
+
             var l = new List<string>();
             l.Add(scheme);
 
             foreach (var segment in path.Split('/'))
-            {
-                if(!string.IsNullOrEmpty(segment))
+                if (!string.IsNullOrEmpty(segment))
                     l.Add($"{segment}/");
-            }
 
             return l;
         }
