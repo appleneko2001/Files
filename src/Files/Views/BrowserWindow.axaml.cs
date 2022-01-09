@@ -20,9 +20,14 @@ namespace Files.Views
 
         private readonly BrowserWindowViewModel _context;
         
-        // ReSharper disable once InconsistentNaming
+        // ReSharper disable InconsistentNaming
+        // Control references
         private Grid PART_BrowserViewRoot;
+        private ColorZone PART_ContentViewColorZone;
+        private ColorZone PART_AppbarColorZone;
         
+        // ReSharper restore InconsistentNaming
+
         private readonly PaletteHelper _paletteHelper = new();
 
         private readonly BundledTheme _lightTheme = new()
@@ -70,6 +75,8 @@ namespace Files.Views
             AvaloniaXamlLoader.Load(this);
 
             PART_BrowserViewRoot = this.Get<Grid>(nameof(PART_BrowserViewRoot));
+            PART_ContentViewColorZone = this.Get<ColorZone>(nameof(PART_ContentViewColorZone));
+            PART_AppbarColorZone = this.Get<ColorZone>(nameof(PART_AppbarColorZone));
         }
 
         private void NavDrawerButton_OnClick(object sender, RoutedEventArgs e)
