@@ -12,6 +12,8 @@ namespace Files.Views.Models.Breadcrumb
         private string _header;
         private int _index;
         private string _path;
+
+        protected BreadcrumbPathViewModel Parent => _parent;
         
         protected BreadcrumbNodeViewModel(BreadcrumbPathViewModel parent, int index)
         {
