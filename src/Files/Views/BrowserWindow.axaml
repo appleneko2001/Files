@@ -4,18 +4,17 @@
         xmlns:assist="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:viewmodels="clr-namespace:Files.Views.Models"
-        xmlns:storage="clr-namespace:Files.Views.Models.Storage"
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
 
         x:Class="Files.Views.BrowserWindow"
         x:DataType="viewmodels:BrowserWindowViewModel"
-        
+
         Opacity="0.5"
 
         Title="Files"
-        
+
         TransparencyLevelHint="Transparent"
-        
+
         SystemDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="PreferSystemChrome"
@@ -29,7 +28,7 @@
             <Setter Property="Margin" Value="0,32,0,0"/>
         </Style>
     </Window.Styles-->
-    
+
     <!-- ReSharper disable file InconsistentNaming -->
     <!-- ReSharper disable Xaml.StyleClassNotFound -->
 
@@ -39,16 +38,16 @@
                                    LeftDrawerOpened="{CompiledBinding IsNavigationDrawerOpen, Mode=TwoWay}">
             <material:NavigationDrawer.LeftDrawerContent>
                 <StackPanel Margin="0, 16">
-                    <Button Classes="Flat" 
+                    <Button Classes="Flat"
                             Content="Switch theme"
                             assist:ButtonAssist.CornerRadius="0"
                             Click="SwitchThemeButton_OnClick" />
-                    
+
                     <ItemsControl Items="{CompiledBinding StorageDevices}"
-                                  ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}"/>
+                                  ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
                 </StackPanel>
             </material:NavigationDrawer.LeftDrawerContent>
-            
+
             <Grid Name="PART_BrowserViewRoot" RowDefinitions="Auto, *">
                 <material:ColorZone Grid.Row="1"
                                     ClipToBounds="False"
@@ -63,22 +62,22 @@
                 </material:ColorZone>
 
                 <!-- Appbar -->
-                <material:ColorZone  Mode="Standard"
-                                     ClipToBounds="False"
-                                     HorizontalAlignment="Stretch" 
-                                     Grid.Row="0" Height="128" 
-                                     PointerPressed="RootAppBar_OnPointerPressed">
+                <material:ColorZone Mode="Standard"
+                                    ClipToBounds="False"
+                                    HorizontalAlignment="Stretch"
+                                    Grid.Row="0" Height="128"
+                                    PointerPressed="RootAppBar_OnPointerPressed">
                     <!-- Layout: [*| |Header      |* * *] -->
                     <!-- Layout: [  (Breadcrumbs       )] -->
-                    <Grid ClipToBounds="False" 
+                    <Grid ClipToBounds="False"
                           Margin="8,8, 8,0" ZIndex="101"
                           ColumnDefinitions="Auto, 16, *, Auto" RowDefinitions="*, Auto">
-                        <Button Name="NavDrawerButton" 
-                                Classes="Flat" 
+                        <Button Name="NavDrawerButton"
+                                Classes="Flat"
                                 VerticalAlignment="Top"
-                                
+
                                 Grid.Column="0" Grid.Row="0" Width="32" Height="32"
-                                
+
                                 Foreground="{DynamicResource MaterialDesignBody}"
                                 Content="{icons:MaterialIconExt Kind=Menu, Size=24}"
                                 Click="NavDrawerButton_OnClick" />
@@ -87,7 +86,7 @@
                             <ContentControl Margin="0,0,16,0"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
-                                            
+
                                             Content="{CompiledBinding SelectedTab.BreadcrumbNodeEdit}"
                                             ContentTemplate="{StaticResource BreadcrumbElementTemplate}" />
 
