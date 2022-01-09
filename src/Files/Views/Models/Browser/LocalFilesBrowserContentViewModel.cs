@@ -9,13 +9,18 @@ namespace Files.Views.Models.Browser
     {
         public LocalFilesBrowserContentViewModel(BrowserWindowTabViewModel parent, string path) : base(parent)
         {
-            EnumerateDirectoryAndFillCollection(path);
+            var di = new DirectoryInfo(path);
+            if (!di.Exists)
+                throw new DirectoryNotFoundException($"Directory \"{di.FullName}\" is invalid or not exists.");
+            
+            Task.Run(delegate
+            {
+                EnumerateDirectoryAndFillCollection(di);
+            });
         }
 
-        private void EnumerateDirectoryAndFillCollection(string path)
+        private void EnumerateDirectoryAndFillCollection(DirectoryInfo di)
         {
-            var di = new DirectoryInfo(path);
-
             foreach (var directory in di.EnumerateDirectories())
             {
                 AddItemOnUiThread(new FolderItemViewModel(this, directory));
@@ -34,7 +39,7 @@ namespace Files.Views.Models.Browser
             Dispatcher.UIThread.InvokeAsync(delegate
             {
                 AddItem(item);
-            }, DispatcherPriority.Background);
+            }, DispatcherPriority.Background).Wait();
         }
     }
 }
