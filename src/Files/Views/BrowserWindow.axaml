@@ -50,10 +50,17 @@
             </material:NavigationDrawer.LeftDrawerContent>
             
             <Grid Name="PART_BrowserViewRoot" RowDefinitions="Auto, *">
-                <ScrollViewer Grid.Row="1">
-                    <ContentControl Content="{CompiledBinding SelectedTab.Content}"
-                                    ContentTemplate="{StaticResource BrowserViewTemplate}" />
-                </ScrollViewer>
+                <material:ColorZone Grid.Row="1"
+                                    ClipToBounds="False"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                    <ScrollViewer>
+                        <ContentControl Content="{CompiledBinding SelectedTab.Content}"
+                                        ContentTemplate="{StaticResource BrowserViewTemplate}" />
+                    </ScrollViewer>
+                </material:ColorZone>
 
                 <!-- Appbar -->
                 <material:ColorZone  Mode="Standard"
