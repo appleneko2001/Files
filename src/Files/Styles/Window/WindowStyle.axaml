@@ -9,7 +9,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+                    <Border Name="PART_TransparencyFallback" Background="Black" IsHitTestVisible="False" />
                     <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
                     <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
                     <Border Name="PART_WindowClipBorder">

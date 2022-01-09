@@ -10,6 +10,7 @@
         x:DataType="viewmodels:BrowserWindowViewModel"
 
         Title="Files"
+        TransparencyBackgroundFallback="Black"
 
         SystemDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
