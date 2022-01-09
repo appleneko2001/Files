@@ -44,26 +44,8 @@
                             assist:ButtonAssist.CornerRadius="0"
                             Click="SwitchThemeButton_OnClick" />
                     
-                    <ItemsControl Items="{CompiledBinding StorageDevices}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="storage:StorageDeviceViewModel">
-                                <StackPanel>
-                                    <Panel Margin="16, 8">
-                                        <icons:MaterialIcon HorizontalAlignment="Left" 
-                                                            Width="20" Height="20"
-                                                            Kind="{CompiledBinding IconKind}" />
-                                        <TextBlock Classes="Subtitle1"
-                                                   Margin="28,0,0,0"
-                                                   Text="{CompiledBinding Name}" />
-                                    </Panel>
-
-                                    <ItemsControl KeyboardNavigation.TabNavigation="Continue"
-                                                  Items="{CompiledBinding StorageEntries}"
-                                                  ItemTemplate="{StaticResource BrowserDrawerStorageEntryTemplate}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ItemsControl Items="{CompiledBinding StorageDevices}"
+                                  ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}"/>
                 </StackPanel>
             </material:NavigationDrawer.LeftDrawerContent>
             
