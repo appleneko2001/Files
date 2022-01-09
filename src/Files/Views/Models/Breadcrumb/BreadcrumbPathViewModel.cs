@@ -3,19 +3,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Web;
 using Avalonia.Threading;
+using Files.Commands;
 
 namespace Files.Views.Models.Breadcrumb
 {
     public class BreadcrumbPathViewModel : ViewModelBase
     {
+        private static RelayCommand _submitEditedPathCommand = new RelayCommand(OnSubmitEditedPath);
+        
         private Uri? _fullPath;
         private bool _isInEditMode;
+        private string? _editLine;
         
         private BrowserWindowTabViewModel _parent;
+        private BreadcrumbNodeEditViewModel _editButton;
         private ObservableCollection<BreadcrumbNodeViewModel> _part;
 
         public BrowserWindowTabViewModel Parent => _parent;
         public ObservableCollection<BreadcrumbNodeViewModel> Part => _part;
+        public RelayCommand SubmitEditedPathCommand => _submitEditedPathCommand;
 
         public bool IsInEditMode
         {
@@ -23,6 +29,19 @@ namespace Files.Views.Models.Breadcrumb
             set
             {
                 _isInEditMode = value;
+                RaiseOnPropertyChanged();
+
+                EditLine = _isInEditMode ? HttpUtility.UrlDecode(_fullPath?.AbsoluteUri) : null;
+                _editButton?.UpdateStatus();
+            }
+        }
+
+        public string? EditLine
+        {
+            get => _editLine;
+            set
+            {
+                _editLine = value;
                 RaiseOnPropertyChanged();
             }
         }
@@ -40,12 +59,29 @@ namespace Files.Views.Models.Breadcrumb
             UpdatePart();
         }
 
+        public void ApplyEditButton(BreadcrumbNodeEditViewModel vm)
+        {
+            _editButton = vm;
+        }
+
         public void UpdatePart()
         {
             if (_fullPath == null)
                 return;
 
             UpdatePartCore(_fullPath);
+        }
+
+        private static void OnSubmitEditedPath(object arg)
+        {
+            if (arg is not BreadcrumbPathViewModel vm)
+                return;
+            
+            var path = vm.EditLine!;
+            
+            var uri = new Uri(path);
+            vm.IsInEditMode = false;
+            vm.Parent.OpenAsync(uri);
         }
 
         private void UpdatePartCore(Uri uri)

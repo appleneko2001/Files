@@ -6,6 +6,7 @@ namespace Files.Views.Models.Breadcrumb
     {
         public BreadcrumbNodeEditViewModel(BreadcrumbPathViewModel parent, int index) : base(parent, index)
         {
+            parent.ApplyEditButton(this);
             OnStatusChanged();
         }
 
@@ -16,6 +17,8 @@ namespace Files.Views.Models.Breadcrumb
 
             OnStatusChanged();
         }
+
+        public void UpdateStatus() => OnStatusChanged();
 
         private void OnStatusChanged()
         {

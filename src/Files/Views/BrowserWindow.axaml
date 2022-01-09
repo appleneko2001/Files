@@ -100,11 +100,21 @@
                             <Panel Height="26">
                                 <TextBox Classes="Solo"
                                          BorderBrush="White"
+                                         
+                                         FontSize="16"
+                                         FontWeight="Normal"
                                          BorderThickness="1"
                                          Margin="0" Padding="0"
                                          assist:TextFieldAssist.CornerRadius="32"
+                                         
+                                         Text="{CompiledBinding SelectedTab.BreadcrumbPath.EditLine, Mode=TwoWay}"
                                          IsEnabled="{CompiledBinding SelectedTab.BreadcrumbPath.IsInEditMode}"
                                          IsVisible="{CompiledBinding SelectedTab.BreadcrumbPath.IsInEditMode}">
+                                    <TextBox.KeyBindings>
+                                        <KeyBinding Command="{CompiledBinding SelectedTab.BreadcrumbPath.SubmitEditedPathCommand}"
+                                                    CommandParameter="{CompiledBinding SelectedTab.BreadcrumbPath}"
+                                                    Gesture="Enter"/>
+                                    </TextBox.KeyBindings>
                                     <TextBox.Styles>
                                         <Style Selector="TextBox.Solo /template/ Grid#PART_InnerRoot">
                                             <Setter Property="Margin" Value="16, 0"/>
