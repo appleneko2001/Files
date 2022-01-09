@@ -5,7 +5,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Files.Commands;
 using Files.Services;
-using Files.Services.Watchers;
 using Files.Views;
 
 using Material.Colors;
