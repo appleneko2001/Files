@@ -9,11 +9,7 @@
         x:Class="Files.Views.BrowserWindow"
         x:DataType="viewmodels:BrowserWindowViewModel"
 
-        Opacity="0.5"
-
         Title="Files"
-
-        TransparencyLevelHint="Transparent"
 
         SystemDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
