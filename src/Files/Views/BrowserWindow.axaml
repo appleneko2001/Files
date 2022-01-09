@@ -96,28 +96,45 @@
 
                                             Content="{CompiledBinding SelectedTab.BreadcrumbNodeEdit}"
                                             ContentTemplate="{StaticResource BreadcrumbElementTemplate}" />
+                            
+                            <Panel Height="26">
+                                <TextBox Classes="Solo"
+                                         BorderBrush="White"
+                                         BorderThickness="1"
+                                         Margin="0" Padding="0"
+                                         assist:TextFieldAssist.CornerRadius="32"
+                                         IsEnabled="{CompiledBinding SelectedTab.BreadcrumbPath.IsInEditMode}"
+                                         IsVisible="{CompiledBinding SelectedTab.BreadcrumbPath.IsInEditMode}">
+                                    <TextBox.Styles>
+                                        <Style Selector="TextBox.Solo /template/ Grid#PART_InnerRoot">
+                                            <Setter Property="Margin" Value="16, 0"/>
+                                        </Style>
+                                    </TextBox.Styles>
+                                </TextBox>
 
-                            <controls:Scroller>
-                                <!-- TODO: Better opacity mask for gradient edges to transparent if needed -->
-                                <!--controls:Scroller.OpacityMask>
-                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                        <LinearGradientBrush.GradientStops>
-                                            <GradientStop Color="Transparent" Offset="0"/>
-                                            <GradientStop Color="White" Offset="0.1"/>
-                                            <GradientStop Color="White" Offset="0.9"/>
-                                            <GradientStop Color="Transparent" Offset="1"/>
-                                        </LinearGradientBrush.GradientStops>
-                                    </LinearGradientBrush>
-                                </controls:Scroller.OpacityMask-->
-                                <ItemsControl Items="{CompiledBinding SelectedTab.BreadcrumbPath.Part}"
-                                              ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
-                            </controls:Scroller>
+                                <controls:Scroller IsEnabled="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}"
+                                                   IsVisible="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}">
+                                    <!-- TODO: Better opacity mask for gradient edges to transparent if needed -->
+                                    <!--controls:Scroller.OpacityMask>
+                                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                            <LinearGradientBrush.GradientStops>
+                                                <GradientStop Color="Transparent" Offset="0"/>
+                                                <GradientStop Color="White" Offset="0.1"/>
+                                                <GradientStop Color="White" Offset="0.9"/>
+                                                <GradientStop Color="Transparent" Offset="1"/>
+                                            </LinearGradientBrush.GradientStops>
+                                        </LinearGradientBrush>
+                                    </controls:Scroller.OpacityMask-->
+                                    <ItemsControl Items="{CompiledBinding SelectedTab.BreadcrumbPath.Part}"
+                                                  ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </controls:Scroller>
+                            </Panel>
                         </DockPanel>
                     </Grid>
                 </material:ColorZone>
