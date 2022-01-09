@@ -91,7 +91,9 @@ namespace Files
             
             switch (e.Exception)
             {
-                case NotImplementedException:
+                //case UriFormatException:
+                //case NotImplementedException:
+                case not null:
                     e.ShouldKeepAppAlive = true;
                     break;
             }
