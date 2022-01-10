@@ -30,9 +30,9 @@ namespace Files.Views.Models.Breadcrumb
             {
                 _isInEditMode = value;
                 RaiseOnPropertyChanged();
-
-                EditLine = _isInEditMode ? HttpUtility.UrlDecode(_fullPath?.AbsoluteUri) : null;
+                
                 _editButton?.UpdateStatus();
+                UpdateEditLine();
             }
         }
 
@@ -57,6 +57,8 @@ namespace Files.Views.Models.Breadcrumb
         {
             _fullPath = uri;
             UpdatePart();
+
+            UpdateEditLine();
         }
 
         public void ApplyEditButton(BreadcrumbNodeEditViewModel vm)
@@ -70,6 +72,11 @@ namespace Files.Views.Models.Breadcrumb
                 return;
 
             UpdatePartCore(_fullPath);
+        }
+
+        private void UpdateEditLine()
+        {
+            EditLine = _isInEditMode ? HttpUtility.UrlDecode(_fullPath?.AbsoluteUri) : null;
         }
 
         private static void OnSubmitEditedPath(object arg)
