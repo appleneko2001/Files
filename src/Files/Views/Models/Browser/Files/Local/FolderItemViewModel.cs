@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Files.Commands;
 
 namespace Files.Views.Models.Browser.Files.Local
@@ -12,7 +13,7 @@ namespace Files.Views.Models.Browser.Files.Local
         {
             if (obj is FolderItemViewModel vm)
             {
-                vm.Parent.Parent.OpenAsync(new Uri(vm.FullPath));
+                vm.Parent.Parent.Open(new Uri(vm.FullPath));
             }
         }
 
@@ -25,6 +26,11 @@ namespace Files.Views.Models.Browser.Files.Local
             DisplayName = di.Name;
 
             _fullPath = di.FullName;
+        }
+        
+        public override void TryGetPreview(CancellationToken _cancellationToken = default)
+        {
+            // TODO: folder previews
         }
 
         public override RelayCommand OnClickCommand => _clickCommand;

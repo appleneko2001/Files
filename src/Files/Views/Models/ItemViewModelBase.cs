@@ -60,12 +60,8 @@ namespace Files.Views.Models
             }
         }
         
-        public abstract RelayCommand OpenWithCommand { get; }
-        
-        public abstract RelayCommand RenameCommand { get; } 
-        
-        public abstract RelayCommand PropertiesCommand { get; } 
-        
-        public abstract bool IsHalfVisible { get; }*/
+        public virtual RelayCommand? OnClickCommand { get; }
+
+        public abstract void TryGetPreview(CancellationToken _cancellationToken = default);
     }
 }

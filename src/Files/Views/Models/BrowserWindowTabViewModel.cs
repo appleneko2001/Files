@@ -17,6 +17,9 @@ namespace Files.Views.Models
         private BreadcrumbPathViewModel _breadcrumbPath;
         private BrowserContentViewModelBase _content;
         private BreadcrumbNodeEditViewModel _breadcrumbNodeEdit;
+        private CancellationTokenSource _ctx;
+
+        private ProgressViewModel _progress;
 
         public BrowserContentViewModelBase Content
         {
@@ -32,6 +35,16 @@ namespace Files.Views.Models
         public BreadcrumbPathViewModel BreadcrumbPath => _breadcrumbPath;
 
         public BreadcrumbNodeEditViewModel BreadcrumbNodeEdit => _breadcrumbNodeEdit;
+
+        public ProgressViewModel Progress
+        {
+            get => _progress;
+            private set
+            {
+                _progress = value;
+                RaiseOnPropertyChanged();
+            }
+        }
         
         public BrowserWindowTabViewModel(BrowserWindowViewModel parent, Uri? path = null)
         {
@@ -43,38 +56,49 @@ namespace Files.Views.Models
                 ? new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
                 : path);
         }
-
-        public void OpenAsync(Uri path)
-        {
-            Task.Run(delegate
-            {
-                Open(path);
-            });
-        }
         
         public void Open(Uri path)
         {
-            try
+            if (_ctx != null)
+                _ctx.Cancel();
+
+            _ctx = new CancellationTokenSource();
+            var p = new ProgressViewModel();
+            Progress = p;
+            
+            Task.Factory.StartNew(delegate
             {
-                Content = CreateView(path);
+                p.SetProgress(null);
                 
                 _breadcrumbPath.ApplyPath(path);
-            }
-            catch (Exception e)
+                
+                Content = CreateView(path);
+                Content.LoadContent(path);
+                Content.RequestPreviews(_ctx.Token);
+            }).ContinueWith(delegate(Task task)
             {
+                p.SetProgress(1.0);
+                p.SetCompleted();
+                
+                if (!task.IsFaulted && task.IsCompleted)
+                    return;
+
+                if (task.IsCanceled)
+                    return;
+
                 Dispatcher.UIThread.InvokeAsync(delegate
                 {
                     var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams
                     {
                         Borderless = true,
                         ContentHeader = "Error",
-                        SupportingText = e.Message,
+                        SupportingText = task.Exception?.Message ?? "Unknown exception.",
                         StartupLocation = WindowStartupLocation.CenterOwner,
                         DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok)
                     });
                     dialog.ShowDialog(Parent.ParentWindow);
                 });
-            }
+            });
         }
 
         private BrowserContentViewModelBase CreateView(Uri uri)
@@ -86,7 +110,7 @@ namespace Files.Views.Models
             {
                 case "file":
                 {
-                    viewModel = new LocalFilesBrowserContentViewModel(this, path);
+                    viewModel = new LocalFilesBrowserContentViewModel(this);
                 } break;
             }
 

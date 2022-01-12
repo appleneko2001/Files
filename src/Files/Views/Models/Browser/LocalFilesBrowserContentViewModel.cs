@@ -17,11 +17,17 @@ namespace Files.Views.Models.Browser
             var di = new DirectoryInfo(uri.AbsolutePath);
             if (!di.Exists)
                 throw new DirectoryNotFoundException($"Directory \"{di.FullName}\" is invalid or not exists.");
-            
-            Task.Run(delegate
+
+            EnumerateDirectoryAndFillCollection(di);
+        }
+
+        public override void RequestPreviews(CancellationToken _cancellationToken = default)
+        {
+            foreach (var item in Content)
             {
-                EnumerateDirectoryAndFillCollection(di);
-            });
+                if(item is FileItemViewModel file)
+                    file.TryGetPreview(_cancellationToken);
+            }
         }
 
         private void EnumerateDirectoryAndFillCollection(DirectoryInfo di)

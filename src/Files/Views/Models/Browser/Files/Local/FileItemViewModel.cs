@@ -1,4 +1,7 @@
 ﻿using System.IO;
+using System.Threading;
+using Files.Services;
+using Files.Views.Models.Browser.Preview;
 
 namespace Files.Views.Models.Browser.Files.Local
 {
@@ -10,6 +13,10 @@ namespace Files.Views.Models.Browser.Files.Local
         private string _fullPath;
         public string FullPath => _fullPath;
         
+        private PreviewableViewModelBase? _previewViewModel;
+        public PreviewableViewModelBase? Preview => _previewViewModel;
+        public bool IsPreviewReady => Preview != null;
+
         public FileItemViewModel(LocalFilesBrowserContentViewModel parent, FileInfo fi) : base(parent, fi)
         {
             Name = fi.Name;
@@ -17,6 +24,18 @@ namespace Files.Views.Models.Browser.Files.Local
             
             _size = fi.Length;
             _fullPath = fi.FullName;
+        }
+
+        public override void TryGetPreview(CancellationToken _cancellationToken = default)
+        {
+            PreviewManagerBackend.ScheduleGetPreview(new FileInfo(_fullPath), OnCompleteGetPreviewTask, _cancellationToken);
+        }
+
+        private void OnCompleteGetPreviewTask(PreviewableViewModelBase model)
+        {
+            _previewViewModel = model;
+            RaiseOnPropertyChanged(nameof(Preview));
+            RaiseOnPropertyChanged(nameof(IsPreviewReady));
         }
     }
 }
