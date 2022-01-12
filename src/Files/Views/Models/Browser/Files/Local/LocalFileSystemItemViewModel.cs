@@ -4,7 +4,7 @@ using Material.Icons;
 
 namespace Files.Views.Models.Browser.Files.Local
 {
-    public class LocalFileSystemItemViewModel : ItemViewModelBase
+    public abstract class LocalFileSystemItemViewModel : ItemViewModelBase
     {
         private LocalFilesBrowserContentViewModel _parent;
         public LocalFilesBrowserContentViewModel Parent => _parent;

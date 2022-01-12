@@ -1,8 +1,10 @@
-﻿using Files.Commands;
+﻿using System.Threading;
+using Avalonia.Controls;
+using Files.Commands;
 
 namespace Files.Views.Models
 {
-    public abstract class ItemViewModelBase : ViewModelBase
+    public abstract class ItemViewModelBase : ViewModelBase, ISelectable
     {
         protected ItemViewModelBase()
         {
@@ -46,10 +48,17 @@ namespace Files.Views.Models
                 RaiseOnPropertyChanged();
             }
         }
-        
-        public virtual RelayCommand OnClickCommand { get; }
-        
-        /*public abstract RelayCommand OpenCommand { get; } 
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                RaiseOnPropertyChanged();
+            }
+        }
         
         public abstract RelayCommand OpenWithCommand { get; }
         
