@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Material.Icons;
 
 namespace Files.Views.Models.Breadcrumb
 {
@@ -63,7 +62,7 @@ namespace Files.Views.Models.Breadcrumb
         {
             var clone = _parent.Part.ToList();
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             
             foreach (var item in clone)
             {
