@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Web;
 using Avalonia.Threading;
 using Files.Views.Models.Browser.Files.Local;
 
@@ -15,7 +16,7 @@ namespace Files.Views.Models.Browser
 
         public override void LoadContent(Uri uri)
         {
-            var di = new DirectoryInfo(uri.AbsolutePath);
+            var di = new DirectoryInfo(HttpUtility.UrlDecode(uri.AbsolutePath));
             if (!di.Exists)
                 throw new DirectoryNotFoundException($"Directory \"{di.FullName}\" is invalid or not exists.");
 
