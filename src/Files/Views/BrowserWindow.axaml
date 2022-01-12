@@ -131,7 +131,7 @@
                             
                             <Panel Height="26">
                                 <TextBox Classes="Solo"
-                                         BorderBrush="White"
+                                         BorderBrush="{DynamicResource MaterialDesignBody}"
                                          
                                          FontSize="16"
                                          FontWeight="Normal"
