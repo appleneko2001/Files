@@ -88,7 +88,7 @@ namespace Files.Views.Models.Breadcrumb
             
             var uri = new Uri(path);
             vm.IsInEditMode = false;
-            vm.Parent.OpenAsync(uri);
+            vm.Parent.Open(uri);
         }
 
         private void UpdatePartCore(Uri uri)
