@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Files.Views.Models.Breadcrumb;
 using Files.Views.Models.Browser;
+using Files.Views.Models.Progress;
 using Material.Dialog;
 using Material.Dialog.Enums;
 
