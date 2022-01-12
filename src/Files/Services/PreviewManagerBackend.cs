@@ -15,19 +15,39 @@ namespace Files.Services
 {
     public class PreviewManagerBackend
     {
-        private static Thread? _enumerateQueueThread;
-        private static ObservableQueue<TaskScheduleModel> _queues;
-        private static ManualResetEventSlim _manualResetEvent;
+        private static PreviewManagerBackend? _instance;
 
-        static PreviewManagerBackend()
+        public static PreviewManagerBackend? Instance => _instance;
+
+        public static void Initiate(FilesApp app)
+        {
+            if (_instance != null)
+                throw new InvalidOperationException();
+
+            _instance = new PreviewManagerBackend(app);
+        }
+        
+        private Thread? _enumerateQueueThread;
+        private ObservableQueue<TaskScheduleModel> _queues;
+        private ManualResetEventSlim _manualResetEvent;
+
+        private bool _keepRunning = true;
+
+        private PreviewManagerBackend(FilesApp app)
         {
             _manualResetEvent = new ManualResetEventSlim();
             
             _queues = new ObservableQueue<TaskScheduleModel>();
             _queues.CollectionChanged += OnCollectionChanged;
+            
+            app.ApplicationShutdown += delegate
+            {
+                _keepRunning = false;
+                _manualResetEvent.Set();
+            };
         }
 
-        private static void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Add)
                 return;
@@ -43,7 +63,7 @@ namespace Files.Services
             {
                 try
                 {
-                    while (true)
+                    while (_keepRunning)
                     {
                         if (_queues.Count == decimal.Zero)
                         {
@@ -82,7 +102,7 @@ namespace Files.Services
             _enumerateQueueThread.Start();
         }
 
-        public static void GetLazyPreview(FileInfo fi, Action<PreviewableViewModelBase> OnComplete = null,
+        public void GetLazyPreview(FileInfo fi, Action<PreviewableViewModelBase> OnComplete = null,
             CancellationToken _cancellationToken = default)
         {
             /*
@@ -108,7 +128,7 @@ namespace Files.Services
             })*/
         }
 
-        public static void ScheduleGetPreview(FileInfo fi, Action<PreviewableViewModelBase> OnComplete = null,
+        public void ScheduleGetPreview(FileInfo fi, Action<PreviewableViewModelBase> OnComplete = null,
             CancellationToken _cancellationToken = default)
         {
             var model = new GetPreviewLocalFileTaskModel
@@ -130,7 +150,7 @@ namespace Files.Services
             });
         }
 
-        private static void GetPreviewCore(object arg)
+        private void GetPreviewCore(object arg)
         {
             if (arg is not GetPreviewTaskModel model)
                 throw new InvalidOperationException($"Internal error: Unknown task model type: {arg.GetType().Name}");

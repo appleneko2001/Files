@@ -82,11 +82,13 @@ namespace Files
                 });
 
             _context = AppBackend.Instance;
+            
+            PreviewManagerBackend.Initiate(this);
         }
 
         private void RelayCommandOnExceptionOccurred(object sender, OnExecutionOccurExceptionEventArgs e)
         {
-            PlatformApi.PopupMessageWindow("Error", e.Exception.Message);
+            PlatformApi?.PopupMessageWindow("Error", e.Exception.Message);
             
             switch (e.Exception)
             {

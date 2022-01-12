@@ -28,7 +28,7 @@ namespace Files.Views.Models.Browser.Files.Local
 
         public override void TryGetPreview(CancellationToken _cancellationToken = default)
         {
-            PreviewManagerBackend.ScheduleGetPreview(new FileInfo(_fullPath), OnCompleteGetPreviewTask, _cancellationToken);
+            PreviewManagerBackend.Instance?.ScheduleGetPreview(new FileInfo(_fullPath), OnCompleteGetPreviewTask, _cancellationToken);
         }
 
         private void OnCompleteGetPreviewTask(PreviewableViewModelBase model)
