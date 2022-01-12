@@ -7,9 +7,14 @@ namespace Files.Views.Models.Browser
 {
     public class LocalFilesBrowserContentViewModel : BrowserContentViewModelBase
     {
-        public LocalFilesBrowserContentViewModel(BrowserWindowTabViewModel parent, string path) : base(parent)
+        public LocalFilesBrowserContentViewModel(BrowserWindowTabViewModel parent) : base(parent)
         {
-            var di = new DirectoryInfo(path);
+
+        }
+
+        public override void LoadContent(Uri uri)
+        {
+            var di = new DirectoryInfo(uri.AbsolutePath);
             if (!di.Exists)
                 throw new DirectoryNotFoundException($"Directory \"{di.FullName}\" is invalid or not exists.");
             
@@ -26,9 +31,11 @@ namespace Files.Views.Models.Browser
                 AddItemOnUiThread(new FolderItemViewModel(this, directory));
             }
 
-            foreach (var files in di.EnumerateFiles())
+            foreach (var fileInfo in di.EnumerateFiles())
             {
-                AddItemOnUiThread(new FileItemViewModel(this, files));
+                var file = new FileItemViewModel(this, fileInfo);
+                
+                AddItemOnUiThread(file);
             }
         }
 

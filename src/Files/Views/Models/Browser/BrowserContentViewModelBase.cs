@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace Files.Views.Models.Browser
 {
-    public class BrowserContentViewModelBase : ViewModelBase
+    public abstract class BrowserContentViewModelBase : ViewModelBase
     {
         private BrowserWindowTabViewModel _parent;
         public BrowserWindowTabViewModel Parent => _parent;
@@ -15,5 +17,9 @@ namespace Files.Views.Models.Browser
             _parent = parent;
             _content = new ObservableCollection<ItemViewModelBase>();
         }
+
+        public abstract void LoadContent(Uri uri);
+
+        public abstract void RequestPreviews(CancellationToken _cancellationToken = default);
     }
 }
