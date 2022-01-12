@@ -107,5 +107,10 @@ namespace Files.Services
 
             return result;
         }
+
+        public void ShowNativeDialog(string title, string text)
+        {
+            _platformService.ApiBridge?.PopupMessageWindow(title, text);
+        }
     }
 }

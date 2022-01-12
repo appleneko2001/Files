@@ -13,7 +13,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Visuals.Media.Imaging;
-
+using Files.Extensions;
 using Files.Services;
 using Files.Views.Models;
 
@@ -161,12 +161,17 @@ namespace Files.Views
             await using var stream = new FileStream(result.First(), FileMode.Open, FileAccess.Read);
 
             var bitmap = new Bitmap(stream);
-            
+
+            if (bitmap.PixelSize.GreaterThan(new PixelSize(2560, 1440)))
+            {
+                AppBackend.Instance.ShowNativeDialog("Warning", "The background picture size is bigger than 2560x1440, the performance impact could issued.");
+            }
+
             var brush = new ImageBrush(bitmap)
             {
                 BitmapInterpolationMode = BitmapInterpolationMode.HighQuality,
                 Stretch = Stretch.UniformToFill,
-                Opacity = 0.3 
+                Opacity = 0.2 
             };
 
             Background = brush;
