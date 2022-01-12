@@ -4,100 +4,133 @@
                     xmlns:viewModel="clr-namespace:Files.Views.Models.Browser"
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-                    xmlns:viewModel1="clr-namespace:Files.Views.Models"
                     xmlns:local="clr-namespace:Files.Views.Models.Browser.Files.Local"
+                    xmlns:controls="clr-namespace:Files.Views.Controls"
+                    xmlns:preview="clr-namespace:Files.Views.Models.Browser.Preview"
 
                     x:Class="Files.Views.Browser.BrowserView">
     <RecyclePool x:Key="BrowserItemRecyclePool"/>
     
-    <RecyclingElementFactory x:Key="BrowserViewGridItemTemplate"
+    <RecyclingElementFactory x:Key="BrowserViewPreviewElement" SelectTemplateKey="BrowserViewPreviewElement_OnSelectTemplateKey">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate DataType="preview:PreviewableViewModelBase" x:Key="Image">
+                <Image Source="{CompiledBinding PreviewInstance}"
+                       Stretch="UniformToFill"/>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
+    
+    <DataTemplate DataType="local:FileItemViewModel" x:Key="BrowserViewGridFileItemTemplate">
+        <DockPanel LastChildFill="True"
+                       
+                   Opacity="{CompiledBinding IsVisible, 
+                       Converter={StaticResource BoolToDoubleConverter}, 
+                       ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
+            <Panel VerticalAlignment="Top"
+                   DockPanel.Dock="Left">
+                <icons:MaterialIcon Width="48" Height="48" Margin="8"
+                                    Kind="File" 
+                                    VerticalAlignment="Stretch" 
+                                    HorizontalAlignment="Stretch"/>
+                    
+                <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
+                
+                <ContentControl Name="PART_PreviewPresenter"
+                                Width="{Binding ElementName=PART_PreviewPresenter, Path=Bounds.Height}"
+                                Content="{CompiledBinding Preview}"
+                                IsVisible="{CompiledBinding IsPreviewReady}"
+                                ContentTemplate="{StaticResource BrowserViewPreviewElement}"/>
+            </Panel>
+                
+            <StackPanel Margin="8" DockPanel.Dock="Right">
+                <StackPanel.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        <Setter Property="TextWrapping" Value="NoWrap"/>
+                        <Setter Property="TextAlignment" Value="Left"/>
+                    </Style>
+                </StackPanel.Styles>
+                    
+                <TextBlock Text="{CompiledBinding DisplayName}"/>
+                <TextBlock Text="{CompiledBinding Size, Converter={StaticResource HumanizeSizeConverter}}"/>
+            </StackPanel>
+        </DockPanel>
+    </DataTemplate>
+    
+    <DataTemplate DataType="local:FolderItemViewModel" x:Key="BrowserViewGridFolderItemTemplate">
+        <DockPanel Margin="8"
+                   LastChildFill="True"
+                       
+                   Opacity="{CompiledBinding IsVisible, 
+                       Converter={StaticResource BoolToDoubleConverter}, 
+                       ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
+            <Panel Width="48" Height="48"
+                   VerticalAlignment="Top"
+                   DockPanel.Dock="Left">
+                <icons:MaterialIcon Width="NaN" Height="NaN"
+                                           
+                                    Kind="Folder" 
+                                    VerticalAlignment="Stretch" 
+                                    HorizontalAlignment="Stretch"/>
+                    
+                <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
+            </Panel>
+                
+            <StackPanel Margin="8,0" DockPanel.Dock="Right">
+                <StackPanel.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                        <Setter Property="TextWrapping" Value="NoWrap"/>
+                        <Setter Property="TextAlignment" Value="Left"/>
+                    </Style>
+                </StackPanel.Styles>
+                    
+                <TextBlock Text="{CompiledBinding DisplayName}"/>
+            </StackPanel>
+        </DockPanel>
+    </DataTemplate>
+    
+    <RecyclingElementFactory x:Key="BrowserViewGridItemFactory"
                              RecyclePool="{StaticResource BrowserItemRecyclePool}"
                              SelectTemplateKey="OnSelectTemplateKeyForBrowserViewGridItem">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="local:FileItemViewModel" x:Key="File">
-                <Button Classes="Flat" Margin="0" Padding="0"
-                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                        
-                        Foreground="{DynamicResource PrimaryHueDarkBrush}">
-                    <DockPanel Margin="8"
-                               LastChildFill="True"
-                               
-                               Opacity="{CompiledBinding IsVisible, 
-                               Converter={StaticResource BoolToDoubleConverter}, 
-                               ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                        <Panel Width="48" Height="48"
-                               VerticalAlignment="Top"
-                               DockPanel.Dock="Left">
-                            <icons:MaterialIcon Width="NaN" Height="NaN"
-                                                   
-                                                   Kind="File" 
-                                                   VerticalAlignment="Stretch" 
-                                                   HorizontalAlignment="Stretch"/>
+                <Panel>
+                    <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                    
+                                    Content="{CompiledBinding }"
+                                    ContentTemplate="{StaticResource BrowserViewGridFileItemTemplate}"/>
+                    <Border Name="PART_SelectionIndicator"
+                            Background="{DynamicResource PrimaryHueMidBrush}"
+                            CornerRadius="4" Opacity="{StaticResource ItemViewSelectedPartOpacity}"
                             
-                            <ContentControl Content="{CompiledBinding AdditionalIconKind}"
-                                            ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
-                        </Panel>
-                        
-                        <StackPanel Margin="8,0" DockPanel.Dock="Right">
-                            <StackPanel.Styles>
-                                <Style Selector="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                    <Setter Property="VerticalAlignment" Value="Stretch"/>
-                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                    <Setter Property="TextWrapping" Value="NoWrap"/>
-                                    <Setter Property="TextAlignment" Value="Left"/>
-                                </Style>
-                            </StackPanel.Styles>
-                            
-                            <TextBlock Text="{CompiledBinding DisplayName}"/>
-                            <TextBlock Text="{CompiledBinding Size, Converter={StaticResource HumanizeSizeConverter}}"/>
-                        </StackPanel>
-                    </DockPanel>
-                </Button>
+                            IsVisible="{CompiledBinding IsSelected}"/>
+                    <Border Name="PART_Selection"
+                            Background="Transparent"
+                            CornerRadius="4"/>
+                </Panel>
             </DataTemplate>
             
             <DataTemplate DataType="local:FolderItemViewModel" x:Key="Folder">
-                <Button Classes="Flat" Margin="0" Padding="0"
-                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                        
-                        Command="{CompiledBinding OnClickCommand}" 
-                        CommandParameter="{CompiledBinding }"
-                        
-                        Foreground="{DynamicResource PrimaryHueDarkBrush}">
-                    <DockPanel Margin="8"
-                               LastChildFill="True"
-                               
-                               Opacity="{CompiledBinding IsVisible, 
-                               Converter={StaticResource BoolToDoubleConverter}, 
-                               ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                        <Panel Width="48" Height="48"
-                               VerticalAlignment="Top"
-                               DockPanel.Dock="Left">
-                            <icons:MaterialIcon Width="NaN" Height="NaN"
-                                                   
-                                                   Kind="Folder" 
-                                                   VerticalAlignment="Stretch" 
-                                                   HorizontalAlignment="Stretch"/>
-                            
-                            <ContentControl Content="{CompiledBinding AdditionalIconKind}"
-                                            ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
-                        </Panel>
-                        
-                        <StackPanel Margin="8,0" DockPanel.Dock="Right">
-                            <StackPanel.Styles>
-                                <Style Selector="TextBlock">
-                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                    <Setter Property="VerticalAlignment" Value="Stretch"/>
-                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                    <Setter Property="TextWrapping" Value="NoWrap"/>
-                                    <Setter Property="TextAlignment" Value="Left"/>
-                                </Style>
-                            </StackPanel.Styles>
-                            
-                            <TextBlock Text="{CompiledBinding DisplayName}"/>
-                        </StackPanel>
-                    </DockPanel>
-                </Button>
+                <Panel>
+                    <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                    
+                                    Content="{CompiledBinding }"
+                                    ContentTemplate="{StaticResource BrowserViewGridFolderItemTemplate}"/>
+                    <Border Name="PART_SelectionIndicator"
+                            Background="{DynamicResource PrimaryHueMidBrush}"
+                            CornerRadius="4"  Opacity="{StaticResource ItemViewSelectedPartOpacity}"
+                            IsVisible="{CompiledBinding IsSelected}"/>
+                    <Border Name="PART_Selection"
+                            Background="Transparent"
+                            CornerRadius="4"/>
+                </Panel>
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
@@ -105,14 +138,20 @@
     <RecyclingElementFactory x:Key="BrowserViewTemplate">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="viewModel:LocalFilesBrowserContentViewModel" x:Key="GridView">
-                <ItemsRepeater Items="{CompiledBinding Content}"
-                               VerticalCacheLength="2" HorizontalCacheLength="2" Margin="16"
-                               ItemTemplate="{StaticResource BrowserViewGridItemTemplate}">
-                    <ItemsRepeater.Layout>
+                <controls:SelectingItemRepeater Name="PART_ItemRepeater"
+                                                Margin="16"
+                                                VerticalCacheLength="2"
+                                                HorizontalCacheLength="2"
+                                                
+                                                Items="{CompiledBinding Content}"
+                                                ItemTemplate="{StaticResource BrowserViewGridItemFactory}"
+                                                
+                                                DoubleTappedItemEvent="SelectingItemRepeater_OnDoubleTappedItemEvent">
+                    <controls:SelectingItemRepeater.Layout>
                         <UniformGridLayout ItemsJustification="Start" ItemsStretch="Fill"
                                            MinColumnSpacing="16" MinRowSpacing="16" MinItemWidth="240" MinItemHeight="64"/>
-                    </ItemsRepeater.Layout>
-                </ItemsRepeater>
+                    </controls:SelectingItemRepeater.Layout>
+                </controls:SelectingItemRepeater>
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
