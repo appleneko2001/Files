@@ -80,7 +80,7 @@ namespace Files.Views.Models.Storage
             if (arg is StorageEntryViewModel entry)
             {
                 var tab = entry.Parent.Parent.SelectedTab;
-                tab.OpenAsync(new Uri(entry.Entry));
+                tab.Open(new Uri(entry.Entry));
             }
         }
     }
