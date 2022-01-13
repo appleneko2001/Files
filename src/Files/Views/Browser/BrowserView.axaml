@@ -15,8 +15,15 @@
     <RecyclingElementFactory x:Key="BrowserViewPreviewElement" SelectTemplateKey="BrowserViewPreviewElement_OnSelectTemplateKey">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="preview:PreviewableViewModelBase" x:Key="Image">
-                <Image Source="{CompiledBinding PreviewInstance}"
-                       Stretch="UniformToFill"/>
+                <Panel>
+                    <Image Name="PART_PreviewImage"
+                           Stretch="UniformToFill"
+                           Source="{CompiledBinding PreviewInstance}">
+                        <Image.OpacityMask>
+                            <ImageBrush Source="{Binding ElementName=PART_PreviewImage, Path=Bounds, Converter={StaticResource RoundedCornerBrushFactory}, ConverterParameter={StaticResource BrowserItemPreviewOpacityMaskSmallCorner}}"/>
+                        </Image.OpacityMask>
+                    </Image>
+                </Panel>
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>

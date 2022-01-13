@@ -3,4 +3,5 @@
                     xmlns:converters="clr-namespace:Files.Views.Converters">
     <converters:BoolToDoubleConverter x:Key="BoolToDoubleConverter"/>
     <converters:HumanizeSizeConverter x:Key="HumanizeSizeConverter"/>
+    <converters:RoundedCornerBrushFactoryConverter x:Key="RoundedCornerBrushFactory" />
 </ResourceDictionary>

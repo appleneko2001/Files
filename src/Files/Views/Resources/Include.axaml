@@ -4,4 +4,8 @@
                     xmlns:system="clr-namespace:System;assembly=netstandard">
     <parameters:BoolToDoubleConverterParameter x:Key="IsNotVisibleDoubleValue" ValueOnFalse="0.35" ValueOnTrue="1.0"/>
     <system:Double x:Key="ItemViewSelectedPartOpacity">0.35</system:Double>
+    
+    <parameters:RoundedCornerBrushFactoryParameter x:Key="BrowserItemPreviewOpacityMaskSmallCorner" 
+                                                   CornerRadius="4" Brush="#000" ReuseId="BrowserItemPreviewOpacityMaskSmallCorner"
+                                                   UpdateWhenSizeChanged="True"/>
 </ResourceDictionary>
