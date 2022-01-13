@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0017745-beta" />
+      <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0017822-beta" />
     </ItemGroup>
 
     <ItemGroup>
