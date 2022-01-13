@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Assets" />
       <Folder Include="Enums" />
     </ItemGroup>
 
@@ -30,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <UpToDateCheckInput Remove="Views\Resources\Breadcrumbs\BreadcrumbElementTemplate.axaml" />
+        <AvaloniaResource Include="Assets\**\*" />
     </ItemGroup>
 
 </Project>
