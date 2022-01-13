@@ -12,7 +12,7 @@
     </DataTemplate>
     
     <DataTemplate DataType="icons1:MaterialIconKind" x:Key="BrowserDrawerStorageItemIconTemplate">
-        <icons:MaterialIcon Width="24" Height="24"
+        <icons:MaterialIcon Width="24" Height="24" Margin="0,0,8,0"
                                 
                             Kind="{CompiledBinding }"
                             Foreground="{DynamicResource PrimaryHueMidBrush}"/>
