@@ -30,14 +30,15 @@
                        ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
             <Panel VerticalAlignment="Top"
                    DockPanel.Dock="Left">
-                <icons:MaterialIcon Width="48" Height="48" Margin="8"
-                                    Kind="File" 
-                                    VerticalAlignment="Stretch" 
-                                    HorizontalAlignment="Stretch"/>
+                <Panel IsVisible="{CompiledBinding !IsPreviewReady}">
+                    <icons:MaterialIcon Width="48" Height="48" Margin="8"
+                                        Kind="File" 
+                                        VerticalAlignment="Stretch" 
+                                        HorizontalAlignment="Stretch"/>
                     
-                <ContentControl Content="{CompiledBinding AdditionalIconKind}"
-                                ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
-                
+                    <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                    ContentTemplate="{StaticResource BrowserItemDecorationTemplate}"/>
+                </Panel> 
                 <ContentControl Name="PART_PreviewPresenter"
                                 Width="{Binding ElementName=PART_PreviewPresenter, Path=Bounds.Height}"
                                 Content="{CompiledBinding Preview}"
