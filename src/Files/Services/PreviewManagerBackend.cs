@@ -27,23 +27,19 @@ namespace Files.Services
             _instance = new PreviewManagerBackend(app);
         }
         
-        private Thread? _enumerateQueueThread;
+        private Task? _enumerateQueueTask;
         private ObservableQueue<TaskScheduleModel> _queues;
-        private ManualResetEventSlim _manualResetEvent;
 
         private bool _keepRunning = true;
 
         private PreviewManagerBackend(FilesApp app)
         {
-            _manualResetEvent = new ManualResetEventSlim();
-            
             _queues = new ObservableQueue<TaskScheduleModel>();
             _queues.CollectionChanged += OnCollectionChanged;
             
             app.ApplicationShutdown += delegate
             {
                 _keepRunning = false;
-                _manualResetEvent.Set();
             };
         }
 
@@ -52,25 +48,27 @@ namespace Files.Services
             if (e.Action != NotifyCollectionChangedAction.Add)
                 return;
 
-            if (_enumerateQueueThread != null)
+            if (_enumerateQueueTask != null)
             {
-                if(!_manualResetEvent.IsSet)
-                    _manualResetEvent.Set();
-                return;
+                if (_enumerateQueueTask.Status == TaskStatus.RanToCompletion)
+                {
+                    _enumerateQueueTask.Dispose();
+                    _enumerateQueueTask = null;
+                }
+                else
+                {
+                    return;
+                }
             }
 
-            _enumerateQueueThread = new Thread(new ThreadStart(delegate
+            _enumerateQueueTask = Task.Factory.StartNew(delegate
             {
                 try
                 {
                     while (_keepRunning)
                     {
                         if (_queues.Count == decimal.Zero)
-                        {
-                            _manualResetEvent.Wait();
-                            _manualResetEvent.Reset();
-                            continue;
-                        }
+                            break;
 
                         try
                         {
@@ -90,16 +88,13 @@ namespace Files.Services
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    Console.WriteLine($"Preview management thread has stopped due exception thrown: {e.Message}");
+                    Console.WriteLine($"Preview management task has stopped due exception thrown: {e.Message}");
                     Console.WriteLine($"Stacktrace: {e.StackTrace}");
-
-                    _enumerateQueueThread = null;
                 }
-            }));
-            _enumerateQueueThread.Name = "Preview queue thread";
-            _enumerateQueueThread.Start();
+                _enumerateQueueTask = null;
+            });
         }
 
         public void GetLazyPreview(FileInfo fi, Action<PreviewableViewModelBase> OnComplete = null,
