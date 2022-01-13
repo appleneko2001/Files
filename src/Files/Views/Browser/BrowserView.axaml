@@ -11,6 +11,7 @@
                     x:Class="Files.Views.Browser.BrowserView">
     <RecyclePool x:Key="BrowserItemRecyclePool"/>
     
+    <!-- Preview element template -->
     <RecyclingElementFactory x:Key="BrowserViewPreviewElement" SelectTemplateKey="BrowserViewPreviewElement_OnSelectTemplateKey">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="preview:PreviewableViewModelBase" x:Key="Image">
@@ -20,6 +21,7 @@
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
     
+    <!-- File item element template -->
     <DataTemplate DataType="local:FileItemViewModel" x:Key="BrowserViewGridFileItemTemplate">
         <DockPanel LastChildFill="True"
                        
@@ -60,6 +62,7 @@
         </DockPanel>
     </DataTemplate>
     
+    <!-- Folder item element template -->
     <DataTemplate DataType="local:FolderItemViewModel" x:Key="BrowserViewGridFolderItemTemplate">
         <DockPanel Margin="8"
                    LastChildFill="True"
@@ -96,6 +99,7 @@
         </DockPanel>
     </DataTemplate>
     
+    <!-- Browser item view -->
     <RecyclingElementFactory x:Key="BrowserViewGridItemFactory"
                              RecyclePool="{StaticResource BrowserItemRecyclePool}"
                              SelectTemplateKey="OnSelectTemplateKeyForBrowserViewGridItem">
@@ -135,6 +139,7 @@
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
     
+    <!-- Browser view -->
     <RecyclingElementFactory x:Key="BrowserViewTemplate">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="viewModel:LocalFilesBrowserContentViewModel" x:Key="GridView">
