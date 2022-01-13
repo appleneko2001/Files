@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Files.Windows.Services;
 
 namespace Files.Windows
@@ -19,9 +18,10 @@ namespace Files.Windows
                     .With(new Win32PlatformOptions
                     {
                         OverlayPopups = true,
-                        UseWindowsUIComposition = false,
+                        UseWindowsUIComposition = true,
                         AllowEglInitialization = true,
-                        UseDeferredRendering = true
+                        UseDeferredRendering = true,
+                        EnableMultitouch = true
                     })
                     .AfterSetup(delegate(AppBuilder appBuilder)
                     {
