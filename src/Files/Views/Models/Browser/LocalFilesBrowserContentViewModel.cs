@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Threading;
 using System.Web;
@@ -14,36 +16,65 @@ namespace Files.Views.Models.Browser
 
         }
 
-        public override void LoadContent(Uri uri)
+        public override void LoadContent(Uri uri, CancellationToken _cancellationToken = default)
         {
             var di = new DirectoryInfo(HttpUtility.UrlDecode(uri.AbsolutePath));
             if (!di.Exists)
                 throw new DirectoryNotFoundException($"Directory \"{di.FullName}\" is invalid or not exists.");
 
-            EnumerateDirectoryAndFillCollection(di);
+            EnumerateDirectoryAndFillCollection(di, _cancellationToken);
         }
 
         public override void RequestPreviews(CancellationToken _cancellationToken = default)
         {
             foreach (var item in Content)
             {
+                _cancellationToken.ThrowIfCancellationRequested();
+                
                 if(item is FileItemViewModel file)
                     file.TryGetPreview(_cancellationToken);
             }
         }
 
-        private void EnumerateDirectoryAndFillCollection(DirectoryInfo di)
+        private void EnumerateDirectoryAndFillCollection(DirectoryInfo di, CancellationToken _cancellationToken = default)
         {
-            foreach (var directory in di.EnumerateDirectories())
+            const int maxBulkCount = 8;
+            var bulkPool = new List<ItemViewModelBase>(maxBulkCount);
+
+            void Commit()
             {
-                AddItemOnUiThread(new FolderItemViewModel(this, directory));
+                _cancellationToken.ThrowIfCancellationRequested();
+                
+                AddItemsOnUiThread(bulkPool.ToImmutableList());
+                bulkPool.Clear();
             }
+            
+            foreach (var directory in di.EnumerateDirectories())
+            { 
+                if (bulkPool.Count >= bulkPool.Capacity)
+                {
+                    Commit();
+                }
+                bulkPool.Add(new FolderItemViewModel(this, directory));
+            }
+
+            if (bulkPool.Count > 0) Commit();
 
             foreach (var fileInfo in di.EnumerateFiles())
             {
                 var file = new FileItemViewModel(this, fileInfo);
+
+                if (bulkPool.Count >= bulkPool.Capacity)
+                {
+                    Commit();
+                }
                 
-                AddItemOnUiThread(file);
+                bulkPool.Add(file);
+            }
+            
+            if (bulkPool.Count > 0)
+            {
+                Commit();
             }
         }
 
@@ -55,6 +86,23 @@ namespace Files.Views.Models.Browser
             {
                 AddItem(item);
             }, DispatcherPriority.Background).Wait();
+            
+            // Avalonia Input system will be frozen if not adding Thread.Sleep
+            Thread.Sleep(1);
+        }
+        
+        private void AddItemsOnUiThread(IEnumerable<ItemViewModelBase> items)
+        {
+            Dispatcher.UIThread.InvokeAsync(delegate
+            {
+                foreach (var item in items)
+                {
+                    AddItem(item);
+                }
+            }, DispatcherPriority.Background).Wait();
+            
+            // Avalonia Input system will be frozen if not adding Thread.Sleep
+            Thread.Sleep(1);
         }
     }
 }

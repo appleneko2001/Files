@@ -9,7 +9,7 @@ namespace Files.Views.Models.Browser
         {
         }
 
-        public override void LoadContent(Uri uri)
+        public override void LoadContent(Uri uri, CancellationToken _cancellationToken = default)
         {
             throw new NotImplementedException();
         }

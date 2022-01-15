@@ -18,7 +18,7 @@ namespace Files.Views.Models.Browser
             _content = new ObservableCollection<ItemViewModelBase>();
         }
 
-        public abstract void LoadContent(Uri uri);
+        public abstract void LoadContent(Uri uri, CancellationToken _cancellationToken = default);
 
         public abstract void RequestPreviews(CancellationToken _cancellationToken = default);
     }
