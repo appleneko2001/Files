@@ -17,7 +17,6 @@ namespace Files.Windows
                     .UseSkia()
                     .With(new Win32PlatformOptions
                     {
-                        OverlayPopups = true,
                         UseWindowsUIComposition = true,
                         AllowEglInitialization = true,
                         UseDeferredRendering = true,
