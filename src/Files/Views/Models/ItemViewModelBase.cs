@@ -63,5 +63,10 @@ namespace Files.Views.Models
         public virtual RelayCommand? OnClickCommand { get; }
 
         public abstract void TryGetPreview(CancellationToken _cancellationToken = default);
+        
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
