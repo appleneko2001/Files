@@ -36,6 +36,8 @@ namespace Files
 
         public override void OnFrameworkInitializationCompleted()
         {
+            PostInit();
+            
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app)
             {
                 app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -82,8 +84,12 @@ namespace Files
                 });
 
             _context = AppBackend.Instance;
-            
+        }
+
+        private void PostInit()
+        {
             PreviewManagerBackend.Initiate(this);
+            ContextMenuBackend.Initiate(this);
         }
 
         private void RelayCommandOnExceptionOccurred(object sender, OnExecutionOccurExceptionEventArgs e)
