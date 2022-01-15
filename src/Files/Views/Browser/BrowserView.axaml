@@ -36,7 +36,7 @@
     <!-- ReSharper disable once Xaml.InvalidResourceType -->
     <ContextMenu x:Key="BrowserViewContextMenu"
                  Name="PART_BrowserViewContextMenu"
-                 ContextMenuClosing="BrowserViewContextMenu_OnContextMenuClosing"
+                 DataContextChanged="BrowserViewContextMenu_OnDataContextChanged"
                  ContextMenuOpening="BrowserViewContextMenu_OnContextMenuOpening">
     </ContextMenu>
     

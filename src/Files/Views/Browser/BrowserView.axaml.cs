@@ -10,26 +10,27 @@ using Files.Views.Models.Browser.Files.Local;
 using Files.Views.Models.Browser.Preview;
 using Files.Views.Models.Context.Menus;
 
+// ReSharper disable ConvertTypeCheckPatternToNullCheck
+// ReSharper disable MergeIntoPattern
+
 namespace Files.Views.Browser
 {
+    // ReSharper disable once UnusedType.Global
     public class BrowserView : ResourceDictionary
     {
         private void OnSelectTemplateKeyForBrowserViewGridItem(object sender, SelectTemplateEventArgs e)
         {
-            switch (e.DataContext)
+            e.TemplateKey = e.DataContext switch
             {
-                case FileItemViewModel:
-                    e.TemplateKey = "File";
-                    break;
-                case FolderItemViewModel:
-                    e.TemplateKey = "Folder";
-                    break;
-            }
+                FileItemViewModel => "File",
+                FolderItemViewModel => "Folder",
+                _ => e.TemplateKey
+            };
         }
 
         private void SelectingItemRepeater_OnDoubleTappedItemEvent(object sender, AdditionalEventArgs e)
         {
-            if(e.Argument is not Visual v)
+            if (e.Argument is not Visual v)
                 return;
 
             if (v.DataContext is not ItemViewModelBase vm)
@@ -37,8 +38,8 @@ namespace Files.Views.Browser
 
             if (vm.OnClickCommand == null)
                 return;
-            
-            if(vm.OnClickCommand.CanExecute(vm))
+
+            if (vm.OnClickCommand.CanExecute(vm))
                 vm.OnClickCommand.Execute(vm);
         }
 
@@ -50,68 +51,36 @@ namespace Files.Views.Browser
 
         private void BrowserViewContextMenu_OnContextMenuOpening(object sender, CancelEventArgs e)
         {
-            if (sender is not ContextMenu menu)
-            {
+            if (sender is not ContextMenu)
                 e.Cancel = true;
-                return;
-            }
-            
-            switch (menu.DataContext)
-            {
-                case FileItemViewModel:
-                {
-                    menu.Items = Application.Current?.Resources[ContextMenuBackend.FileContextMenuResourceName] as IEnumerable;
-                } break;
-                
-                case FolderItemViewModel:
-                {
-                    menu.Items = Application.Current?.Resources[ContextMenuBackend.FolderContextMenuResourceName] as IEnumerable;
-                } break;
-            }
-
-            return;
         }
 
         private void BrowserViewContextMenuItemTemplate_OnSelectTemplateKey(object sender, SelectTemplateEventArgs e)
         {
-            switch (e.DataContext)
+            e.TemplateKey = e.DataContext switch
             {
-                case ContextMenuItemViewModel:
-                    e.TemplateKey = "Item";
-                    break;
-                case ContextMenuSeparatorViewModel:
-                    e.TemplateKey = "Separator";
-                    break;
-                
-            }
+                ContextMenuItemViewModel => "Item",
+                ContextMenuSeparatorViewModel => "Separator",
+                _ => e.TemplateKey
+            };
         }
 
-        private void BrowserViewItemFlyout_OnOpening(object sender, EventArgs e)
+        private void BrowserViewContextMenu_OnDataContextChanged(object sender, EventArgs e)
         {
-            if (sender is not MenuFlyout flyout)
+            if (sender is not ContextMenu menu)
                 return;
-            if (flyout.Target == null)
-                return;
-
-            var dataContext = flyout.Target.DataContext;
             
-            switch (dataContext)
-            {
-                case FileItemViewModel file:
-                {
-                    flyout.Items = Application.Current?.Resources[ContextMenuBackend.FileContextMenuResourceName] as IEnumerable;
-                } break;
-                
-                case FolderItemViewModel folder:
-                {
-                    flyout.Items = Application.Current?.Resources[ContextMenuBackend.FolderContextMenuResourceName] as IEnumerable;
-                } break;
-            }
-        }
+            if (Application.Current is not Application app)
+                return;
 
-        private void BrowserViewContextMenu_OnContextMenuClosing(object sender, CancelEventArgs e)
-        {
-            e.Cancel = false;
+            menu.Items = menu.DataContext switch
+            {
+                FileItemViewModel => app.Resources[ContextMenuBackend.FileContextMenuResourceName] as
+                    IEnumerable,
+                FolderItemViewModel => app.Resources[ContextMenuBackend.FolderContextMenuResourceName]
+                    as IEnumerable,
+                _ => menu.Items
+            };
         }
     }
 }
