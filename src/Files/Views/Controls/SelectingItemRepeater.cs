@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Selection;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -14,7 +16,10 @@ namespace Files.Views.Controls
     {
         public event EventHandler<AdditionalEventArgs> DoubleTappedItemEvent; 
 
-        private readonly SelectionModel<object?> _selection = new();
+        private readonly SelectionModel<object?> _selection = new()
+        {
+            SingleSelect = false
+        };
 
         public SelectionModel<object?> Selection => _selection;
 
@@ -64,10 +69,94 @@ namespace Files.Views.Controls
             
             if (child is not ContentControl)
             {
-                Selection.SelectedItem = child.DataContext;
+                var shift = e.KeyModifiers.HasFlag(KeyModifiers.Shift);
+                var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control);
+
+                if (shift && !Selection.SingleSelect)
+                {
+                    var itemsCast = new List<object>(Items.Cast<object>());
+                    
+                    var startObject = Selection.SelectedItem ?? itemsCast.First();
+                    if (startObject == null)
+                    {
+                        base.OnPointerPressed(e);
+                        return;
+                    }
+
+                    var endObject = child.DataContext;
+
+                    long startPos = -1, endPos = -1;
+
+                    long index = 0;
+                    foreach (var o in itemsCast)
+                    {
+                        if (ReferenceEquals(o, startObject))
+                            startPos = index;
+                        else if (ReferenceEquals(o, endObject))
+                            endPos = index;
+
+                        index++;
+
+                        if (startPos == -1)
+                            continue;
+                        
+                        if (endPos == -1)
+                            continue;
+                        
+                        Selection.Deselect((int)startPos);
+
+                        if(endPos > startPos)
+                            Selection.SelectRange((int)endPos, (int)startPos);
+                        else
+                            Selection.SelectRange((int)startPos, (int)endPos);
+                        break;
+                    }
+                }
+                else
+                {
+                    if (!ctrl)
+                    {
+                        Selection.Clear();
+                
+                        Selection.SelectedItem = child.DataContext;
+                    }
+                    else
+                    {
+                        var itemsCast = new List<object>(Items.Cast<object>());
+
+                        int index = 0;
+                        foreach (var o in itemsCast)
+                        {
+                            var target = ReferenceEquals(o, child.DataContext) ? index : -1;
+                            index++;
+                            
+                            if(target == -1)
+                                continue;
+
+                            var isSelected = Selection.IsSelected(target);
+                            if(isSelected)
+                                Selection.Deselect(target);
+                            else
+                                Selection.Select(target);
+                        }
+                    }
+                }
             }
             
             base.OnPointerPressed(e);
+
+            var prop = e.GetCurrentPoint(child).Properties;
+            if (prop.IsRightButtonPressed)
+            {
+                if(ContextMenu is not ContextMenu menu)
+                    return;
+
+                menu.PlacementAnchor = PopupAnchor.None;
+                menu.PlacementGravity = PopupGravity.None;
+                menu.PlacementTarget = child as Control;
+                menu.DataContext = Selection.SelectedItem;
+                menu.Open();
+            }
         }
         
         private void OnDoubleTapped(object sender, TappedEventArgs e)
@@ -113,7 +202,7 @@ namespace Files.Views.Controls
                 if (item is ISelectable i)
                     i.IsSelected = false;
             }
-            
+
             foreach (var item in e.SelectedItems)
             {
                 if (item is ISelectable i)
@@ -127,6 +216,7 @@ namespace Files.Views.Controls
         
         private void OnSelectionLostSelection(object sender, EventArgs e)
         {
+            
         }
         
         private void OnSelectionSourceReset(object sender, EventArgs e)
