@@ -10,7 +10,7 @@
       <PackageReference Include="Avalonia" Version="0.10.999-cibuild0017822-beta" />
       <PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0017822-beta" />
       <PackageReference Include="FileSignatures" Version="4.2.0" />
-      <PackageReference Include="Material.Avalonia" Version="2.5.0.55-nightly" />
+      <PackageReference Include="Material.Avalonia" Version="2.5.0.58-nightly" />
       <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
     </ItemGroup>
 
