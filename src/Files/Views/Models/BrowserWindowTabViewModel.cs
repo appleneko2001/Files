@@ -74,7 +74,7 @@ namespace Files.Views.Models
                 _breadcrumbPath.ApplyPath(path);
                 
                 Content = CreateView(path);
-                Content.LoadContent(path);
+                Content.LoadContent(path, _ctx.Token);
                 Content.RequestPreviews(_ctx.Token);
             }).ContinueWith(delegate(Task task)
             {
@@ -85,6 +85,9 @@ namespace Files.Views.Models
                     return;
 
                 if (task.IsCanceled)
+                    return;
+
+                if (task.Exception?.InnerException is OperationCanceledException)
                     return;
 
                 Dispatcher.UIThread.InvokeAsync(delegate
