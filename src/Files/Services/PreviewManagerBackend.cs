@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Threading;
@@ -34,7 +35,7 @@ namespace Files.Services
 
         private PreviewManagerBackend(FilesApp app)
         {
-            _queues = new ObservableQueue<TaskScheduleModel>();
+            _queues = new ObservableQueue<TaskScheduleModel>(new List<TaskScheduleModel>(2048));
             _queues.CollectionChanged += OnCollectionChanged;
             
             app.ApplicationShutdown += delegate
