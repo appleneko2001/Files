@@ -13,4 +13,30 @@
             </ControlTemplate>
         </Setter>
     </Style>
+    
+    <Style Selector="MenuItem">
+        <Setter Property="Height" Value="36"/>
+    </Style>
+    
+    <Style Selector="MenuItem:separator">
+        <Setter Property="Height" Value="NaN"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Separator Background="{DynamicResource PrimaryHueMidBrush}"
+                           Margin="0, 8"
+                           Height="1" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="ContextMenu#PART_BrowserViewContextMenu MenuItem">
+        <Setter Property="Header" Value="{Binding Header}"/>
+        <Setter Property="Items" Value="{Binding Items}"/>
+        <Setter Property="Command" Value="{Binding Command}"/>
+        <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+        <!--Setter Property="Icon">
+            <ContentControl Content="{Binding Icon}"
+                            ContentTemplate="{StaticResource ContextMenuIconFactory}"/>
+        </Setter-->
+    </Style>
 </Styles>

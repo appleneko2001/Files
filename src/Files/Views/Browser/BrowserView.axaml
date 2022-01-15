@@ -7,8 +7,40 @@
                     xmlns:local="clr-namespace:Files.Views.Models.Browser.Files.Local"
                     xmlns:controls="clr-namespace:Files.Views.Controls"
                     xmlns:preview="clr-namespace:Files.Views.Models.Browser.Preview"
+                    xmlns:menus="clr-namespace:Files.Views.Models.Context.Menus"
 
                     x:Class="Files.Views.Browser.BrowserView">
+    <!-- Browser view templates -->
+    <!-- Browser view context menu -->
+    
+    <RecyclingElementFactory x:Key="BrowserViewContextMenuItemTemplate" SelectTemplateKey="BrowserViewContextMenuItemTemplate_OnSelectTemplateKey">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate x:Key="Item" DataType="menus:ContextMenuItemViewModel">
+                <MenuItem Header="{CompiledBinding Header}">
+                    <MenuItem.Icon>
+                        <ContentControl Content="{CompiledBinding Icon}"
+                                        ContentTemplate="{StaticResource ContextMenuIconFactory}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="Separator" DataType="menus:ContextMenuSeparatorViewModel">
+                <Separator/>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
+    
+    <!-- What a weaselly lier dude -->
+    <!-- IDE tell me DataTemplates should not use RecyclingElementFactory -->
+    
+    <!-- ReSharper disable once Xaml.InvalidResourceType -->
+    <ContextMenu x:Key="BrowserViewContextMenu"
+                 Name="PART_BrowserViewContextMenu"
+                 ContextMenuClosing="BrowserViewContextMenu_OnContextMenuClosing"
+                 ContextMenuOpening="BrowserViewContextMenu_OnContextMenuOpening">
+    </ContextMenu>
+    
+    <!-- Browser view item global recycle pool -->
     <RecyclePool x:Key="BrowserItemRecyclePool"/>
     
     <!-- Preview element template -->
@@ -113,7 +145,7 @@
                              SelectTemplateKey="OnSelectTemplateKeyForBrowserViewGridItem">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="local:FileItemViewModel" x:Key="File">
-                <Panel>
+                <Panel ContextMenu="{StaticResource BrowserViewContextMenu}">
                     <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
                                     
                                     Content="{CompiledBinding }"
@@ -130,7 +162,7 @@
             </DataTemplate>
             
             <DataTemplate DataType="local:FolderItemViewModel" x:Key="Folder">
-                <Panel>
+                <Panel ContextMenu="{StaticResource BrowserViewContextMenu}">
                     <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
                                     
                                     Content="{CompiledBinding }"

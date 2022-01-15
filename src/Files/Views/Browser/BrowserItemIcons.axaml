@@ -2,7 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-                    xmlns:icons1="clr-namespace:Material.Icons;assembly=Material.Icons">
+                    xmlns:icons1="clr-namespace:Material.Icons;assembly=Material.Icons"
+                    xmlns:models="clr-namespace:Files.Views.Models">
+    <RecyclingElementFactory x:Key="ContextMenuIconFactory">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate DataType="models:MaterialIconViewModel" x:Key="MaterialIcon">
+                <icons:MaterialIcon Width="16" Height="16"
+                                    Kind="{CompiledBinding Kind}"
+                                    Foreground="{DynamicResource MaterialDesignBody}"/>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
+    
     <DataTemplate DataType="icons1:MaterialIconKind" x:Key="BrowserItemDecorationTemplate">
         <icons:MaterialIcon Width="24" Height="24"
                             VerticalAlignment="Bottom" HorizontalAlignment="Right"
