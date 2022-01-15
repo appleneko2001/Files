@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Visuals.Media.Imaging;
 using Files.Collections;
 using Files.Tasks;
 using Files.Tasks.Schedules;
@@ -157,7 +158,7 @@ namespace Files.Services
             
             stream.Seek(0, SeekOrigin.Begin);
             
-            using var final = GetScaledBitmap(stream, model.TargetPreviewSize);
+            using var final = GetScaledBitmap(stream, model.TargetPreviewSize, model.BitmapQuality);
             
             var vm = new PicturePreviewableViewModelBase();
 
@@ -169,7 +170,7 @@ namespace Files.Services
             model.IsSuccessful = true;
         }
 
-        private static Bitmap GetScaledBitmap(Stream stream, int maxSize)
+        private static Bitmap GetScaledBitmap(Stream stream, int maxSize, BitmapInterpolationMode mode)
         {
             using var src = new Bitmap(stream);
             if (src is null)
@@ -193,7 +194,7 @@ namespace Files.Services
                 thumbW = (int) Math.Round(thumbW * aspect);
             }
             
-            return src.CreateScaledBitmap(new PixelSize(thumbW, thumbH));
+            return src.CreateScaledBitmap(new PixelSize(thumbW, thumbH), mode);
         }
 
         private static bool OnFinalizeGetPreviewTask(Task task, object arg)
