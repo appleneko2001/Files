@@ -4,4 +4,5 @@
     <converters:BoolToDoubleConverter x:Key="BoolToDoubleConverter"/>
     <converters:HumanizeSizeConverter x:Key="HumanizeSizeConverter"/>
     <converters:RoundedCornerBrushFactoryConverter x:Key="RoundedCornerBrushFactory" />
+    <converters:GetMayExecuteCommandConverter x:Key="MayExecuteConverter"/>
 </ResourceDictionary>
