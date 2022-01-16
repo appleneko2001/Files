@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
@@ -14,6 +15,15 @@ namespace Files.Views.Controls
 {
     public class SelectingItemRepeater : ItemsRepeater
     {
+        public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
+            RoutedEvent.Register<SelectingItemRepeater, SelectionChangedEventArgs>(
+                "SelectionChanged",
+                RoutingStrategies.Bubble);
+        public event EventHandler<SelectionChangedEventArgs> SelectionChanged
+        {
+            add => AddHandler(SelectionChangedEvent, value);
+            remove => RemoveHandler(SelectionChangedEvent, value);
+        } 
         public event EventHandler<AdditionalEventArgs> DoubleTappedItemEvent; 
 
         private readonly SelectionModel<object?> _selection = new()
@@ -208,6 +218,8 @@ namespace Files.Views.Controls
                 if (item is ISelectable i)
                     i.IsSelected = true;
             }
+            
+            RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, e.DeselectedItems as IList, e.SelectedItems as IList));
         }
         
         private void OnSelectionIndexesChanged(object sender, SelectionModelIndexesChangedEventArgs e)
