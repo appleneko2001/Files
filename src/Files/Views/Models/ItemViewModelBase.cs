@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Files.Commands;
 
@@ -60,7 +61,7 @@ namespace Files.Views.Models
             }
         }
         
-        public virtual RelayCommand? OnClickCommand { get; }
+        public virtual ICommand? OnClickCommand { get; protected set; }
 
         public abstract void TryGetPreview(CancellationToken _cancellationToken = default);
         
