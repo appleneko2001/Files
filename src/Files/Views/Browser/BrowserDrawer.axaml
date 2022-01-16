@@ -5,7 +5,7 @@
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
     
     <DataTemplate DataType="storage:StorageEntryViewModel" x:Key="BrowserDrawerStorageEntryTemplate">
-        <Panel Margin="0,0,16,0">
+        <Panel Margin="0,0,4,0">
             <Button Classes="Flat" HorizontalContentAlignment="Stretch"
                     UseLayoutRounding="True" ClipToBounds="True"
                     
