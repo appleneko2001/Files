@@ -70,6 +70,7 @@ namespace Files
         private void PreInit()
         {
             RelayCommand.ExceptionOccur += RelayCommandOnExceptionOccurred;
+            ExtendedRelayCommand.ExceptionOccur += RelayCommandOnExceptionOccurred;
             
             _windowManager = new WindowManagerService();
             _windowManager.WhenNoActiveWindowsLeft += WhenNoActiveWindowsLeft;
