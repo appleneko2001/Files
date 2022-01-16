@@ -133,7 +133,7 @@
                                 <TextBox Classes="Solo"
                                          BorderBrush="{DynamicResource MaterialDesignBody}"
                                          
-                                         FontSize="16"
+                                         FontSize="14"
                                          FontWeight="Normal"
                                          BorderThickness="1"
                                          Margin="0" Padding="0"
