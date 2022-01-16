@@ -17,7 +17,7 @@ namespace Files.Windows
                     .UseSkia()
                     .With(new Win32PlatformOptions
                     {
-                        UseWindowsUIComposition = true,
+                        UseWindowsUIComposition = false,
                         AllowEglInitialization = true,
                         UseDeferredRendering = true,
                         EnableMultitouch = true
