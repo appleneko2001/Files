@@ -2,8 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:parameters="clr-namespace:Files.Views.Converters.Parameters"
                     xmlns:system="clr-namespace:System;assembly=netstandard">
+    <!-- Opacity presets -->
+    <system:Double x:Key="ItemViewSelectedPartOpacity">0.3</system:Double>
+    <system:Double x:Key="ItemViewHovered">0.1</system:Double>
+    
     <parameters:BoolToDoubleConverterParameter x:Key="IsNotVisibleDoubleValue" ValueOnFalse="0.35" ValueOnTrue="1.0"/>
-    <system:Double x:Key="ItemViewSelectedPartOpacity">0.35</system:Double>
+
     
     <parameters:RoundedCornerBrushFactoryParameter x:Key="BrowserItemPreviewOpacityMaskSmallCorner" 
                                                    CornerRadius="4" Brush="#000" ReuseId="BrowserItemPreviewOpacityMaskSmallCorner"
