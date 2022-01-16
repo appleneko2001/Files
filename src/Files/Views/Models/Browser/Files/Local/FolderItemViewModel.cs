@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Windows.Input;
 using Files.Commands;
 
 namespace Files.Views.Models.Browser.Files.Local
 {
     public class FolderItemViewModel : LocalFileSystemItemViewModel
     {
-        private static RelayCommand _clickCommand = new(ExecuteOpenFolderCommand);
+        private static readonly RelayCommand _clickCommand = new(ExecuteOpenFolderCommand);
+        public static RelayCommand OpenFolderCommand => _clickCommand;
 
         private static void ExecuteOpenFolderCommand(object obj)
         {
@@ -33,6 +35,6 @@ namespace Files.Views.Models.Browser.Files.Local
             // TODO: folder previews
         }
 
-        public override RelayCommand OnClickCommand => _clickCommand;
+        public override ICommand OnClickCommand => _clickCommand;
     }
 }
