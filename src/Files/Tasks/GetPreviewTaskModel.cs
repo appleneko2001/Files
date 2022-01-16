@@ -8,7 +8,7 @@ namespace Files.Tasks
     {
         public int TargetPreviewSize = 120;
 
-        public BitmapInterpolationMode BitmapQuality = BitmapInterpolationMode.MediumQuality;
+        public BitmapInterpolationMode BitmapQuality = BitmapInterpolationMode.LowQuality;
         
         public abstract Stream GetStream();
     }
