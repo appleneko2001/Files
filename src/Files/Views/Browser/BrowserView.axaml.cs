@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Selection;
 using Files.Services;
+using Files.Views.Controls;
 using Files.Views.Controls.Events;
 using Files.Views.Models;
 using Files.Views.Models.Browser.Files.Local;
@@ -18,15 +20,7 @@ namespace Files.Views.Browser
     // ReSharper disable once UnusedType.Global
     public class BrowserView : ResourceDictionary
     {
-        private void OnSelectTemplateKeyForBrowserViewGridItem(object sender, SelectTemplateEventArgs e)
-        {
-            e.TemplateKey = e.DataContext switch
-            {
-                FileItemViewModel => "File",
-                FolderItemViewModel => "Folder",
-                _ => e.TemplateKey
-            };
-        }
+        private SelectingItemRepeater _prevItemRepeater;
 
         private void SelectingItemRepeater_OnDoubleTappedItemEvent(object sender, AdditionalEventArgs e)
         {
@@ -55,16 +49,6 @@ namespace Files.Views.Browser
                 e.Cancel = true;
         }
 
-        private void BrowserViewContextMenuItemTemplate_OnSelectTemplateKey(object sender, SelectTemplateEventArgs e)
-        {
-            e.TemplateKey = e.DataContext switch
-            {
-                ContextMenuItemViewModel => "Item",
-                ContextMenuSeparatorViewModel => "Separator",
-                _ => e.TemplateKey
-            };
-        }
-
         private void BrowserViewContextMenu_OnDataContextChanged(object sender, EventArgs e)
         {
             if (sender is not ContextMenu menu)
@@ -73,14 +57,60 @@ namespace Files.Views.Browser
             if (Application.Current is not Application app)
                 return;
 
-            menu.Items = menu.DataContext switch
+            switch (menu.DataContext)
             {
-                FileItemViewModel => app.Resources[ContextMenuBackend.FileContextMenuResourceName] as
-                    IEnumerable,
-                FolderItemViewModel => app.Resources[ContextMenuBackend.FolderContextMenuResourceName]
-                    as IEnumerable,
-                _ => menu.Items
-            };
+                case FileItemViewModel:
+                {
+                    var menus = app.Resources[ContextMenuBackend.FileContextMenuResourceName] as
+                        ObservableCollection<ContextMenuItemViewModelBase>;
+                    var parameter = GetSelectedItemOrItems(_prevItemRepeater.Selection);
+                    
+                    foreach (var model in menus)
+                    {
+                        model.CommandParameter = parameter;
+                    }
+
+                    menu.Items = menus;
+                } break;
+                case FolderItemViewModel:
+                {
+                    var menus = app.Resources[ContextMenuBackend.FolderContextMenuResourceName] as
+                        ObservableCollection<ContextMenuItemViewModelBase>;
+                    var parameter = GetSelectedItemOrItems(_prevItemRepeater.Selection);
+                    
+                    foreach (var model in menus)
+                    {
+                        model.CommandParameter = parameter;
+                    }
+                    
+                    menu.Items = menus;
+                } break;
+                default:
+                    menu.Items = menu.Items;
+                    break;
+            }
+        }
+
+        private object? GetSelectedItemOrItems(object value)
+        {
+            if (value is SelectionModel<object> selectionModel)
+            {
+                return selectionModel.Count switch
+                {
+                    1 => selectionModel.SelectedItem!,
+                    > 1 => selectionModel.SelectedItems,
+                    _ => null
+                };
+            }
+
+            return null;
+        }
+
+        private void SelectingItemRepeater_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is not SelectingItemRepeater itemRepeater)
+                return;
+            _prevItemRepeater = itemRepeater;
         }
     }
 }

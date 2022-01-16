@@ -1,8 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Files.Views.Models;
 using Files.Views.Models.Context.Menus;
 using Material.Icons;
+
+using ContextMenuItem = Files.Views.Models.Context.Menus.ContextMenuItemViewModel;
 
 namespace Files.Services
 {
@@ -14,12 +22,34 @@ namespace Files.Services
         private static ContextMenuBackend _instance;
         public static ContextMenuBackend Instance => _instance;
 
+        private FilesApp _appInstance;
+        private CommandsBackend _commands;
+        private PlatformHotkeyConfiguration? _hotkeyConfigs;
+
+        private ObservableCollection<ContextMenuItemViewModelBase> FolderContextMenus;
+        private ObservableCollection<ContextMenuItemViewModelBase> FileContextMenus;
+
+        // ReSharper disable once SuggestBaseTypeForParameterInConstructor
+        private ContextMenuBackend(FilesApp app)
+        {
+            _hotkeyConfigs = AvaloniaLocator.Current.GetService<PlatformHotkeyConfiguration>();
+
+            if (_hotkeyConfigs == null)
+                Console.WriteLine("Unable to get platform specified hotkey configurations.");
+            //throw new ArgumentNullException(nameof(_hotkeyConfigs), "Unable to get platform specified hotkey configurations.");
+
+            _commands = CommandsBackend.Instance;
+
+            FolderContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFolderContextMenus());
+            FileContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFileContextMenus());
+            
+            AddOrModifyResource(app.Resources, FolderContextMenuResourceName, FolderContextMenus);
+            AddOrModifyResource(app.Resources, FileContextMenuResourceName, FileContextMenus);
+        }
+
         public static void Initiate(FilesApp app)
         {
-            AddOrModifyResource(app.Resources, FileContextMenuResourceName,
-                InitiateFileContextMenus());
-            AddOrModifyResource(app.Resources, FolderContextMenuResourceName,
-                InitiateFolderContextMenus());
+            _instance = new ContextMenuBackend(app);
         }
 
         private static void AddOrModifyResource(IResourceDictionary dict, object key, object? value)
@@ -28,41 +58,59 @@ namespace Files.Services
                 dict[key] = value;
         }
 
-        private static IEnumerable<ContextMenuItemViewModelBase> InitiateFileContextMenus()
+        private IEnumerable<ContextMenuItemViewModelBase> InitiateFileContextMenus()
         {
-            var list = new List<ContextMenuItemViewModelBase>();
-            
-            list.Add(new ContextMenuItemViewModel("Open", new MaterialIconViewModel(MaterialIconKind.Launch)));
-            list.Add(new ContextMenuItemViewModel("Open with..", new MaterialIconViewModel(MaterialIconKind.Launch)));
+            var list = new List<ContextMenuItemViewModelBase>
+            {
+                new ContextMenuItem("Execute application", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.ExecuteApplicationCommand, KeyGesture.Parse("Enter")),
+                new ContextMenuItem("Open", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.OpenFileViaPlatformCommand, KeyGesture.Parse("Enter")),
+                new ContextMenuItem("Open with..", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.ShowOpenFileWithDialogCommand),
+                
+                ContextMenuItem.Separator,
+            };
+
             list.AddRange(InitiatePostEssentialMenus());
 
             return list;
         }
         
-        private static IEnumerable<ContextMenuItemViewModelBase> InitiateFolderContextMenus()
+        private IEnumerable<ContextMenuItemViewModelBase> InitiateFolderContextMenus()
         {
-            var list = new List<ContextMenuItemViewModelBase>();
-            
-            list.Add(new ContextMenuItemViewModel("Open folder"));
+            var list = new List<ContextMenuItemViewModelBase>
+            {
+                new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"), command: _commands.OpenFolderInCurrentViewCommand),
+                //new ContextMenuItemViewModel("Open folder in new tab"),
+                //new ContextMenuItemViewModel("Open folder in new window"),
+                ContextMenuItem.Separator,
+            };
+
             list.AddRange(InitiatePostEssentialMenus());
 
             return list;
         }
         
-        private static IEnumerable<ContextMenuItemViewModelBase> InitiatePostEssentialMenus()
+        private IEnumerable<ContextMenuItemViewModelBase> InitiatePostEssentialMenus()
         {
-            var list = new List<ContextMenuItemViewModelBase>();
-            
-            list.Add(new ContextMenuItemViewModel("Cut", new MaterialIconViewModel(MaterialIconKind.ContentCut)));
-            list.Add(new ContextMenuItemViewModel("Copy", new MaterialIconViewModel(MaterialIconKind.ContentCopy)));
-            list.Add(new ContextMenuItemViewModel("Paste", new MaterialIconViewModel(MaterialIconKind.ContentPaste)));
-            list.Add(new ContextMenuItemViewModel("-"));
-            list.Add(new ContextMenuItemViewModel("Delete", new MaterialIconViewModel(MaterialIconKind.TrashCan)));
-            list.Add(new ContextMenuItemViewModel("Rename", new MaterialIconViewModel(MaterialIconKind.Pencil)));
-            list.Add(new ContextMenuItemViewModel("-"));
-            list.Add(new ContextMenuItemViewModel("Properties"));
+            var list = new List<ContextMenuItemViewModelBase>
+            {
+                new ContextMenuItemViewModel("Cut", new MaterialIconViewModel(MaterialIconKind.ContentCut),
+                    keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Cut)),
+                new ContextMenuItemViewModel("Copy", new MaterialIconViewModel(MaterialIconKind.ContentCopy),
+                    keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Copy)),
+                new ContextMenuItemViewModel("Paste", new MaterialIconViewModel(MaterialIconKind.ContentPaste),
+                    keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Paste)),
+                ContextMenuItem.Separator,
+                new ContextMenuItemViewModel("Delete", new MaterialIconViewModel(MaterialIconKind.TrashCan),
+                    keyGesture: KeyGesture.Parse("Delete")),
+                new ContextMenuItemViewModel("Rename", new MaterialIconViewModel(MaterialIconKind.Pencil)),
+                ContextMenuItem.Separator,
+                new ContextMenuItemViewModel("Properties")
+            };
 
             return list;
         }
+
+        private KeyGesture? GetFirstDefaultGesture(List<KeyGesture>? keyGestures) =>
+            keyGestures?.FirstOrDefault() ?? null;
     }
 }
