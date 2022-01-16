@@ -1,13 +1,17 @@
 ﻿using System.Windows.Input;
+using Avalonia.Input;
 
 namespace Files.Views.Models.Context.Menus
 {
     public class ContextMenuItemViewModel : ContextMenuItemViewModelBase
     {
-        public ContextMenuItemViewModel(string header, IconViewModelBase? icon = null, ICommand command = null)
+        private static readonly ContextMenuItemViewModel _separator = new("-");
+        public static ContextMenuItemViewModel Separator => _separator;
+        
+        public ContextMenuItemViewModel(string header, IconViewModelBase? icon = null, ICommand command = null, KeyGesture? keyGesture = null) : base(command)
         {
-            _command = command;
             _header = header;
+            _keyGesture = keyGesture;
             _icon = icon;
         }
         
@@ -17,7 +21,7 @@ namespace Files.Views.Models.Context.Menus
         private string _header;
         public string Header => _header;
 
-        private ICommand? _command;
-        public ICommand? Command => _command;
+        private KeyGesture? _keyGesture;
+        public KeyGesture? KeyGesture => _keyGesture;
     }
 }
