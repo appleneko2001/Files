@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Windows.Input;
 using Avalonia.Controls;
-using Files.Commands;
 
 namespace Files.Views.Models
 {
