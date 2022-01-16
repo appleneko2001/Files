@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Threading;
+using System.Windows.Input;
+using Files.Commands;
 using Files.Services;
 using Files.Views.Models.Browser.Preview;
 
@@ -7,6 +9,20 @@ namespace Files.Views.Models.Browser.Files.Local
 {
     public class FileItemViewModel : LocalFileSystemItemViewModel
     {
+        private static ICommand _onClickCommand = new RelayCommand(delegate(object o)
+        {
+            if (o is not FileItemViewModel file)
+                return;
+
+            var command = CommandsBackend.GetPrimaryCommandForThisFile(file);
+
+            if (command == null)
+                return;
+            
+            if(command.CanExecute(file))
+                command.Execute(file);
+        });
+        
         private long _size;
         public long Size => _size;
 
@@ -30,6 +46,8 @@ namespace Files.Views.Models.Browser.Files.Local
         {
             PreviewManagerBackend.Instance?.ScheduleGetPreview(new FileInfo(_fullPath), OnCompleteGetPreviewTask, _cancellationToken);
         }
+
+        public override ICommand? OnClickCommand => _onClickCommand;
 
         private void OnCompleteGetPreviewTask(PreviewableViewModelBase model)
         {
