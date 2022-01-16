@@ -51,10 +51,18 @@
     
     <Style Selector="ContextMenu#PART_BrowserViewContextMenu MenuItem"
            x:DataType="menus:ContextMenuItemViewModel">
-        <Setter Property="Header" Value="{CompiledBinding Header}"/>
-        <!--Setter Property="Items" Value="{CompiledBinding Items}"/-->
-        <Setter Property="Command" Value="{CompiledBinding Command}"/>
-        <!--Setter Property="CommandParameter" Value="{CompiledBinding CommandParameter}"/-->
         <Setter Property="Icon" Value="{CompiledBinding Icon}"/>
+        <Setter Property="Header" Value="{CompiledBinding Header}"/>
+        <Setter Property="Command" Value="{CompiledBinding Command}"/>
+        <Setter Property="InputGesture" Value="{CompiledBinding KeyGesture}"/>
+        <Setter Property="IsVisible" >
+            <Setter.Value>
+                <MultiBinding Converter="{StaticResource MayExecuteConverter}">
+                    <CompiledBinding Path="Command"/>
+                    <CompiledBinding Path="CommandParameter"/>
+                </MultiBinding>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="CommandParameter" Value="{CompiledBinding CommandParameter}"/>
     </Style>
 </Styles>
