@@ -59,9 +59,9 @@ namespace Files
             _context.BindServices(service);
         }
 
-        public BrowserWindow CreateBrowserWindow()
+        public BrowserWindow CreateBrowserWindow(Uri startUri = null)
         {
-            var window = new BrowserWindow();
+            var window = new BrowserWindow(startUri);
             _windowManager.RegisterWindow(window);
 
             return window;
