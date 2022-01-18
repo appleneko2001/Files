@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Files.Commands;
@@ -32,7 +33,7 @@ namespace Files.Views.Models
         private ObservableCollection<StorageDeviceViewModel> _storageDevices;
         private ObservableCollection<BrowserWindowTabViewModel> _tabsViewModel;
         private bool _isNavigationDrawerOpen;
-        private BrowserWindowTabViewModel _selectedTab;
+        private BrowserWindowTabViewModel? _selectedTab;
         
         private BrowserWindowTabViewModel _previousSelectedTab;
         //private SelectionModel<BrowserWindowTabViewModel> _tabSelection;
@@ -47,7 +48,7 @@ namespace Files.Views.Models
                 
         public RelayCommand NewTabCommand => _newTabCommand;
 
-        public BrowserWindowTabViewModel SelectedTab
+        public BrowserWindowTabViewModel? SelectedTab
         {
             get => _selectedTab;
             set
@@ -56,8 +57,10 @@ namespace Files.Views.Models
                     _selectedTab.IsSelected = false;
                 
                 _selectedTab = value;
-                value.IsSelected = true;
                 RaiseOnPropertyChangedThroughUiThread();
+                
+                if(value != null)
+                    value.IsSelected = true;
             }
         }
 
@@ -91,6 +94,17 @@ namespace Files.Views.Models
             var newTab = new BrowserWindowTabViewModel(vm);
             vm.TabsViewModel.Add(newTab);
             vm.SelectedTab = newTab;
+        }
+
+        internal void CloseTab(BrowserWindowTabViewModel tab)
+        {
+            var lastTab = TabsViewModel.LastOrDefault();
+            if (lastTab == tab)
+                lastTab = null;
+            SelectedTab = lastTab;
+            
+            TabsViewModel.Remove(tab);
+            tab.AfterClose();
         }
 
         public void RefreshStorageDevicesCollection()

@@ -14,7 +14,7 @@ using Material.Dialog.Enums;
 
 namespace Files.Views.Models
 {
-    public class BrowserWindowTabViewModel : HeaderViewModelBase
+    public class BrowserWindowTabViewModel : HeaderViewModelBase, IDisposable
     {
         private static RelayCommand _selectTabCommand = new RelayCommand(delegate(object o)
         {
@@ -23,7 +23,18 @@ namespace Files.Views.Models
                 OnExecuteSelectCommand(vm);
             }
         });
+        
+        private static ExtendedRelayCommand _closeTabCommand = new ExtendedRelayCommand(delegate(object o)
+        {
+            if (o is BrowserWindowTabViewModel vm)
+            {
+                OnExecuteCloseCommand(vm);
+            }
+        });
 
+        private bool _shouldDispose;
+        
+        private bool _isDisposed;
         private bool _isSelected;
 
         private BrowserWindowViewModel _parent;
@@ -34,6 +45,8 @@ namespace Files.Views.Models
 
         private ProgressViewModel _progress;
 
+        public ExtendedRelayCommand CloseTabCommand => _closeTabCommand;
+        
         public RelayCommand SelectTabCommand => _selectTabCommand;
 
         public BrowserContentViewModelBase Content
@@ -82,6 +95,11 @@ namespace Files.Views.Models
                 : path);
         }
         
+        private static void OnExecuteCloseCommand(BrowserWindowTabViewModel vm)
+        {
+            vm.Parent.CloseTab(vm);
+        }
+        
         private static void OnExecuteSelectCommand(BrowserWindowTabViewModel vm)
         {
             vm.Parent.SelectedTab = vm;
@@ -110,6 +128,9 @@ namespace Files.Views.Models
                 p.SetProgress(1.0);
                 p.SetCompleted();
                 
+                if(_shouldDispose)
+                    Dispose();
+
                 if (!task.IsFaulted && task.IsCompleted)
                     return;
 
@@ -138,7 +159,6 @@ namespace Files.Views.Models
         {
             Header = uri.Segments.Last();
             
-            var path = HttpUtility.UrlDecode(uri.AbsolutePath);
             BrowserContentViewModelBase viewModel = null;
             
             switch (uri.Scheme.ToLowerInvariant())
@@ -150,6 +170,23 @@ namespace Files.Views.Models
             }
 
             return viewModel;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            
+            _ctx.Dispose();
+        }
+
+        internal void AfterClose()
+        {
+            _ctx.Cancel();
+
+            if (!_progress.IsComplete)
+                _shouldDispose = true;
+            else
+                Dispose();
         }
     }
 }

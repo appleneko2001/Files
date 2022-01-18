@@ -203,14 +203,14 @@
                                     </ItemsPresenter.ItemsPanel>
                                     <ItemsPresenter.ItemTemplate>
                                         <DataTemplate DataType="viewmodels:BrowserWindowTabViewModel">
-                                            <Button Classes="TabButton" MinWidth="256"
-                                                    Command="{CompiledBinding SelectTabCommand}"
-                                                    CommandParameter="{CompiledBinding }">
-                                                <Panel>
-                                                    <Border Opacity="0.2"
-                                                            CornerRadius="8,8,0,0"
-                                                            Background="Black"
-                                                            IsVisible="{CompiledBinding !IsSelected}" />
+                                            <Panel>
+                                                <Border Opacity="0.2"
+                                                        CornerRadius="8,8,0,0"
+                                                        Background="Black"
+                                                        IsVisible="{CompiledBinding !IsSelected}" />
+                                                <Button Classes="TabButton" MinWidth="256"
+                                                        Command="{CompiledBinding SelectTabCommand}"
+                                                        CommandParameter="{CompiledBinding }">
                                                     <TextBlock Classes="Subtitle2"
                                                                Margin="8,0"
                                                                HorizontalAlignment="Left"
@@ -218,8 +218,19 @@
                                                                TextTrimming="CharacterEllipsis"
                                                                Text="{CompiledBinding Header}"
                                                                Foreground="{DynamicResource MaterialDesignBody}" />
-                                                </Panel>
-                                            </Button>
+                                                </Button>
+                                                
+                                                <Button Classes="Flat"
+                                                        Margin="8"
+                                                        Padding="4"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center"
+                                                        ToolTip.Tip="Close tab"
+                                                        Content="{icons:MaterialIconExt Close}"
+                                                        
+                                                        Command="{CompiledBinding CloseTabCommand}"
+                                                        CommandParameter="{CompiledBinding }"/>
+                                            </Panel>
                                         </DataTemplate>
                                     </ItemsPresenter.ItemTemplate>
                                 </ItemsPresenter>
