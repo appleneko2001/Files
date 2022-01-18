@@ -12,4 +12,8 @@
     <parameters:RoundedCornerBrushFactoryParameter x:Key="BrowserItemPreviewOpacityMaskSmallCorner" 
                                                    CornerRadius="4" Brush="#000" ReuseId="BrowserItemPreviewOpacityMaskSmallCorner"
                                                    UpdateWhenSizeChanged="True"/>
+    
+    <parameters:EdgeGradientGeneratorParameter x:Key="BreadcrumbScrollerEdgeGradientParameter"
+                                               LeftOpacityDistanceDp="24"
+                                               RightOpacityDistanceDp="24"/>
 </ResourceDictionary>

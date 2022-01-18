@@ -5,4 +5,5 @@
     <converters:HumanizeSizeConverter x:Key="HumanizeSizeConverter"/>
     <converters:RoundedCornerBrushFactoryConverter x:Key="RoundedCornerBrushFactory" />
     <converters:GetMayExecuteCommandConverter x:Key="MayExecuteConverter"/>
+    <converters:EdgeGradientOpacityMaskGenerator x:Key="EdgeGradientOpacityMaskGenerator"/>
 </ResourceDictionary>
