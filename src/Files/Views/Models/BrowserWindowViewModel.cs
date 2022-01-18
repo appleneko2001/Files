@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Avalonia;
+using Avalonia.Controls;
+using Files.Commands;
 using Files.Services;
 using Files.Views.Models.Storage;
 
@@ -8,6 +10,14 @@ namespace Files.Views.Models
 {
     public class BrowserWindowViewModel : ViewModelBase
     {
+        private static RelayCommand _fullscreenCommand = new RelayCommand(delegate(object o)
+        {
+            if (o is Window w)
+            {
+                w.WindowState = w.WindowState == WindowState.FullScreen ? WindowState.Normal : WindowState.FullScreen;
+            }
+        });
+        
         private BrowserWindow _parentWindow;
 
         private AppBackend _context;
@@ -21,6 +31,8 @@ namespace Files.Views.Models
         
         public ObservableCollection<StorageDeviceViewModel> StorageDevices => _storageDevices;
         public ObservableCollection<BrowserWindowTabViewModel> TabViewModel => _tabsViewModel;
+
+        public RelayCommand FullscreenCommand => _fullscreenCommand;
 
         public BrowserWindowTabViewModel SelectedTab
         {
