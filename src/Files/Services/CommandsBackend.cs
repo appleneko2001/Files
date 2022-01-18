@@ -24,6 +24,7 @@ namespace Files.Services
                 mayExecute: MayExecuteShowOpenWithDialogCommand);
 
             OpenFolderInCurrentViewCommand = new ExtendedRelayCommand(OnExecuteOpenFolderInCurrentViewCommand, mayExecute: MayExecuteOpenFolderInCurrentViewCommand);
+            OpenFolderInNewWindowCommand = new ExtendedRelayCommand(OnExecuteOpenFolderInNewWindowCommand, mayExecute: MayExecuteOpenFolderInNewWindowCommand);
         }
 
         public static void Initiate(FilesApp app)
@@ -143,12 +144,11 @@ namespace Files.Services
 
         private void OnExecuteOpenFolderInNewWindowCommand(object obj)
         {
-            if (obj is FileItemViewModel file)
-            {
-                // TODO: Open folder in new window feature implement
-                //var window = _appInstance.CreateBrowserWindow();
-                //window.
-            }
+            if (obj is not FolderItemViewModel folder)
+                return;
+            
+            var window = _appInstance.CreateBrowserWindow(new Uri(folder.FullPath));
+            window.Show();
         }
 
         #endregion
