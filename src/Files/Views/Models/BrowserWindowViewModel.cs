@@ -10,6 +10,14 @@ namespace Files.Views.Models
 {
     public class BrowserWindowViewModel : ViewModelBase
     {
+        private static RelayCommand _newTabCommand = new RelayCommand(delegate(object o)
+        {
+            if (o is BrowserWindowViewModel vm)
+            {
+                OnExecuteNewTabAndSelectCommand(vm);
+            }
+        });
+        
         private static RelayCommand _fullscreenCommand = new RelayCommand(delegate(object o)
         {
             if (o is Window w)
@@ -26,20 +34,29 @@ namespace Files.Views.Models
         private bool _isNavigationDrawerOpen;
         private BrowserWindowTabViewModel _selectedTab;
         
+        private BrowserWindowTabViewModel _previousSelectedTab;
+        //private SelectionModel<BrowserWindowTabViewModel> _tabSelection;
+
         public AppBackend Context => _context;
         public BrowserWindow ParentWindow => _parentWindow;
         
         public ObservableCollection<StorageDeviceViewModel> StorageDevices => _storageDevices;
-        public ObservableCollection<BrowserWindowTabViewModel> TabViewModel => _tabsViewModel;
+        public ObservableCollection<BrowserWindowTabViewModel> TabsViewModel => _tabsViewModel;
 
         public RelayCommand FullscreenCommand => _fullscreenCommand;
+                
+        public RelayCommand NewTabCommand => _newTabCommand;
 
         public BrowserWindowTabViewModel SelectedTab
         {
             get => _selectedTab;
             set
             {
+                if (_selectedTab != null)
+                    _selectedTab.IsSelected = false;
+                
                 _selectedTab = value;
+                value.IsSelected = true;
                 RaiseOnPropertyChangedThroughUiThread();
             }
         }
@@ -61,12 +78,19 @@ namespace Files.Views.Models
             _storageDevices = new ObservableCollection<StorageDeviceViewModel>();
             _tabsViewModel = new ObservableCollection<BrowserWindowTabViewModel>();
 
-            SelectedTab = new BrowserWindowTabViewModel(this);
+            OnExecuteNewTabAndSelectCommand(this);
 
             if (Application.Current is FilesApp app)
             {
                 app.ApplicationInitializationCompleted += OnApplicationInitializationCompleted;
             }
+        }
+
+        private static void OnExecuteNewTabAndSelectCommand(BrowserWindowViewModel vm)
+        {
+            var newTab = new BrowserWindowTabViewModel(vm);
+            vm.TabsViewModel.Add(newTab);
+            vm.SelectedTab = newTab;
         }
 
         public void RefreshStorageDevicesCollection()

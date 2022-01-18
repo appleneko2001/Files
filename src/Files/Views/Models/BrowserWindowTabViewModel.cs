@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Files.Commands;
 using Files.Views.Models.Breadcrumb;
 using Files.Views.Models.Browser;
 using Files.Views.Models.Progress;
@@ -12,8 +14,18 @@ using Material.Dialog.Enums;
 
 namespace Files.Views.Models
 {
-    public class BrowserWindowTabViewModel : ViewModelBase
+    public class BrowserWindowTabViewModel : HeaderViewModelBase
     {
+        private static RelayCommand _selectTabCommand = new RelayCommand(delegate(object o)
+        {
+            if (o is BrowserWindowTabViewModel vm)
+            {
+                OnExecuteSelectCommand(vm);
+            }
+        });
+
+        private bool _isSelected;
+
         private BrowserWindowViewModel _parent;
         private BreadcrumbPathViewModel _breadcrumbPath;
         private BrowserContentViewModelBase _content;
@@ -21,6 +33,8 @@ namespace Files.Views.Models
         private CancellationTokenSource _ctx;
 
         private ProgressViewModel _progress;
+
+        public RelayCommand SelectTabCommand => _selectTabCommand;
 
         public BrowserContentViewModelBase Content
         {
@@ -46,6 +60,16 @@ namespace Files.Views.Models
                 RaiseOnPropertyChanged();
             }
         }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            internal set
+            {
+                _isSelected = value;
+                RaiseOnPropertyChanged();
+            }
+        }
         
         public BrowserWindowTabViewModel(BrowserWindowViewModel parent, Uri? path = null)
         {
@@ -56,6 +80,11 @@ namespace Files.Views.Models
             Open(path == null
                 ? new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
                 : path);
+        }
+        
+        private static void OnExecuteSelectCommand(BrowserWindowTabViewModel vm)
+        {
+            vm.Parent.SelectedTab = vm;
         }
         
         public void Open(Uri path)
@@ -107,6 +136,8 @@ namespace Files.Views.Models
 
         private BrowserContentViewModelBase CreateView(Uri uri)
         {
+            Header = uri.Segments.Last();
+            
             var path = HttpUtility.UrlDecode(uri.AbsolutePath);
             BrowserContentViewModelBase viewModel = null;
             

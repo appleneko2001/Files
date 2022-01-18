@@ -34,85 +34,86 @@
     <!-- ReSharper disable file InconsistentNaming -->
     <!-- ReSharper disable Xaml.StyleClassNotFound -->
 
-    <material:SnackbarHost HostName="RootSnackbarHost">
-        <material:NavigationDrawer Name="PART_NavDrawerHost"
-                                   LeftDrawerWidth="360"
-                                   LeftDrawerOpened="{CompiledBinding IsNavigationDrawerOpen, Mode=TwoWay}">
-            <material:NavigationDrawer.LeftDrawerContent>
-                <StackPanel Margin="0, 16">
-                    <Button Classes="Flat"
-                            Content="Switch theme"
-                            assist:ButtonAssist.CornerRadius="0"
-                            Click="SwitchThemeButton_OnClick" />
-                    
-                    <Button Classes="Flat"
-                            Content="Use background"
-                            assist:ButtonAssist.CornerRadius="0"
-                            Click="UseBackgroundImageButton_OnClick" />
-                    
-                    <Button Classes="Flat"
-                            Content="Use default background"
-                            assist:ButtonAssist.CornerRadius="0"
-                            Click="UseDefaultBackgroundButton_OnClick" />
+    <material:NavigationDrawer Name="PART_NavDrawerHost"
+                               LeftDrawerWidth="360"
+                               LeftDrawerOpened="{CompiledBinding IsNavigationDrawerOpen, Mode=TwoWay}">
+        <material:NavigationDrawer.LeftDrawerContent>
+            <StackPanel Margin="0, 16">
+                <Button Classes="Flat"
+                        Content="Switch theme"
+                        assist:ButtonAssist.CornerRadius="0"
+                        Click="SwitchThemeButton_OnClick" />
 
-                    <ItemsControl Items="{CompiledBinding StorageDevices}"
-                                  ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
-                </StackPanel>
-            </material:NavigationDrawer.LeftDrawerContent>
+                <Button Classes="Flat"
+                        Content="Use background"
+                        assist:ButtonAssist.CornerRadius="0"
+                        Click="UseBackgroundImageButton_OnClick" />
 
-            <Grid Name="PART_BrowserViewRoot" RowDefinitions="Auto, *">
-                <material:ColorZone Name="PART_ContentViewColorZone"
-                                    VerticalAlignment="Stretch"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    Grid.Row="1">
-                    <Panel >
-                        <ScrollViewer>
-                            <ContentControl Content="{CompiledBinding SelectedTab.Content}"
-                                            ContentTemplate="{StaticResource BrowserViewTemplate}" />
-                        </ScrollViewer>
-                        <material:Card Name="PART_BrowserProgressBarContainer"
-                                       VerticalAlignment="Top"
-                                       HorizontalAlignment="Center"
-                                       
-                                       Margin="16"
-                                       CornerRadius="32"
-                                       IsVisible="{CompiledBinding !SelectedTab.Progress.IsComplete}"
-                                       assist:ShadowAssist.ShadowDepth="CenterDepth2">
-                            <material:Card.Styles>
-                                <Style Selector="material|Card#PART_BrowserProgressBarContainer[IsVisible=True]:not(.notransitions)">
-                                    <Style.Animations>
-                                        <Animation Duration="0.25" Easing="CircularEaseOut">
-                                            <KeyFrame Cue="0%">
-                                                <Setter Property="ScaleTransform.ScaleY" Value="0" />
-                                                <Setter Property="ScaleTransform.ScaleX" Value="0" />
-                                            </KeyFrame>
-                                            
-                                            <KeyFrame Cue="100%">
-                                                <Setter Property="ScaleTransform.ScaleY" Value="1" />
-                                                <Setter Property="ScaleTransform.ScaleX" Value="1" />
-                                            </KeyFrame>
-                                        </Animation>
-                                    </Style.Animations>
-                                </Style>
-                            </material:Card.Styles>
-                            
-                            <ProgressBar Classes="Circle Circular"
-                                         IsIndeterminate="{CompiledBinding SelectedTab.Progress.IsIndeterminate}"
-                                         Value="{CompiledBinding SelectedTab.Progress.Progress}"/>
-                        </material:Card>
-                    </Panel>
-                </material:ColorZone>
+                <Button Classes="Flat"
+                        Content="Use default background"
+                        assist:ButtonAssist.CornerRadius="0"
+                        Click="UseDefaultBackgroundButton_OnClick" />
 
-                <!-- Appbar -->
-                <material:ColorZone Name="PART_AppbarColorZone"
-                                    HorizontalAlignment="Stretch"
-                                    Mode="Standard"
-                                    Grid.Row="0" Height="128"
-                                    PointerPressed="RootAppBar_OnPointerPressed">
-                    <!-- Layout: [*| |Header      |* * *] -->
-                    <!-- Layout: [  (Breadcrumbs       )] -->
+                <ItemsControl Items="{CompiledBinding StorageDevices}"
+                              ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
+            </StackPanel>
+        </material:NavigationDrawer.LeftDrawerContent>
+
+        <Grid Name="PART_BrowserViewRoot" RowDefinitions="Auto, *">
+            <material:ColorZone Name="PART_ContentViewColorZone"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Grid.Row="1">
+                <Panel>
+                    <ScrollViewer>
+                        <ContentControl Content="{CompiledBinding SelectedTab.Content}"
+                                        ContentTemplate="{StaticResource BrowserViewTemplate}" />
+                    </ScrollViewer>
+                    <material:Card Name="PART_BrowserProgressBarContainer"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Center"
+
+                                   Margin="16"
+                                   CornerRadius="32"
+                                   IsVisible="{CompiledBinding !SelectedTab.Progress.IsComplete}"
+                                   assist:ShadowAssist.ShadowDepth="CenterDepth2">
+                        <material:Card.Styles>
+                            <Style
+                                Selector="material|Card#PART_BrowserProgressBarContainer[IsVisible=True]:not(.notransitions)">
+                                <Style.Animations>
+                                    <Animation Duration="0.25" Easing="CircularEaseOut">
+                                        <KeyFrame Cue="0%">
+                                            <Setter Property="ScaleTransform.ScaleY" Value="0" />
+                                            <Setter Property="ScaleTransform.ScaleX" Value="0" />
+                                        </KeyFrame>
+
+                                        <KeyFrame Cue="100%">
+                                            <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                                            <Setter Property="ScaleTransform.ScaleX" Value="1" />
+                                        </KeyFrame>
+                                    </Animation>
+                                </Style.Animations>
+                            </Style>
+                        </material:Card.Styles>
+
+                        <ProgressBar Classes="Circle Circular"
+                                     IsIndeterminate="{CompiledBinding SelectedTab.Progress.IsIndeterminate}"
+                                     Value="{CompiledBinding SelectedTab.Progress.Progress}" />
+                    </material:Card>
+                </Panel>
+            </material:ColorZone>
+
+            <!-- Appbar -->
+            <material:ColorZone Name="PART_AppbarColorZone"
+                                HorizontalAlignment="Stretch"
+                                Mode="Standard"
+                                Grid.Row="0" Height="128"
+                                PointerPressed="RootAppBar_OnPointerPressed">
+                <!-- Layout: [*| |Header      |* * *] -->
+                <!-- Layout: [  (Breadcrumbs       )] -->
+                <Panel>
                     <Grid ClipToBounds="False"
                           Margin="8,8, 8,0" ZIndex="101"
                           ColumnDefinitions="Auto, 16, *, Auto" RowDefinitions="*, Auto">
@@ -133,28 +134,29 @@
 
                                             Content="{CompiledBinding SelectedTab.BreadcrumbNodeEdit}"
                                             ContentTemplate="{StaticResource BreadcrumbElementTemplate}" />
-                            
+
                             <Panel Height="26">
                                 <TextBox Classes="Solo"
                                          BorderBrush="{DynamicResource MaterialDesignBody}"
-                                         
+
                                          FontSize="14"
-                                         FontWeight="Normal"
+                                         FontWeight="Light"
                                          BorderThickness="1"
                                          Margin="0" Padding="0"
                                          assist:TextFieldAssist.CornerRadius="32"
-                                         
+
                                          Text="{CompiledBinding SelectedTab.BreadcrumbPath.EditLine, Mode=TwoWay}"
                                          IsEnabled="{CompiledBinding SelectedTab.BreadcrumbPath.IsInEditMode}"
                                          IsVisible="{CompiledBinding SelectedTab.BreadcrumbPath.IsInEditMode}">
                                     <TextBox.KeyBindings>
-                                        <KeyBinding Command="{CompiledBinding SelectedTab.BreadcrumbPath.SubmitEditedPathCommand}"
-                                                    CommandParameter="{CompiledBinding SelectedTab.BreadcrumbPath}"
-                                                    Gesture="Enter"/>
+                                        <KeyBinding
+                                            Command="{CompiledBinding SelectedTab.BreadcrumbPath.SubmitEditedPathCommand}"
+                                            CommandParameter="{CompiledBinding SelectedTab.BreadcrumbPath}"
+                                            Gesture="Enter" />
                                     </TextBox.KeyBindings>
                                     <TextBox.Styles>
                                         <Style Selector="TextBox.Solo /template/ Grid#PART_InnerRoot">
-                                            <Setter Property="Margin" Value="16, 0"/>
+                                            <Setter Property="Margin" Value="16, 0" />
                                         </Style>
                                     </TextBox.Styles>
                                 </TextBox>
@@ -186,8 +188,54 @@
                             </Panel>
                         </DockPanel>
                     </Grid>
-                </material:ColorZone>
-            </Grid>
-        </material:NavigationDrawer>
-    </material:SnackbarHost>
+
+                    <Border VerticalAlignment="Top"
+                            Margin="64, 0, 128, 0"
+                            Height="48" ClipToBounds="True">
+                        <StackPanel Orientation="Horizontal">
+                            <controls:Scroller Name="PART_ScrollerRoot" ClipToBounds="False">
+                                <ItemsPresenter Name="PART_TabItemsPresenter" Margin="0,8,0,0"
+                                                Items="{CompiledBinding TabsViewModel}">
+                                    <ItemsPresenter.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Name="HeaderPanel" Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsPresenter.ItemsPanel>
+                                    <ItemsPresenter.ItemTemplate>
+                                        <DataTemplate DataType="viewmodels:BrowserWindowTabViewModel">
+                                            <Button Classes="TabButton" MinWidth="256"
+                                                    Command="{CompiledBinding SelectTabCommand}"
+                                                    CommandParameter="{CompiledBinding }">
+                                                <Panel>
+                                                    <Border Opacity="0.2"
+                                                            CornerRadius="8,8,0,0"
+                                                            Background="Black"
+                                                            IsVisible="{CompiledBinding !IsSelected}" />
+                                                    <TextBlock Classes="Subtitle2"
+                                                               Margin="8,0"
+                                                               HorizontalAlignment="Left"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Text="{CompiledBinding Header}"
+                                                               Foreground="{DynamicResource MaterialDesignBody}" />
+                                                </Panel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsPresenter.ItemTemplate>
+                                </ItemsPresenter>
+                            </controls:Scroller>
+
+                            <Button Classes="Flat"
+                                    Margin="16, 0"
+                                    Padding="8"
+                                    VerticalAlignment="Center"
+                                    Content="{icons:MaterialIconExt Plus}"
+                                    Command="{CompiledBinding NewTabCommand}"
+                                    CommandParameter="{CompiledBinding }" />
+                        </StackPanel>
+                    </Border>
+                </Panel>
+            </material:ColorZone>
+        </Grid>
+    </material:NavigationDrawer>
 </Window>
