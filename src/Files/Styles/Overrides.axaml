@@ -1,7 +1,9 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:menus="clr-namespace:Files.Views.Models.Context.Menus"
-        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles">
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:cc="clr-namespace:Material.Styles;assembly=Material.Styles"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles">
     <Style Selector="OverlayPopupHost">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
@@ -47,6 +49,16 @@
     <Style Selector="ContextMenu#TextBoxContextMenu controls|MaterialInternalIcon">
         <Setter Property="Height" Value="16"/>
         <Setter Property="Width" Value="16"/>
+    </Style>
+    
+    <Style Selector="ContextMenu">
+        <Setter Property="HorizontalOffset" Value="-16.0" />
+        <Setter Property="VerticalOffset" Value="-16.0" />
+    </Style>
+    
+    <Style Selector="ContextMenu /template/ cc|Card#PART_ContextMenuCardRoot">
+        <Setter Property="Margin" Value="16"/>
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth3"/>
     </Style>
     
     <Style Selector="ContextMenu#PART_BrowserViewContextMenu MenuItem"
