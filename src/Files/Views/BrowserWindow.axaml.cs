@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -19,6 +20,7 @@ using Files.Views.Models;
 
 using Material.Colors;
 using Material.Styles;
+using Material.Styles.Controls;
 using Material.Styles.Themes;
 using Material.Styles.Themes.Base;
 
