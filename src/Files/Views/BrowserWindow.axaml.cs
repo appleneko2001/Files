@@ -62,6 +62,11 @@ namespace Files.Views
         public BrowserWindow()
         {
             InitializeComponent();
+        }
+        
+        public BrowserWindow(Uri? startUri = null)
+        {
+            InitializeComponent();
 
             Avalonia.Diagnostics.DevTools.Attach(this, KeyGesture.Parse("F12"));
 
@@ -73,6 +78,9 @@ namespace Files.Views
             
             
             _paletteHelper.SetTheme(_darkTheme.GetTheme());
+
+            if (startUri is not null)
+                _context.SelectedTab.Open(startUri);
         }
 
         protected override void HandleWindowStateChanged(WindowState state)
