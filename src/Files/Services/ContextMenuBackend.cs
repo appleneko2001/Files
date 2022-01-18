@@ -64,7 +64,7 @@ namespace Files.Services
             {
                 new ContextMenuItem("Execute application", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.ExecuteApplicationCommand, KeyGesture.Parse("Enter")),
                 new ContextMenuItem("Open", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.OpenFileViaPlatformCommand, KeyGesture.Parse("Enter")),
-                new ContextMenuItem("Open with..", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.ShowOpenFileWithDialogCommand),
+                new ContextMenuItem("Open with ...", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.ShowOpenFileWithDialogCommand),
                 
                 ContextMenuItem.Separator,
             };
@@ -80,7 +80,7 @@ namespace Files.Services
             {
                 new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"), command: _commands.OpenFolderInCurrentViewCommand),
                 //new ContextMenuItemViewModel("Open folder in new tab"),
-                //new ContextMenuItemViewModel("Open folder in new window"),
+                new ContextMenuItemViewModel("Open folder in new window", command: _commands.OpenFolderInNewWindowCommand),
                 ContextMenuItem.Separator,
             };
 
