@@ -98,12 +98,13 @@ namespace Files.Views.Models
 
         internal void CloseTab(BrowserWindowTabViewModel tab)
         {
+            TabsViewModel.Remove(tab);
+            
             var lastTab = TabsViewModel.LastOrDefault();
             if (lastTab == tab)
                 lastTab = null;
             SelectedTab = lastTab;
             
-            TabsViewModel.Remove(tab);
             tab.AfterClose();
         }
 
