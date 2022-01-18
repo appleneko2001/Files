@@ -28,6 +28,7 @@ namespace Files.Views
 {
     public class BrowserWindow : Window
     {
+        private static bool _isAppliedInitialTheme = false;
         //public const string SnackbarHost = "RootSnackbarHost";
 
         private readonly BrowserWindowViewModel _context;
@@ -75,9 +76,12 @@ namespace Files.Views
             DataContext = _context;
 
             PART_BrowserViewRoot!.DataContext = _context;
-            
-            
-            _paletteHelper.SetTheme(_darkTheme.GetTheme());
+
+            if (!_isAppliedInitialTheme)
+            {
+                _isAppliedInitialTheme = true;
+                _paletteHelper.SetTheme(_darkTheme.GetTheme());
+            }
 
             if (startUri is not null)
                 _context.SelectedTab.Open(startUri);
