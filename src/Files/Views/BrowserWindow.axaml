@@ -9,6 +9,7 @@
         x:Class="Files.Views.BrowserWindow"
         x:DataType="viewmodels:BrowserWindowViewModel"
 
+        Name="PART_RootBrowserWindow"
         Title="Files"
         TransparencyBackgroundFallback="Black"
 
