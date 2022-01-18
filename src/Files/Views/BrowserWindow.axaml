@@ -159,17 +159,16 @@
                                                    IsVisible="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}"
                                                    AttachedToVisualTree="PART_BreadcrumbScroller_OnAttachedToVisualTree"
                                                    DetachedFromVisualTree="PART_BreadcrumbScroller_OnDetachedFromVisualTree">
-                                    <!-- TODO: Better opacity mask for gradient edges to transparent if needed -->
-                                    <!--controls:Scroller.OpacityMask>
-                                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                            <LinearGradientBrush.GradientStops>
-                                                <GradientStop Color="Transparent" Offset="0"/>
-                                                <GradientStop Color="White" Offset="0.1"/>
-                                                <GradientStop Color="White" Offset="0.9"/>
-                                                <GradientStop Color="Transparent" Offset="1"/>
-                                            </LinearGradientBrush.GradientStops>
-                                        </LinearGradientBrush>
-                                    </controls:Scroller.OpacityMask-->
+                                    <controls:Scroller.OpacityMask>
+                                        <MultiBinding Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
+                                                      ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
+                                            <Binding ElementName="PART_BreadcrumbScroller" Path="Bounds" />
+                                            <Binding ElementName="PART_BreadcrumbScroller"
+                                                     Path="HorizontalScrollBarMaximum" />
+                                            <Binding ElementName="PART_BreadcrumbScroller"
+                                                     Path="HorizontalScrollBarValue" />
+                                        </MultiBinding>
+                                    </controls:Scroller.OpacityMask>
                                     <ItemsControl Items="{CompiledBinding SelectedTab.BreadcrumbPath.Part}"
                                                   ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
                                         <ItemsControl.ItemsPanel>
