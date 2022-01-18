@@ -88,10 +88,12 @@
                         </Style>
                     </StackPanel.Styles>
                     
-                    <Panel Name="PART_FullScreenButton">
+                    <Panel Name="PART_FullScreenButton"
+                           ToolTip.Tip="Fullscreen (F11)">
                         <icons:MaterialIcon Name="PART_FullScreenButtonIcon"/>
                     </Panel>
-                    <Panel Name="PART_MinimizeButton">
+                    <Panel Name="PART_MinimizeButton"
+                           ToolTip.Tip="Minimize">
                         <Viewbox Margin="8" Width="16" Height="16">
                             <Canvas Width="24" Height="24">
                                 <Path Data="M20,20H4V16H20"                                   
@@ -99,10 +101,12 @@
                             </Canvas>
                         </Viewbox>
                     </Panel>
-                    <Panel Name="PART_RestoreButton">
+                    <Panel Name="PART_RestoreButton"
+                           ToolTip.Tip="Maximize / restore">
                         <icons:MaterialIcon Name="PART_RestoreButtonIcon"/>
                     </Panel>
-                    <Panel Name="PART_CloseButton">
+                    <Panel Name="PART_CloseButton"
+                           ToolTip.Tip="Close window (Alt+F4)">
                         <icons:MaterialIcon Kind="WindowClose"/>
                     </Panel>
                 </StackPanel>
