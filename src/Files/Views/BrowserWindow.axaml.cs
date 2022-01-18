@@ -207,5 +207,27 @@ namespace Files.Views
             _previousBackgroundBitmap.Dispose();
             _previousBackgroundBitmap = null;
         }
+
+        private CompositeDisposable? _disposable; 
+        
+        private void PART_BreadcrumbScroller_OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (sender is Scroller scroller)
+            {
+                _disposable = new CompositeDisposable
+                {
+                    scroller.GetObservable(OpacityMaskProperty).Subscribe(delegate
+                    {
+                        scroller.InvalidateVisual();
+                    })
+                };
+            }
+        }
+
+        private void PART_BreadcrumbScroller_OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            _disposable?.Dispose();
+            _disposable = null;
+        }
     }
 }

@@ -154,8 +154,11 @@
                                     </TextBox.Styles>
                                 </TextBox>
 
-                                <controls:Scroller IsEnabled="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}"
-                                                   IsVisible="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}">
+                                <controls:Scroller Name="PART_BreadcrumbScroller"
+                                                   IsEnabled="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}"
+                                                   IsVisible="{CompiledBinding !SelectedTab.BreadcrumbPath.IsInEditMode}"
+                                                   AttachedToVisualTree="PART_BreadcrumbScroller_OnAttachedToVisualTree"
+                                                   DetachedFromVisualTree="PART_BreadcrumbScroller_OnDetachedFromVisualTree">
                                     <!-- TODO: Better opacity mask for gradient edges to transparent if needed -->
                                     <!--controls:Scroller.OpacityMask>
                                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
