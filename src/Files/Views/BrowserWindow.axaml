@@ -17,6 +17,10 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="PreferSystemChrome"
         ExtendClientAreaTitleBarHeightHint="-1">
+    <Window.KeyBindings>
+        <KeyBinding Gesture="F11" Command="{CompiledBinding FullscreenCommand}"
+                    CommandParameter="{ResolveByName PART_RootBrowserWindow}" />
+    </Window.KeyBindings>
     <!--Window.Styles>
         <Style Selector="Window:fullscreen material|NavigationDrawer#PART_NavDrawerHost">
             <Setter Property="Margin" Value="0"/>
