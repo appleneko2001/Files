@@ -13,6 +13,10 @@ namespace Files.Views.Models.Breadcrumb
                 Header = "Local";
                 Path = "/";
             }
+            else
+            {
+                Header = path;
+            }
         }
     }
 }
