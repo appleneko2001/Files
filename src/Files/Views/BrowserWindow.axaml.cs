@@ -60,6 +60,8 @@ namespace Files.Views
             SecondaryColor = SecondaryColor.Pink
         };
         
+        // The application will not be compiled if this class implemented without default constructor
+        // ReSharper disable once UnusedMember.Global
         public BrowserWindow()
         {
             InitializeComponent();
