@@ -14,29 +14,33 @@
         <Setter Property="TextBlock.FontSize" Value="14" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth1"/>
         <Setter Property="assists:ButtonAssist.CornerRadius" Value="8,8,0,0"/>
+        <Setter Property="assists:ButtonAssist.HoverColor" Value="{DynamicResource PrimaryHueMidBrush}"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_ButtonRootBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding assists:ButtonAssist.CornerRadius}"
-                        assists:ShadowAssist.ShadowDepth="{TemplateBinding assists:ShadowAssist.ShadowDepth}">
-                    <Panel>
-                        <Border Name="PART_HoverIndicator" BorderThickness="0"
-                                Background="{TemplateBinding assists:ButtonAssist.HoverColor}"
-                                CornerRadius="{TemplateBinding assists:ButtonAssist.CornerRadius}"
-                                IsVisible="{CompiledBinding !IsSelected}"/>
-                        <ContentPresenter Name="PART_ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          Padding="{TemplateBinding Padding}"
-                                          TextBlock.Foreground="{TemplateBinding Foreground}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Panel>
-                </Border>
+                <Panel>
+                    <Border Name="PART_ButtonShadow"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding assists:ButtonAssist.CornerRadius}"
+                            assists:ShadowAssist.ShadowDepth="{TemplateBinding assists:ShadowAssist.ShadowDepth}"
+                            
+                            IsVisible="{CompiledBinding IsSelected}"/>
+                    
+                    <Border Name="PART_HoverIndicator" BorderThickness="0"
+                            Background="{TemplateBinding assists:ButtonAssist.HoverColor}"
+                            CornerRadius="{TemplateBinding assists:ButtonAssist.CornerRadius}"
+                            IsVisible="{CompiledBinding !IsSelected}"/>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      TextBlock.Foreground="{TemplateBinding Foreground}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Panel>
             </ControlTemplate>
         </Setter>
     </Style>
@@ -44,4 +48,13 @@
     <Style Selector="controls|Scroller#PART_ScrollerRoot /template/ ScrollContentPresenter#PART_ContentPresenter">
         <Setter Property="ClipToBounds" Value="False"/>
     </Style>
+    
+    <Style Selector="Button.TabButton:not(.disabled):pointerover /template/ Border#PART_HoverIndicator">
+        <Setter Property="Opacity" Value="0.1" />
+    </Style>
+    
+    <Style Selector="Button.TabButton:pointerover">
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth3"/>
+    </Style>
+
 </Styles>

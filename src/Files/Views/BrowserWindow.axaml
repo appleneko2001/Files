@@ -189,62 +189,66 @@
                         </DockPanel>
                     </Grid>
 
-                    <Border VerticalAlignment="Top"
-                            Margin="64, 0, 128, 0"
-                            Height="48" ClipToBounds="True">
-                        <StackPanel Orientation="Horizontal">
-                            <controls:Scroller Name="PART_ScrollerRoot" ClipToBounds="False">
-                                <ItemsPresenter Name="PART_TabItemsPresenter" Margin="0,8,0,0"
-                                                Items="{CompiledBinding TabsViewModel}">
-                                    <ItemsPresenter.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Name="HeaderPanel" Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsPresenter.ItemsPanel>
-                                    <ItemsPresenter.ItemTemplate>
-                                        <DataTemplate DataType="viewmodels:BrowserWindowTabViewModel">
-                                            <Panel>
-                                                <Border Opacity="0.2"
-                                                        CornerRadius="8,8,0,0"
-                                                        Background="Black"
-                                                        IsVisible="{CompiledBinding !IsSelected}" />
-                                                <Button Classes="TabButton" MinWidth="256"
-                                                        Command="{CompiledBinding SelectTabCommand}"
-                                                        CommandParameter="{CompiledBinding }">
-                                                    <TextBlock Classes="Subtitle2"
-                                                               Margin="8,0"
-                                                               HorizontalAlignment="Left"
-                                                               VerticalAlignment="Center"
-                                                               TextTrimming="CharacterEllipsis"
-                                                               Text="{CompiledBinding Header}"
-                                                               Foreground="{DynamicResource MaterialDesignBody}" />
-                                                </Button>
-                                                
-                                                <Button Classes="Flat"
-                                                        Margin="8"
-                                                        Padding="4"
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Center"
-                                                        ToolTip.Tip="Close tab"
-                                                        Content="{icons:MaterialIconExt Close}"
-                                                        
-                                                        Command="{CompiledBinding CloseTabCommand}"
-                                                        CommandParameter="{CompiledBinding }"/>
-                                            </Panel>
-                                        </DataTemplate>
-                                    </ItemsPresenter.ItemTemplate>
-                                </ItemsPresenter>
-                            </controls:Scroller>
-
+                    <Panel VerticalAlignment="Top"
+                           Height="48"
+                           Margin="80, 0, 0, 0" >
+                        <DockPanel HorizontalAlignment="Left"
+                                   Margin="0, 0, 128, 0">
                             <Button Classes="Flat"
-                                    Margin="16, 0"
+                                    Margin="0, 8, 8, 0"
                                     Padding="8"
                                     VerticalAlignment="Center"
                                     Content="{icons:MaterialIconExt Plus}"
                                     Command="{CompiledBinding NewTabCommand}"
-                                    CommandParameter="{CompiledBinding }" />
-                        </StackPanel>
-                    </Border>
+                                    CommandParameter="{CompiledBinding }"
+
+                                    DockPanel.Dock="Right" />
+                            <Border ClipToBounds="True"
+                                    Padding="8,8,8,0">
+                                <controls:Scroller Name="PART_ScrollerRoot"
+                                                   ClipToBounds="False"
+
+                                                   DockPanel.Dock="Right">
+                                    <ItemsPresenter Name="PART_TabItemsPresenter"
+                                                    Items="{CompiledBinding TabsViewModel}">
+                                        <ItemsPresenter.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Name="HeaderPanel" Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsPresenter.ItemsPanel>
+                                        <ItemsPresenter.ItemTemplate>
+                                            <DataTemplate DataType="viewmodels:BrowserWindowTabViewModel">
+                                                <Panel>
+                                                    <Button Classes="TabButton" MinWidth="200"
+                                                            Command="{CompiledBinding SelectTabCommand}"
+                                                            CommandParameter="{CompiledBinding }">
+                                                        <TextBlock Classes="Subtitle2"
+                                                                   Margin="8,0"
+                                                                   HorizontalAlignment="Left"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   Text="{CompiledBinding Header}"
+                                                                   Foreground="{DynamicResource MaterialDesignBody}" />
+                                                    </Button>
+
+                                                    <Button Classes="Flat"
+                                                            Margin="8"
+                                                            Padding="4"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center"
+                                                            ToolTip.Tip="Close tab"
+                                                            Content="{icons:MaterialIconExt Close}"
+
+                                                            Command="{CompiledBinding CloseTabCommand}"
+                                                            CommandParameter="{CompiledBinding }" />
+                                                </Panel>
+                                            </DataTemplate>
+                                        </ItemsPresenter.ItemTemplate>
+                                    </ItemsPresenter>
+                                </controls:Scroller>
+                            </Border>
+                        </DockPanel>
+                    </Panel>
                 </Panel>
             </material:ColorZone>
         </Grid>
