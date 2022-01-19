@@ -224,6 +224,7 @@
                                                             CommandParameter="{CompiledBinding }">
                                                         <TextBlock Classes="Subtitle2"
                                                                    Margin="8,0"
+                                                                   FontWeight="Normal"
                                                                    HorizontalAlignment="Left"
                                                                    VerticalAlignment="Center"
                                                                    TextTrimming="CharacterEllipsis"
@@ -240,7 +241,8 @@
                                                             Content="{icons:MaterialIconExt Close}"
 
                                                             Command="{CompiledBinding CloseTabCommand}"
-                                                            CommandParameter="{CompiledBinding }" />
+                                                            CommandParameter="{CompiledBinding }"
+                                                            Foreground="{DynamicResource MaterialDesignBody}"/>
                                                 </Panel>
                                             </DataTemplate>
                                         </ItemsPresenter.ItemTemplate>

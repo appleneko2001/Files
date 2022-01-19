@@ -29,10 +29,18 @@
                             
                             IsVisible="{CompiledBinding IsSelected}"/>
                     
-                    <Border Name="PART_HoverIndicator" BorderThickness="0"
-                            Background="{TemplateBinding assists:ButtonAssist.HoverColor}"
-                            CornerRadius="{TemplateBinding assists:ButtonAssist.CornerRadius}"
-                            IsVisible="{CompiledBinding !IsSelected}"/>
+                    <Panel IsVisible="{CompiledBinding !IsSelected}">
+                        <Border Name="PART_HoverIndicator"
+                            
+                                Background="{TemplateBinding assists:ButtonAssist.HoverColor}"
+                                CornerRadius="{TemplateBinding assists:ButtonAssist.CornerRadius}"/>
+                        <Rectangle Name="PART_Separator"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Stretch"
+                                   Margin="0,8"
+                                   Width="1"
+                                   Fill="{DynamicResource MaterialDesignDivider}"/>
+                    </Panel>
                     <ContentPresenter Name="PART_ContentPresenter"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -56,5 +64,12 @@
     <Style Selector="Button.TabButton:pointerover">
         <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth3"/>
     </Style>
+    
+    <Style Selector="Button.TabButton /template/ Rectangle#PART_Separator">
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
 
+    <Style Selector="Button.TabButton:pointerover /template/ Rectangle#PART_Separator">
+        <Setter Property="Opacity" Value="0"/>
+    </Style>
 </Styles>
