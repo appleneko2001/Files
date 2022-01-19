@@ -44,16 +44,16 @@ namespace Files.Views
         // Private fields -- object instance
         private Bitmap? _previousBackgroundBitmap;
 
-        private readonly PaletteHelper _paletteHelper = new();
+        private static readonly PaletteHelper _paletteHelper = new();
 
-        private readonly BundledTheme _lightTheme = new()
+        private static readonly BundledTheme _lightTheme = new()
         {
             BaseTheme = BaseThemeMode.Light,
             PrimaryColor = PrimaryColor.Indigo,
             SecondaryColor = SecondaryColor.Pink
         };
         
-        private readonly BundledTheme _darkTheme = new()
+        private static readonly BundledTheme _darkTheme = new()
         {
             BaseTheme = BaseThemeMode.Dark,
             PrimaryColor = PrimaryColor.LightBlue,
