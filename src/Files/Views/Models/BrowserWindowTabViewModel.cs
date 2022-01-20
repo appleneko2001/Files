@@ -157,7 +157,7 @@ namespace Files.Views.Models
 
         private BrowserContentViewModelBase CreateView(Uri uri)
         {
-            Header = uri.Segments.Last();
+            Header = HttpUtility.UrlDecode(uri.Segments.Last());
             
             BrowserContentViewModelBase viewModel = null;
             
