@@ -27,6 +27,7 @@ namespace Files.Views.Models.Browser
 
         public override void RequestPreviews(CancellationToken _cancellationToken = default)
         {
+            /*
             foreach (var item in Content)
             {
                 _cancellationToken.ThrowIfCancellationRequested();
@@ -34,6 +35,7 @@ namespace Files.Views.Models.Browser
                 if(item is FileItemViewModel file)
                     file.TryGetPreview(_cancellationToken);
             }
+            */
         }
 
         private void EnumerateDirectoryAndFillCollection(DirectoryInfo di, CancellationToken _cancellationToken = default)
