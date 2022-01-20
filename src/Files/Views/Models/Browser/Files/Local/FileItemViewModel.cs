@@ -7,7 +7,7 @@ using Files.Views.Models.Browser.Preview;
 
 namespace Files.Views.Models.Browser.Files.Local
 {
-    public class FileItemViewModel : LocalFileSystemItemViewModel
+    public class FileItemViewModel : LocalFileSystemItemViewModel, IRequestPreviewable
     {
         private static ICommand _onClickCommand = new RelayCommand(delegate(object o)
         {
