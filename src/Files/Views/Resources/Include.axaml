@@ -6,6 +6,10 @@
     <system:Double x:Key="ItemViewSelectedPartOpacity">0.3</system:Double>
     <system:Double x:Key="ItemViewHovered">0.1</system:Double>
     
+    <!-- Tab minimum width -->
+    <system:Double x:Key="TabMinWidthValue">240</system:Double>
+    <system:Double x:Key="TabMaxWidthValue">360</system:Double>
+    
     <parameters:BoolToDoubleConverterParameter x:Key="IsNotVisibleDoubleValue" ValueOnFalse="0.35" ValueOnTrue="1.0"/>
 
     
@@ -16,4 +20,9 @@
     <parameters:EdgeGradientGeneratorParameter x:Key="BreadcrumbScrollerEdgeGradientParameter"
                                                LeftOpacityDistanceDp="24"
                                                RightOpacityDistanceDp="24"/>
+    
+    <parameters:CountToWidthConverterParameter x:Key="GetTabWidthParameter"
+                                               MinWidth="{StaticResource TabMinWidthValue}"
+                                               MaxWidth="{StaticResource TabMaxWidthValue}"
+                                               MarginOffset="0,0,128,0"/>
 </ResourceDictionary>

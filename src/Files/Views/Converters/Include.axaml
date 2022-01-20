@@ -6,4 +6,5 @@
     <converters:RoundedCornerBrushFactoryConverter x:Key="RoundedCornerBrushFactory" />
     <converters:GetMayExecuteCommandConverter x:Key="MayExecuteConverter"/>
     <converters:EdgeGradientOpacityMaskGenerator x:Key="EdgeGradientOpacityMaskGenerator"/>
+    <converters:CountToWidthConverter x:Key="CountToWidthConverter"/>
 </ResourceDictionary>

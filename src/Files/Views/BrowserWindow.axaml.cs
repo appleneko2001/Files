@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -17,7 +16,6 @@ using Avalonia.Visuals.Media.Imaging;
 using Files.Extensions;
 using Files.Services;
 using Files.Views.Models;
-
 using Material.Colors;
 using Material.Styles;
 using Material.Styles.Controls;
@@ -32,15 +30,15 @@ namespace Files.Views
         //public const string SnackbarHost = "RootSnackbarHost";
 
         private readonly BrowserWindowViewModel _context;
-        
+
         // ReSharper disable InconsistentNaming
         // Control references
         private Grid PART_BrowserViewRoot;
         private ColorZone PART_ContentViewColorZone;
         private ColorZone PART_AppbarColorZone;
-        
+
         // ReSharper restore InconsistentNaming
-        
+
         // Private fields -- object instance
         private Bitmap? _previousBackgroundBitmap;
 
@@ -52,21 +50,21 @@ namespace Files.Views
             PrimaryColor = PrimaryColor.Indigo,
             SecondaryColor = SecondaryColor.Pink
         };
-        
+
         private static readonly BundledTheme _darkTheme = new()
         {
             BaseTheme = BaseThemeMode.Dark,
             PrimaryColor = PrimaryColor.LightBlue,
             SecondaryColor = SecondaryColor.Pink
         };
-        
+
         // The application will not be compiled if this class implemented without default constructor
         // ReSharper disable once UnusedMember.Global
         public BrowserWindow()
         {
             InitializeComponent();
         }
-        
+
         public BrowserWindow(Uri? startUri = null)
         {
             InitializeComponent();
@@ -117,7 +115,7 @@ namespace Files.Views
         {
             if (WindowState == WindowState.FullScreen)
                 return;
-            
+
             BeginMoveDrag(e);
         }
 
@@ -141,7 +139,7 @@ namespace Files.Views
                 }
             });
         }
-        
+
         private async void UseBackgroundImageButton_OnClick(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog
@@ -173,21 +171,22 @@ namespace Files.Views
 
             if (!result.Any())
                 return;
-            
+
             await using var stream = new FileStream(result.First(), FileMode.Open, FileAccess.Read);
 
             var bitmap = new Bitmap(stream);
 
             if (bitmap.PixelSize.GreaterThan(new PixelSize(2560, 1440)))
             {
-                AppBackend.Instance.ShowNativeDialog("Warning", "The background picture size is bigger than 2560x1440, the performance impact could issued.");
+                AppBackend.Instance.ShowNativeDialog("Warning",
+                    "The background picture size is bigger than 2560x1440, the performance impact could issued.");
             }
 
             var brush = new ImageBrush(bitmap)
             {
                 BitmapInterpolationMode = BitmapInterpolationMode.HighQuality,
                 Stretch = Stretch.UniformToFill,
-                Opacity = 0.2 
+                Opacity = 0.2
             };
 
             Background = brush;
@@ -196,7 +195,7 @@ namespace Files.Views
             PART_ContentViewColorZone.Background = Brushes.Transparent;
 
             DisposeBackgroundImage();
-            
+
             _previousBackgroundBitmap = bitmap;
         }
 
@@ -205,13 +204,13 @@ namespace Files.Views
             if (Application.Current is not IResourceHost host)
                 throw new NullReferenceException("Unable to get resource host.");
 
-            if (!host.HasResources || !host.TryGetResource("MaterialDesignPaper", out _)) 
+            if (!host.HasResources || !host.TryGetResource("MaterialDesignPaper", out _))
                 return;
 
             var source = host.GetResourceObservable("MaterialDesignPaper");
 
             DelayedBinding.Add(this, BackgroundProperty, source.ToBinding());
-            
+
             DisposeBackgroundImage();
         }
 
@@ -219,31 +218,46 @@ namespace Files.Views
         {
             if (_previousBackgroundBitmap == null)
                 return;
-            
+
             _previousBackgroundBitmap.Dispose();
             _previousBackgroundBitmap = null;
         }
 
-        private CompositeDisposable? _disposable; 
-        
-        private void PART_BreadcrumbScroller_OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        private Dictionary<string, IDisposable>? _disposables;
+
+        private void OnScrollerAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
             if (sender is Scroller scroller)
             {
-                _disposable = new CompositeDisposable
+                if (_disposables == null)
                 {
-                    scroller.GetObservable(OpacityMaskProperty).Subscribe(delegate
-                    {
-                        scroller.InvalidateVisual();
-                    })
-                };
+                    _disposables = new();
+                }
+
+                _disposables.Add(scroller.Name, scroller.GetObservable(OpacityMaskProperty).Subscribe(delegate
+                {
+                    scroller.InvalidateVisual();
+                }));
             }
         }
 
-        private void PART_BreadcrumbScroller_OnDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        private void OnScrollerDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
         {
-            _disposable?.Dispose();
-            _disposable = null;
+            if (sender is Scroller scroller)
+            {
+                var name = scroller.Name;
+                if (_disposables.TryGetValue(name, out var disposable))
+                {
+                    disposable.Dispose();
+                    _disposables.Remove(name);
+                }
+
+                if (_disposables.Count == 0)
+                {
+                    _disposables.Clear();
+                    _disposables = null;
+                }
+            }
         }
     }
 }
