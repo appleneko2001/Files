@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Threading;
 using System.Web;
@@ -41,13 +41,13 @@ namespace Files.Views.Models.Browser
         private void EnumerateDirectoryAndFillCollection(DirectoryInfo di, CancellationToken _cancellationToken = default)
         {
             const int maxBulkCount = 8;
-            var bulkPool = new List<ItemViewModelBase>(maxBulkCount);
+            var bulkPool = new ArrayList(maxBulkCount);
 
             void Commit()
             {
                 _cancellationToken.ThrowIfCancellationRequested();
                 
-                AddItemsOnUiThread(bulkPool.ToImmutableList());
+                AddItemsOnUiThread(bulkPool);
                 bulkPool.Clear();
             }
             
@@ -100,6 +100,21 @@ namespace Files.Views.Models.Browser
                 foreach (var item in items)
                 {
                     AddItem(item);
+                }
+            }, DispatcherPriority.Background).Wait();
+            
+            // Avalonia Input system will be frozen if not adding Thread.Sleep
+            Thread.Sleep(1);
+        }
+        
+        private void AddItemsOnUiThread(IEnumerable items)
+        {
+            Dispatcher.UIThread.InvokeAsync(delegate
+            {
+                foreach (var item in items)
+                {
+                    if(item is ItemViewModelBase i)
+                        AddItem(i);
                 }
             }, DispatcherPriority.Background).Wait();
             
