@@ -1,6 +1,6 @@
 ﻿using Files.Services.Watchers;
 
-namespace Files.Services
+namespace Files.Services.Platform
 {
     public class OperationSystemService
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Files.Models.Devices;
 
-namespace Files.Services
+namespace Files.Services.Platform
 {
     public abstract class PlatformSpecificBridge
     {

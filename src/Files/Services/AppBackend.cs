@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia;
 using Files.Models.Devices;
+using Files.Services.Platform;
 using Files.Services.Watchers;
 using Files.Views.Models;
 
