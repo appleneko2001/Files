@@ -40,6 +40,7 @@ namespace Files.Views
         // ReSharper restore InconsistentNaming
 
         // Private fields -- object instance
+        private double _backgroundBrightness = 0.2;
         private Bitmap? _previousBackgroundBitmap;
 
         private static readonly PaletteHelper _paletteHelper = new();
@@ -69,7 +70,9 @@ namespace Files.Views
         {
             InitializeComponent();
 
+            #if DEBUG
             Avalonia.Diagnostics.DevTools.Attach(this, KeyGesture.Parse("F12"));
+            #endif
 
             var mainContext = AppBackend.Instance;
             _context = new BrowserWindowViewModel(mainContext, this);
@@ -186,7 +189,7 @@ namespace Files.Views
             {
                 BitmapInterpolationMode = BitmapInterpolationMode.HighQuality,
                 Stretch = Stretch.UniformToFill,
-                Opacity = 0.2
+                Opacity = _backgroundBrightness
             };
 
             Background = brush;
@@ -257,6 +260,19 @@ namespace Files.Views
                     _disposables.Clear();
                     _disposables = null;
                 }
+            }
+        }
+
+        private void BackgroundDarknessOpacitySlider_OnPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property.Name == "Value" && e.NewValue is double value)
+            {
+                _backgroundBrightness = value;
+                
+                if (Background is not ImageBrush brush)
+                    return;
+
+                brush.Opacity = _backgroundBrightness;
             }
         }
     }

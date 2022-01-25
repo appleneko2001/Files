@@ -55,6 +55,12 @@
                         assist:ButtonAssist.CornerRadius="0"
                         Click="UseDefaultBackgroundButton_OnClick" />
 
+                <DockPanel>
+                    <TextBlock Text="Background brightness" Margin="16,0,0,0" />
+                    <Slider Classes="Discrete" Margin="16,0" Minimum="0" Maximum="1"
+                            PropertyChanged="BackgroundDarknessOpacitySlider_OnPropertyChanged" />
+                </DockPanel>
+
                 <ItemsControl Items="{CompiledBinding StorageDevices}"
                               ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
             </StackPanel>
