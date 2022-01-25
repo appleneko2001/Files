@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Selection;
+using Avalonia.LogicalTree;
 using Files.Services;
 using Files.Views.Controls;
 using Files.Views.Controls.Events;
@@ -20,8 +20,10 @@ namespace Files.Views.Browser
     // ReSharper disable once UnusedType.Global
     public class BrowserView : ResourceDictionary
     {
-        private SelectingItemRepeater _prevItemRepeater;
+        private SelectingItemRepeater _currentItems;
+        private SelectingItemRepeater _prevItems;
 
+        // ReSharper disable once UnusedMember.Local
         private void SelectingItemRepeater_OnDoubleTappedItemEvent(object sender, AdditionalEventArgs e)
         {
             if (e.Argument is not Visual v)
@@ -57,7 +59,7 @@ namespace Files.Views.Browser
                 {
                     var menus = app.Resources[ContextMenuBackend.FileContextMenuResourceName] as
                         ObservableCollection<ContextMenuItemViewModelBase>;
-                    var parameter = GetSelectedItemOrItems(_prevItemRepeater.Selection);
+                    var parameter = GetSelectedItemOrItems(_currentItems.Selection);
                     
                     foreach (var model in menus)
                     {
@@ -70,7 +72,7 @@ namespace Files.Views.Browser
                 {
                     var menus = app.Resources[ContextMenuBackend.FolderContextMenuResourceName] as
                         ObservableCollection<ContextMenuItemViewModelBase>;
-                    var parameter = GetSelectedItemOrItems(_prevItemRepeater.Selection);
+                    var parameter = GetSelectedItemOrItems(_currentItems.Selection);
                     
                     foreach (var model in menus)
                     {
@@ -104,7 +106,18 @@ namespace Files.Views.Browser
         {
             if (sender is not SelectingItemRepeater itemRepeater)
                 return;
-            _prevItemRepeater = itemRepeater;
+            _prevItems = _currentItems;
+            
+            _currentItems = itemRepeater;
+        }
+
+        private void SelectingItemRepeater_OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
+        {
+            if (sender is not SelectingItemRepeater itemRepeater)
+                return;
+            _prevItems = _currentItems;
+            
+            _currentItems = itemRepeater;
         }
     }
 }

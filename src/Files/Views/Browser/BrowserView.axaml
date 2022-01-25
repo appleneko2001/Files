@@ -155,6 +155,7 @@
                                                 ItemTemplate="{StaticResource BrowserViewGridItemFactory}"
 
                                                 DoubleTappedItemEvent="SelectingItemRepeater_OnDoubleTappedItemEvent"
+                                                AttachedToLogicalTree="SelectingItemRepeater_OnAttachedToLogicalTree"
                                                 SelectionChanged="SelectingItemRepeater_OnSelectionChanged">
                     <controls:SelectingItemRepeater.Layout>
                         <UniformGridLayout ItemsJustification="Start" ItemsStretch="Fill"
