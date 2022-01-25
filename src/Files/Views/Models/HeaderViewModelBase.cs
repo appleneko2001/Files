@@ -1,9 +1,11 @@
-﻿namespace Files.Views.Models
+﻿using Files.Views.Models.Interfaces;
+
+namespace Files.Views.Models
 {
-    public class HeaderViewModelBase : ViewModelBase
+    public class HeaderViewModelBase : ViewModelBase, IHeaderViewModel
     {
         private object? _icon;
-        public object? Icon
+        public virtual object? Icon
         {
             get => _icon;
             protected set
@@ -14,7 +16,7 @@
         }
         
         private string _header;
-        public string Header
+        public virtual string Header
         {
             get => _header;
             protected set
