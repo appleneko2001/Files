@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
 using Files.Commands;
+using Files.Services.Platform;
+using Files.Views.Models;
 using Files.Views.Models.Browser.Files.Local;
 
 namespace Files.Services

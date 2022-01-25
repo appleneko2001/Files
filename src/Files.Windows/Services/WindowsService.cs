@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Files.Services;
+using Files.Services.Platform;
 using Files.Services.Watchers;
 using Files.Windows.Services.Native;
 using Files.Windows.Services.Watchers;

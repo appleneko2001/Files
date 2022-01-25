@@ -6,7 +6,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
+using Files.Commands;
+using Files.Services.Platform.Interfaces;
 using Files.Views.Models;
+using Files.Views.Models.Browser.Files.Local;
 using Files.Views.Models.Context.Menus;
 using Material.Icons;
 
