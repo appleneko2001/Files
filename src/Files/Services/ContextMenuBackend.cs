@@ -35,6 +35,7 @@ namespace Files.Services
         // ReSharper disable once SuggestBaseTypeForParameterInConstructor
         private ContextMenuBackend(FilesApp app)
         {
+            _appInstance = app;
             _hotkeyConfigs = AvaloniaLocator.Current.GetService<PlatformHotkeyConfiguration>();
 
             if (_hotkeyConfigs == null)
