@@ -7,4 +7,5 @@
     <converters:GetMayExecuteCommandConverter x:Key="MayExecuteConverter"/>
     <converters:EdgeGradientOpacityMaskGenerator x:Key="EdgeGradientOpacityMaskGenerator"/>
     <converters:CountToWidthConverter x:Key="CountToWidthConverter"/>
+    <converters:StringFormatConverter x:Key="StringFormat"/>
 </ResourceDictionary>
