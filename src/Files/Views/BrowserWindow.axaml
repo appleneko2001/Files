@@ -220,7 +220,7 @@
                     <Panel Name="PART_TabsPanelRoot"
                            VerticalAlignment="Top"
                            Height="48"
-                           Margin="80, 0, 0, 0" >
+                           Margin="80, 0, 0, 0">
                         <DockPanel HorizontalAlignment="Left"
                                    Margin="0, 0, 128, 0">
                             <Button Classes="Flat"
@@ -250,7 +250,7 @@
                                                      Path="HorizontalScrollBarValue" />
                                         </MultiBinding>
                                     </controls:Scroller.OpacityMask>
-                                    
+
                                     <ItemsPresenter Name="PART_TabItemsPresenter"
                                                     Items="{CompiledBinding TabsViewModel}">
                                         <ItemsPresenter.ItemsPanel>
@@ -263,25 +263,35 @@
                                                 <Panel Name="PART_TabButtonPanel"
                                                        additional:TabButtonAdditional.IsSelected="{CompiledBinding IsSelected, Mode=OneWay}">
                                                     <Panel.Width>
-                                                        <MultiBinding Converter="{StaticResource CountToWidthConverter}"
-                                                                      ConverterParameter="{StaticResource GetTabWidthParameter}">
-                                                            <Binding ElementName="PART_TabsPanelRoot" Path="Bounds.Width"/>
-                                                            <CompiledBinding Path="Parent.TabsViewModel.Count"/>
+                                                        <MultiBinding
+                                                            Converter="{StaticResource CountToWidthConverter}"
+                                                            ConverterParameter="{StaticResource GetTabWidthParameter}">
+                                                            <Binding ElementName="PART_TabsPanelRoot"
+                                                                     Path="Bounds.Width" />
+                                                            <CompiledBinding Path="Parent.TabsViewModel.Count" />
                                                         </MultiBinding>
                                                     </Panel.Width>
-                                                    
+
                                                     <Button Name="PART_TabButton" Classes="TabButton"
                                                             MinWidth="{StaticResource TabMinWidthValue}"
                                                             Command="{CompiledBinding SelectTabCommand}"
                                                             CommandParameter="{CompiledBinding }">
-                                                        <TextBlock Classes="Subtitle2"
-                                                                   Margin="8,0"
-                                                                   FontWeight="Normal"
-                                                                   HorizontalAlignment="Left"
-                                                                   VerticalAlignment="Center"
-                                                                   TextTrimming="CharacterEllipsis"
-                                                                   Text="{CompiledBinding Header}"
-                                                                   Foreground="{DynamicResource MaterialDesignBody}" />
+                                                        <StackPanel Margin="8,0,32,0" Orientation="Horizontal">
+                                                            <ProgressBar Classes="Circle Circular" Width="16"
+                                                                         Height="16" Margin="0,0,8,0"
+                                                                         IsVisible="{CompiledBinding !Progress.IsComplete}"
+                                                                         IsIndeterminate="{CompiledBinding Progress.IsIndeterminate}"
+                                                                         Value="{CompiledBinding Progress.Progress}" />
+
+                                                            <TextBlock Classes="Subtitle2"
+
+                                                                       FontWeight="Normal"
+                                                                       HorizontalAlignment="Left"
+                                                                       VerticalAlignment="Center"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Text="{CompiledBinding Header}"
+                                                                       Foreground="{DynamicResource MaterialDesignBody}" />
+                                                        </StackPanel>
                                                     </Button>
 
                                                     <Button Classes="Flat"
@@ -294,7 +304,7 @@
 
                                                             Command="{CompiledBinding CloseTabCommand}"
                                                             CommandParameter="{CompiledBinding }"
-                                                            Foreground="{DynamicResource MaterialDesignBody}"/>
+                                                            Foreground="{DynamicResource MaterialDesignBody}" />
                                                 </Panel>
                                             </DataTemplate>
                                         </ItemsPresenter.ItemTemplate>
