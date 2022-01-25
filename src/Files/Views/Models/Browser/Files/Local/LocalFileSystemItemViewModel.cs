@@ -6,21 +6,27 @@ namespace Files.Views.Models.Browser.Files.Local
 {
     public abstract class LocalFileSystemItemViewModel : ItemViewModelBase
     {
-        private LocalFilesBrowserContentViewModel _parent;
-        public LocalFilesBrowserContentViewModel Parent => _parent;
-        
         private MaterialIconKind? _additionalIconKind;
         public MaterialIconKind? AdditionalIconKind => _additionalIconKind;
         
-        protected LocalFileSystemItemViewModel()
+        private string _fullPath;
+        public string FullPath
+        {
+            get => _fullPath;
+            protected set
+            {
+                _fullPath = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+        
+        protected LocalFileSystemItemViewModel(LocalFilesBrowserContentViewModel parent) : base(parent)
         {
             
         }
 
-        protected LocalFileSystemItemViewModel(LocalFilesBrowserContentViewModel parent, FileSystemInfo info)
+        protected LocalFileSystemItemViewModel(LocalFilesBrowserContentViewModel parent, FileSystemInfo info) : base(parent)
         {
-            _parent = parent;
-
             foreach (var attr in (FileAttributes[]) Enum.GetValues(typeof(FileAttributes)))
             {
                 if (!info.Attributes.HasFlag(attr))

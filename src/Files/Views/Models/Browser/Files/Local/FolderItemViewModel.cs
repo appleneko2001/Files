@@ -19,15 +19,12 @@ namespace Files.Views.Models.Browser.Files.Local
             }
         }
 
-        private string _fullPath;
-        public string FullPath => _fullPath;
-
         public FolderItemViewModel(LocalFilesBrowserContentViewModel parent, DirectoryInfo di) : base(parent, di)
         {
             Name = di.Name;
             DisplayName = di.Name;
 
-            _fullPath = di.FullName;
+            FullPath = di.FullName;
         }
         
         public override void TryGetPreview(CancellationToken _cancellationToken = default)

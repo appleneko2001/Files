@@ -26,9 +26,6 @@ namespace Files.Views.Models.Browser.Files.Local
         private long _size;
         public long Size => _size;
 
-        private string _fullPath;
-        public string FullPath => _fullPath;
-        
         private PreviewableViewModelBase? _previewViewModel;
         public PreviewableViewModelBase? Preview => _previewViewModel;
         public bool IsPreviewReady => Preview != null;
@@ -39,12 +36,12 @@ namespace Files.Views.Models.Browser.Files.Local
             DisplayName = fi.Name;
             
             _size = fi.Length;
-            _fullPath = fi.FullName;
+            FullPath = fi.FullName;
         }
 
         public override void TryGetPreview(CancellationToken _cancellationToken = default)
         {
-            PreviewManagerBackend.Instance?.ScheduleGetPreview(new FileInfo(_fullPath), OnCompleteGetPreviewTask, _cancellationToken);
+            PreviewManagerBackend.Instance?.ScheduleGetPreview(new FileInfo(FullPath), OnCompleteGetPreviewTask, _cancellationToken);
         }
 
         public override ICommand? OnClickCommand => _onClickCommand;
