@@ -16,10 +16,15 @@ using Files.Windows.Services.Native.Enums;
 using Material.Dialog;
 using Material.Dialog.Enums;
 
+// ReSharper disable InconsistentNaming
+
 namespace Files.Windows.Services
 {
-    public class WindowsApiBridge : PlatformSpecificBridge
+    public class WindowsApiBridge : PlatformSpecificBridge, IPlatformSupportNativeExplorer
     {
+        private const string _nativeExplorerName = "Windows Explorer";
+        public string NativeExplorerName => _nativeExplorerName;
+        
         private Collection<DeviceModel> _devices;
         private MyComputerDeviceModel _myComputerModel;
         public WindowsApiBridge()
@@ -48,38 +53,7 @@ namespace Files.Windows.Services
 
         public override void NativeExecuteApplication(string execPath)
         {
-            Task.Factory.StartNew(delegate
-            {
-                var param = new ProcessStartInfo
-                {
-                    FileName = execPath,
-                    WorkingDirectory = Path.GetDirectoryName(execPath)!,
-                };
-                Process.Start(param);
-            }).ContinueWith(delegate(Task task)
-            {
-                if (!task.IsFaulted) 
-                    return;
-                
-                var exception = task.Exception.InnerException;
-                var builder = new StringBuilder();
-
-                builder.AppendLine("Cannot start process:");
-                builder.AppendLine(task.Exception.InnerException.Message);
-
-                Dispatcher.UIThread.Post(async delegate
-                {
-                    var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams
-                    {
-                        SupportingText = builder.ToString(),
-                        DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok),
-                        Borderless = false,
-                        ContentHeader = "Error",
-                        WindowTitle = "Error"
-                    });
-                    await dialog.Show();
-                });
-            });
+            InvokeNewProcess(execPath, null);
         }
 
         public override bool IsExecutableApplication(string path)
@@ -110,6 +84,43 @@ namespace Files.Windows.Services
         public override void ShowOpenWithApplicationDialog(string path)
         {
             ShowOpenWithDialog(path);
+        }
+
+        private static void InvokeNewProcess(string execPath, string? args)
+        {
+            Task.Factory.StartNew(delegate
+            {
+                var param = new ProcessStartInfo
+                {
+                    FileName = execPath,
+                    Arguments = args ?? string.Empty,
+                    WorkingDirectory = Path.GetDirectoryName(execPath)!,
+                };
+                Process.Start(param);
+            }).ContinueWith(delegate(Task task)
+            {
+                if (!task.IsFaulted) 
+                    return;
+                
+                var exception = task.Exception?.InnerException ?? new NullReferenceException("Unknown exception");
+                var builder = new StringBuilder();
+
+                builder.AppendLine("Cannot start process:");
+                builder.AppendLine(exception.Message);
+
+                Dispatcher.UIThread.Post(async delegate
+                {
+                    var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams
+                    {
+                        SupportingText = builder.ToString(),
+                        DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok),
+                        Borderless = false,
+                        ContentHeader = "Error",
+                        WindowTitle = "Error"
+                    });
+                    await dialog.Show();
+                });
+            });
         }
 
         private static void OpenFileProcedure(Action del, string errorMsg, string path)
@@ -166,6 +177,11 @@ namespace Files.Windows.Services
                 args += ",OpenAs_RunDLL " + path;
                 Process.Start("rundll32.exe", args);
             }, $"The file \"{path}\" cannot be opened or executed: ", path);
+        }
+
+        public void OpenFolderWithNativeExplorer(string path)
+        {
+            InvokeNewProcess("explorer.exe", path);
         }
     }
 }

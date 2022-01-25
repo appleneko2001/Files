@@ -84,8 +84,22 @@ namespace Files.Services
                 new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"), command: _commands.OpenFolderInCurrentViewCommand),
                 //new ContextMenuItemViewModel("Open folder in new tab"),
                 new ContextMenuItemViewModel("Open folder in new window", command: _commands.OpenFolderInNewWindowCommand),
-                ContextMenuItem.Separator,
             };
+
+            if (_appInstance.PlatformApi is IPlatformSupportNativeExplorer featureSupport1)
+            {
+                list.Add(new ContextMenuItemViewModel($"Open folder with {featureSupport1.NativeExplorerName}", command: new ExtendedRelayCommand(
+                    delegate(object o)
+                    {
+                        if(o is FolderItemViewModel folder)
+                            featureSupport1.OpenFolderWithNativeExplorer(folder.FullPath);
+                    }, mayExecute: delegate(object o)
+                    {
+                        return o is FolderItemViewModel;
+                    })));
+            }
+            
+            list.Add(ContextMenuItem.Separator);
 
             list.AddRange(InitiatePostEssentialMenus());
 
