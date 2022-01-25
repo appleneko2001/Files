@@ -26,7 +26,7 @@ namespace Files.Views.Models
                 OnExecuteSelectCommand(vm);
             }
         });
-        
+
         private static ExtendedRelayCommand _closeTabCommand = new ExtendedRelayCommand(delegate(object o)
         {
             if (o is BrowserWindowTabViewModel vm)
@@ -44,8 +44,8 @@ namespace Files.Views.Models
         });
 
         private bool _shouldDispose;
-        
         private bool _isDisposed;
+
         private bool _isSelected;
         private bool _isSidesheetVisible;
         private BrowserWindowViewModel _parent;
@@ -60,7 +60,7 @@ namespace Files.Views.Models
         public RelayCommand CloseSidesheetCommand => _closeSidesheetCommand;
 
         public ExtendedRelayCommand CloseTabCommand => _closeTabCommand;
-        
+
         public RelayCommand SelectTabCommand => _selectTabCommand;
 
         public BrowserContentViewModelBase Content
@@ -87,7 +87,7 @@ namespace Files.Views.Models
                 RaiseOnPropertyChanged();
             }
         }
-        
+
         public SidesheetViewModelBase Sidesheet
         {
             get => _sidesheet;
@@ -117,7 +117,7 @@ namespace Files.Views.Models
                 RaiseOnPropertyChanged();
             }
         }
-        
+
         public BrowserWindowTabViewModel(BrowserWindowViewModel parent, Uri? path = null)
         {
             _parent = parent;
@@ -128,17 +128,17 @@ namespace Files.Views.Models
                 ? new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
                 : path);
         }
-        
+
         private static void OnExecuteCloseCommand(BrowserWindowTabViewModel vm)
         {
             vm.Parent.CloseTab(vm);
         }
-        
+
         private static void OnExecuteSelectCommand(BrowserWindowTabViewModel vm)
         {
             vm.Parent.SelectedTab = vm;
         }
-        
+
         public void Open(Uri path)
         {
             if (_ctx != null)
@@ -147,13 +147,13 @@ namespace Files.Views.Models
             _ctx = new CancellationTokenSource();
             var p = new ProgressViewModel();
             Progress = p;
-            
+
             Task.Factory.StartNew(delegate
             {
                 p.SetProgress(null);
-                
+
                 _breadcrumbPath.ApplyPath(path);
-                
+
                 Content = CreateView(path);
                 Content.LoadContent(path, _ctx.Token);
                 Content.RequestPreviews(_ctx.Token);
@@ -161,8 +161,8 @@ namespace Files.Views.Models
             {
                 p.SetProgress(1.0);
                 p.SetCompleted();
-                
-                if(_shouldDispose)
+
+                if (_shouldDispose)
                     Dispose();
 
                 if (!task.IsFaulted && task.IsCompleted)
@@ -200,22 +200,24 @@ namespace Files.Views.Models
                 case LocalFileSystemItemViewModel localFs:
                 {
                     vm.AppendModel(new CommonFileSystemProperties(localFs));
-                } break;
+                }
+                    break;
             }
         }
 
         private BrowserContentViewModelBase CreateView(Uri uri)
         {
             Header = HttpUtility.UrlDecode(uri.Segments.Last());
-            
+
             BrowserContentViewModelBase viewModel = null;
-            
+
             switch (uri.Scheme.ToLowerInvariant())
             {
                 case "file":
                 {
                     viewModel = new LocalFilesBrowserContentViewModel(this);
-                } break;
+                }
+                    break;
             }
 
             return viewModel;
@@ -224,7 +226,7 @@ namespace Files.Views.Models
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            
+
             _ctx.Dispose();
         }
 
