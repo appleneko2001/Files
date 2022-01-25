@@ -100,19 +100,24 @@ namespace Files.Views.Models.Breadcrumb
                 var index = 0;
                 foreach (var segment in GetSegments(uri))
                 {
-                    if (index == 0)
+                    switch (index)
                     {
-                        var vm = new BreadcrumbNodeSchemeViewModel(this, index, segment);
-                        Part.Add(vm);
+                        case 0:
+                        {
+                            var vm = new BreadcrumbNodeSchemeViewModel(this, index, segment);
+                            Part.Add(vm);
 
-                        index++;
-                        continue;
-                    }
-
-                    if (index == 1)
-                    {
-                        var vm = new BreadcrumbNodeHostViewModel(this, index, uri.Host);
-                        Part.Add(vm);
+                            index++;
+                            continue;
+                        }
+                        case 1:
+                        {
+                            var vm = new BreadcrumbNodeHostViewModel(this, index, uri.Host);
+                            Part.Add(vm);
+                        
+                            index++;
+                            continue;
+                        }
                     }
 
                     var header = segment;
