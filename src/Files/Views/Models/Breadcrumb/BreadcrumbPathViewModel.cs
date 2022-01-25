@@ -4,12 +4,13 @@ using System.Collections.ObjectModel;
 using System.Web;
 using Avalonia.Threading;
 using Files.Commands;
+using Files.Extensions;
 
 namespace Files.Views.Models.Breadcrumb
 {
     public class BreadcrumbPathViewModel : ViewModelBase
     {
-        private static RelayCommand _submitEditedPathCommand = new RelayCommand(OnSubmitEditedPath);
+        private static RelayCommand _submitEditedPathCommand = new(OnSubmitEditedPath);
         
         private Uri? _fullPath;
         private bool _isInEditMode;
@@ -98,7 +99,7 @@ namespace Files.Views.Models.Breadcrumb
                 Part.Clear();
 
                 var index = 0;
-                foreach (var segment in GetSegments(uri))
+                foreach (var segment in uri.GenerateSegments())
                 {
                     switch (index)
                     {
@@ -126,24 +127,6 @@ namespace Files.Views.Models.Breadcrumb
                     index++;
                 }
             }, DispatcherPriority.Background);
-        }
-
-        private IReadOnlyList<string> GetSegments(Uri uri)
-        {
-            var scheme = $"{uri.Scheme}{Uri.SchemeDelimiter}";
-            var path = HttpUtility.UrlDecode(uri.GetLeftPart(UriPartial.Path));
-
-            if (path.StartsWith(scheme))
-                path = path.Remove(0, scheme.Length);
-
-            var l = new List<string>();
-            l.Add(scheme);
-
-            foreach (var segment in path.Split('/'))
-                if (!string.IsNullOrEmpty(segment))
-                    l.Add($"{segment}/");
-
-            return l;
         }
     }
 }

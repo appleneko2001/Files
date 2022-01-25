@@ -66,7 +66,12 @@ namespace Files.Views.Models.Breadcrumb
             
             foreach (var item in clone)
             {
-                builder.Append(item.Path);
+                var part = item.Path;
+                
+                builder.Append(part);
+                
+                if (!part.EndsWith("/"))
+                    builder.Append("/");
                 
                 if (item == this)
                     break;
