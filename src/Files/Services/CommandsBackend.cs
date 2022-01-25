@@ -27,6 +27,9 @@ namespace Files.Services
 
             OpenFolderInCurrentViewCommand = new ExtendedRelayCommand(OnExecuteOpenFolderInCurrentViewCommand, mayExecute: MayExecuteOpenFolderInCurrentViewCommand);
             OpenFolderInNewWindowCommand = new ExtendedRelayCommand(OnExecuteOpenFolderInNewWindowCommand, mayExecute: MayExecuteOpenFolderInNewWindowCommand);
+
+            DeleteItemsCommand =
+                new ExtendedRelayCommand(OnExecuteDeleteItemsCommand, mayExecute: MayDeleteItemsCommand);
         }
 
         public static void Initiate(FilesApp app)

@@ -118,7 +118,7 @@ namespace Files.Services
                     keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Paste)),
                 ContextMenuItem.Separator,
                 new ContextMenuItemViewModel("Delete", new MaterialIconViewModel(MaterialIconKind.TrashCan),
-                    keyGesture: KeyGesture.Parse("Delete")),
+                    keyGesture: KeyGesture.Parse("Delete"), command: _commands.DeleteItemsCommand),
                 new ContextMenuItemViewModel("Rename", new MaterialIconViewModel(MaterialIconKind.Pencil)),
                 ContextMenuItem.Separator,
                 new ContextMenuItemViewModel("Properties")
