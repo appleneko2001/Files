@@ -43,12 +43,6 @@ namespace Files.Views.Browser
                 e.TemplateKey = "Image";
         }
 
-        private void BrowserViewContextMenu_OnContextMenuOpening(object sender, CancelEventArgs e)
-        {
-            if (sender is not ContextMenu)
-                e.Cancel = true;
-        }
-
         private void BrowserViewContextMenu_OnDataContextChanged(object sender, EventArgs e)
         {
             if (sender is not ContextMenu menu)

@@ -16,8 +16,7 @@
     <!-- ReSharper disable once Xaml.InvalidResourceType -->
     <ContextMenu x:Key="BrowserViewContextMenu"
                  Name="PART_BrowserViewContextMenu"
-                 DataContextChanged="BrowserViewContextMenu_OnDataContextChanged"
-                 ContextMenuOpening="BrowserViewContextMenu_OnContextMenuOpening">
+                 DataContextChanged="BrowserViewContextMenu_OnDataContextChanged">
     </ContextMenu>
 
     <!-- Browser view item global recycle pool -->
