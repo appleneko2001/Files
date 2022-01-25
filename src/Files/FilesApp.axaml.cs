@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Files.Commands;
 using Files.Services;
+using Files.Services.Platform;
 using Files.Views;
 
 using Material.Colors;
@@ -21,11 +22,16 @@ namespace Files
         
         // Properties
         internal PlatformSpecificBridge? PlatformApi => _osService?.ApiBridge;
-        
+
+        internal WindowManagerService WindowManager => _windowManager;
+
+        public bool Initialized => _initialized;
+
         // Fields
         private WindowManagerService _windowManager;
         private OperationSystemService _osService;
         private AppBackend _context;
+        private bool _initialized = false;
         
         public override void Initialize()
         {
@@ -43,6 +49,7 @@ namespace Files
                 app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 app.MainWindow = CreateBrowserWindow();
 
+                _initialized = true;
                 ApplicationInitializationCompleted(this, EventArgs.Empty);
             }
             
@@ -62,7 +69,7 @@ namespace Files
         public BrowserWindow CreateBrowserWindow(Uri startUri = null)
         {
             var window = new BrowserWindow(startUri);
-            _windowManager.RegisterWindow(window);
+            WindowManager.RegisterWindow(window);
 
             return window;
         }
@@ -73,7 +80,7 @@ namespace Files
             ExtendedRelayCommand.ExceptionOccur += RelayCommandOnExceptionOccurred;
             
             _windowManager = new WindowManagerService();
-            _windowManager.WhenNoActiveWindowsLeft += WhenNoActiveWindowsLeft;
+            WindowManager.WhenNoActiveWindowsLeft += WhenNoActiveWindowsLeft;
             
             Resources
                 .MergedDictionaries
