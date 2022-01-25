@@ -54,6 +54,17 @@ namespace Files.Views.Models
             }
         }
 
+        private bool _isReadonly;
+        public bool IsReadonly
+        {
+            get => _isReadonly;
+            protected set
+            {
+                _isReadonly = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+        
         private bool _isSelected;
         public bool IsSelected
         {
