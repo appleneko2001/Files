@@ -32,11 +32,19 @@ namespace Files.Views.Models
             }
         });
 
+        private static RelayCommand _closeSidesheetCommand = new RelayCommand(delegate(object o)
+        {
+            if (o is BrowserWindowTabViewModel vm)
+            {
+                vm.IsSidesheetVisible = false;
+            }
+        });
+
         private bool _shouldDispose;
         
         private bool _isDisposed;
         private bool _isSelected;
-
+        private bool _isSidesheetVisible;
         private BrowserWindowViewModel _parent;
         private BreadcrumbPathViewModel _breadcrumbPath;
         private BrowserContentViewModelBase _content;
@@ -44,6 +52,9 @@ namespace Files.Views.Models
         private CancellationTokenSource _ctx;
 
         private ProgressViewModel _progress;
+        private SidesheetViewModelBase _sidesheet;
+
+        public RelayCommand CloseSidesheetCommand => _closeSidesheetCommand;
 
         public ExtendedRelayCommand CloseTabCommand => _closeTabCommand;
         
@@ -73,6 +84,16 @@ namespace Files.Views.Models
                 RaiseOnPropertyChanged();
             }
         }
+        
+        public SidesheetViewModelBase Sidesheet
+        {
+            get => _sidesheet;
+            private set
+            {
+                _sidesheet = value;
+                RaiseOnPropertyChangedThroughUiThread();
+            }
+        }
 
         public bool IsSelected
         {
@@ -80,6 +101,16 @@ namespace Files.Views.Models
             internal set
             {
                 _isSelected = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+
+        public bool IsSidesheetVisible
+        {
+            get => _isSidesheetVisible;
+            private set
+            {
+                _isSidesheetVisible = value;
                 RaiseOnPropertyChanged();
             }
         }
