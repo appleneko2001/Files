@@ -121,7 +121,7 @@ namespace Files.Services
                     keyGesture: KeyGesture.Parse("Delete"), command: _commands.DeleteItemsCommand),
                 new ContextMenuItemViewModel("Rename", new MaterialIconViewModel(MaterialIconKind.Pencil)),
                 ContextMenuItem.Separator,
-                new ContextMenuItemViewModel("Properties")
+                new ContextMenuItemViewModel("Properties", command: _commands.ShowPropertiesCommand)
             };
 
             return list;

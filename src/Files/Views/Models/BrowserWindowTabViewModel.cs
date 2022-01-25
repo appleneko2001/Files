@@ -8,6 +8,9 @@ using Avalonia.Threading;
 using Files.Commands;
 using Files.Views.Models.Breadcrumb;
 using Files.Views.Models.Browser;
+using Files.Views.Models.Browser.Files.Local;
+using Files.Views.Models.Browser.Properties;
+using Files.Views.Models.Browser.Sidesheet;
 using Files.Views.Models.Progress;
 using Material.Dialog;
 using Material.Dialog.Enums;
@@ -184,6 +187,21 @@ namespace Files.Views.Models
                     dialog.ShowDialog(Parent.ParentWindow);
                 });
             });
+        }
+
+        public void ShowPropertiesSidesheet(ItemViewModelBase item)
+        {
+            var vm = new PropertiesSidesheetViewModel();
+            Sidesheet = vm;
+            IsSidesheetVisible = true;
+
+            switch (item)
+            {
+                case LocalFileSystemItemViewModel localFs:
+                {
+                    vm.AppendModel(new CommonFileSystemProperties(localFs));
+                } break;
+            }
         }
 
         private BrowserContentViewModelBase CreateView(Uri uri)

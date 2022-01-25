@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows.Input;
 using Files.Commands;
 using Files.Services.Platform;
 using Files.Views.Models;
 using Files.Views.Models.Browser.Files.Local;
+using Material.Dialog;
+using Material.Dialog.Enums;
 
 namespace Files.Services
 {
@@ -30,6 +34,9 @@ namespace Files.Services
 
             DeleteItemsCommand =
                 new ExtendedRelayCommand(OnExecuteDeleteItemsCommand, mayExecute: MayDeleteItemsCommand);
+
+            ShowPropertiesCommand = new ExtendedRelayCommand(OnExecuteShowPropertiesCommand,
+                mayExecute: MayExecuteShowPropertiesCommand);
         }
 
         public static void Initiate(FilesApp app)
@@ -154,6 +161,137 @@ namespace Files.Services
             
             var window = _appInstance.CreateBrowserWindow(new Uri(folder.FullPath));
             window.Show();
+        }
+
+        #endregion
+        
+        // Commands for any items (folders / files / etc.)
+        
+        #region Delete files or folders
+
+        public ExtendedRelayCommand DeleteItemsCommand { get; }
+        
+        private bool MayDeleteItemsCommand(object arg)
+        {
+            switch (arg)
+            {
+                case ItemViewModelBase item:
+                {
+                    return !item.IsReadonly;
+                } 
+
+                case IEnumerable<ItemViewModelBase> items:
+                {
+                    // ReSharper disable once LoopCanBeConvertedToQuery
+                    foreach (var item in items)
+                    {
+                        if (!item.IsReadonly)
+                            return true;
+                    }
+
+                    return false;
+                }
+
+                case IReadOnlyList<object> list:
+                {
+                    foreach (var obj in list)
+                    {
+                        if(obj is not ItemViewModelBase item)
+                            continue;
+                        
+                        if (!item.IsReadonly)
+                            return true;
+                    }
+
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        private async void OnExecuteDeleteItemsCommand(object args)
+        {
+            var list = new List<ItemViewModelBase>();
+
+            if (args is IReadOnlyList<object> items)
+            {
+                foreach (var obj in items)
+                {
+                    if(obj is not ItemViewModelBase item)
+                        continue;
+                        
+                    list.Add(item);
+                }
+            }
+            else
+            {
+                if (args is not ItemViewModelBase item)
+                    return;
+
+                list.Add(item);
+            }
+
+            var textBuilder = new StringBuilder("You are about to delete next items:\n");
+
+            var max = list.Count;
+            if (max >= 5)
+                max = 5;
+            
+            for (var i = 0; i < max; i++)
+            {
+                var item = list[i];
+
+                textBuilder.AppendLine(item.DisplayName);
+
+                if (i != max - 1)
+                    continue;
+                
+                if(max < list.Count)
+                    textBuilder.AppendLine($"and {(list.Count - max).ToString()} items.");
+            }
+            
+            var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams
+            {
+                WindowTitle = "Files: confirm action dialog",
+                ContentHeader = "Confirm action",
+                SupportingText = textBuilder.ToString(),
+                DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.YesNo)
+            });
+
+            var result = await dialog.ShowDialog(_appInstance.WindowManager.LastFocusedWindow);
+            if (result is null)
+                return;
+
+            if (result.GetResult == "yes")
+            {
+                // User confirmed action
+                
+                // TODO: Asynchronous delete files and folders task implement
+            }
+        }
+
+        #endregion
+        
+        #region Show properties in sidesheel
+
+        // Avalonia property
+        public ExtendedRelayCommand ShowPropertiesCommand { get; }
+        
+        private bool MayExecuteShowPropertiesCommand(object arg)
+        {
+            return arg is FolderItemViewModel or FileItemViewModel;
+        }
+
+        private void OnExecuteShowPropertiesCommand(object obj)
+        {
+            switch (obj)
+            {
+                case ItemViewModelBase item:
+                {
+                    item.Parent.Parent.ShowPropertiesSidesheet(item);
+                } break;
+            }
         }
 
         #endregion

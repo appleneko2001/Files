@@ -170,4 +170,31 @@
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
+    
+    <!-- Browser side sheet -->
+    <RecyclingElementFactory x:Key="SideSheetViewTemplate">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate x:Key="Properties" DataType="sidesheet:PropertiesSidesheetViewModel">
+                <StackPanel>
+                    <TextBlock Classes="Headline5" Text="Properties"/>
+                    <ContentPresenter Content="{CompiledBinding Properties}">
+                        <ContentPresenter.DataTemplates>
+                            <DataTemplate DataType="properties:CommonFileSystemProperties">
+                                <StackPanel Margin="0,8">
+                                    <TextBlock Classes="Subtitle1" Text="{CompiledBinding Name}"/>
+                                    <TextBlock Text="{CompiledBinding Size, Converter={StaticResource StringFormat}, ConverterParameter='Size: {0}'}"/>
+                                    <TextBlock Text="{CompiledBinding ActualSize, Converter={StaticResource StringFormat}, ConverterParameter='Actual size: {0}'}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentPresenter.DataTemplates>
+                    </ContentPresenter>
+                    
+                    <StackPanel Margin="0, 24" >
+                        <TextBlock Text="This feature is not ready!"/>
+                        <TextBlock Text="Please come back later!"/>
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
 </ResourceDictionary>
