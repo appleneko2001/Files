@@ -8,6 +8,8 @@
                     xmlns:controls="clr-namespace:Files.Views.Controls"
                     xmlns:preview="clr-namespace:Files.Views.Models.Browser.Preview"
                     xmlns:models="clr-namespace:Files.Views.Models"
+                    xmlns:sidesheet="clr-namespace:Files.Views.Models.Browser.Sidesheet"
+                    xmlns:properties="clr-namespace:Files.Views.Models.Browser.Properties"
 
                     x:Class="Files.Views.Browser.BrowserView">
     <!-- Browser view templates -->
