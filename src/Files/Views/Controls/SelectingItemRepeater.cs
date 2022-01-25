@@ -76,13 +76,15 @@ namespace Files.Views.Controls
                 base.OnPointerPressed(e);
                 return;
             }
-            
+            var prop = e.GetCurrentPoint(child).Properties;
+
             if (child is not ContentControl)
             {
                 var shift = e.KeyModifiers.HasFlag(KeyModifiers.Shift);
                 var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control);
 
-                if (shift && !Selection.SingleSelect)
+                // Is multiselect
+                if (shift && !Selection.SingleSelect && prop.IsLeftButtonPressed)
                 {
                     var itemsCast = new List<object>(Items.Cast<object>());
                     
@@ -124,14 +126,17 @@ namespace Files.Views.Controls
                 }
                 else
                 {
+                    // Single select
+                    
                     if (!ctrl)
                     {
                         Selection.Clear();
                 
                         Selection.SelectedItem = child.DataContext;
                     }
-                    else
+                    else if(!prop.IsRightButtonPressed)
                     {
+                        // keep multiselect and pick more by clicking 
                         var itemsCast = new List<object>(Items.Cast<object>());
 
                         int index = 0;
@@ -155,18 +160,17 @@ namespace Files.Views.Controls
             
             base.OnPointerPressed(e);
 
-            var prop = e.GetCurrentPoint(child).Properties;
-            if (prop.IsRightButtonPressed)
-            {
-                if(ContextMenu is not ContextMenu menu)
-                    return;
+            if (!prop.IsRightButtonPressed)
+                return;
+            
+            if(ContextMenu is not ContextMenu menu)
+                return;
 
-                menu.PlacementAnchor = PopupAnchor.None;
-                menu.PlacementGravity = PopupGravity.None;
-                menu.PlacementTarget = child as Control;
-                menu.DataContext = Selection.SelectedItem;
-                menu.Open();
-            }
+            menu.PlacementAnchor = PopupAnchor.None;
+            menu.PlacementGravity = PopupGravity.None;
+            menu.PlacementTarget = child as Control;
+            menu.DataContext = Selection.SelectedItem;
+            menu.Open();
         }
         
         private void OnDoubleTapped(object sender, TappedEventArgs e)
