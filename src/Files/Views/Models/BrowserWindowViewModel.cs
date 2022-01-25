@@ -85,6 +85,12 @@ namespace Files.Views.Models
 
             if (Application.Current is FilesApp app)
             {
+                if (app.Initialized)
+                {
+                    OnApplicationInitializationCompleted(app, EventArgs.Empty);
+                    return;
+                }
+                
                 app.ApplicationInitializationCompleted += OnApplicationInitializationCompleted;
             }
         }
