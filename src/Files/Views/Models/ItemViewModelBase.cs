@@ -1,13 +1,18 @@
 ﻿using System.Threading;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Files.Views.Models.Browser;
 
 namespace Files.Views.Models
 {
     public abstract class ItemViewModelBase : ViewModelBase, ISelectable
     {
-        protected ItemViewModelBase()
+        private BrowserContentViewModelBase _parent;
+        public BrowserContentViewModelBase Parent => _parent;
+        
+        protected ItemViewModelBase(BrowserContentViewModelBase parent)
         {
+            _parent = parent;
         }
         
         public ItemViewModelBase(string name)
