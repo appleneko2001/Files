@@ -1,16 +1,16 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    
-                    xmlns:viewModel="clr-namespace:Files.Views.Models.Breadcrumb"
+
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-                    
+                    xmlns:breadcrumb="clr-namespace:Files.ViewModels.Breadcrumb"
+
                     x:Class="Files.Views.Resources.Breadcrumbs">
     <RecyclingElementFactory x:Key="BreadcrumbElementTemplate"
                              RecyclePool="{StaticResource GlobalRecyclePool}"
                              SelectTemplateKey="RecyclingElementFactory_OnSelectTemplateKey">
         <RecyclingElementFactory.Templates>
-            <DataTemplate x:Key="Node" DataType="viewModel:BreadcrumbNodeViewModel">
+            <DataTemplate x:Key="Node" DataType="breadcrumb:BreadcrumbNodeViewModel">
                 <Border VerticalAlignment="Center"
                         CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
@@ -22,7 +22,7 @@
                 </Border>
             </DataTemplate>
     
-            <DataTemplate x:Key="NodeWithIcon" DataType="viewModel:BreadcrumbNodeWithIconViewModel">
+            <DataTemplate x:Key="NodeWithIcon" DataType="breadcrumb:BreadcrumbNodeWithIconViewModel">
                 <Border VerticalAlignment="Center"
                         CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">

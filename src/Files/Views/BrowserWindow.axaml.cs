@@ -12,10 +12,11 @@ using Avalonia.Markup.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using Avalonia.Visuals.Media.Imaging;
 using Files.Extensions;
 using Files.Services;
-using Files.Views.Models;
+using Files.ViewModels;
 using Material.Colors;
 using Material.Styles;
 using Material.Styles.Controls;
@@ -43,9 +44,9 @@ namespace Files.Views
         private double _backgroundBrightness = 0.2;
         private Bitmap? _previousBackgroundBitmap;
 
-        private static readonly PaletteHelper _paletteHelper = new();
+        private readonly MaterialTheme materialTheme;
 
-        private static readonly BundledTheme _lightTheme = new()
+        /*private static readonly BundledTheme _lightTheme = new()
         {
             BaseTheme = BaseThemeMode.Light,
             PrimaryColor = PrimaryColor.Indigo,
@@ -57,7 +58,11 @@ namespace Files.Views
             BaseTheme = BaseThemeMode.Dark,
             PrimaryColor = PrimaryColor.LightBlue,
             SecondaryColor = SecondaryColor.Pink
-        };
+        };*/
+
+        private static readonly ITheme _lightTheme = Theme.Create(Theme.Light, Colors.SlateBlue, Colors.Pink);
+
+        private static readonly ITheme _darkTheme = Theme.Create(Theme.Dark, Colors.DeepSkyBlue, Colors.Pink);
 
         // The application will not be compiled if this class implemented without default constructor
         // ReSharper disable once UnusedMember.Global
@@ -73,6 +78,8 @@ namespace Files.Views
             #if DEBUG
             Avalonia.Diagnostics.DevTools.Attach(this, KeyGesture.Parse("F12"));
             #endif
+            
+            materialTheme = Application.Current!.LocateMaterialTheme<MaterialTheme>();
 
             var mainContext = AppBackend.Instance;
             _context = new BrowserWindowViewModel(mainContext, this);
@@ -83,7 +90,8 @@ namespace Files.Views
             if (!_isAppliedInitialTheme)
             {
                 _isAppliedInitialTheme = true;
-                _paletteHelper.SetTheme(_darkTheme.GetTheme());
+                materialTheme.CurrentTheme = _darkTheme;
+                //_paletteHelper.SetTheme(_darkTheme.GetTheme());
             }
 
             if (startUri is not null)
@@ -126,20 +134,24 @@ namespace Files.Views
         {
             Task.Run(delegate
             {
-                var theme = _paletteHelper.GetTheme();
+                //materialTheme.CurrentTheme = _darkTheme;
+                var theme = materialTheme.CurrentTheme;
                 var baseTheme = theme.GetBaseTheme();
 
-                switch (baseTheme)
+                Dispatcher.UIThread.InvokeAsync(delegate
                 {
-                    case BaseThemeMode.Light:
-                        _paletteHelper.SetTheme(_darkTheme.GetTheme());
-                        break;
+                    switch (baseTheme)
+                    {
+                        case BaseThemeMode.Light:
+                            materialTheme.CurrentTheme = _darkTheme;
+                            break;
 
-                    case BaseThemeMode.Dark:
-                    default:
-                        _paletteHelper.SetTheme(_lightTheme.GetTheme());
-                        break;
-                }
+                        case BaseThemeMode.Dark:
+                        default:
+                            materialTheme.CurrentTheme = _lightTheme;
+                            break;
+                    }
+                });
             });
         }
 

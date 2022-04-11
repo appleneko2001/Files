@@ -1,15 +1,16 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 
-                    xmlns:viewModel="clr-namespace:Files.Views.Models.Browser"
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-                    xmlns:local="clr-namespace:Files.Views.Models.Browser.Files.Local"
                     xmlns:controls="clr-namespace:Files.Views.Controls"
-                    xmlns:preview="clr-namespace:Files.Views.Models.Browser.Preview"
-                    xmlns:models="clr-namespace:Files.Views.Models"
-                    xmlns:sidesheet="clr-namespace:Files.Views.Models.Browser.Sidesheet"
-                    xmlns:properties="clr-namespace:Files.Views.Models.Browser.Properties"
+                    xmlns:preview="clr-namespace:Files.ViewModels.Browser.Preview"
+                    xmlns:viewModels="clr-namespace:Files.ViewModels"
+                    xmlns:local="clr-namespace:Files.ViewModels.Browser.Files.Local"
+                    xmlns:browser="clr-namespace:Files.ViewModels.Browser"
+                    xmlns:sidesheet="clr-namespace:Files.ViewModels.Browser.Sidesheet"
+                    xmlns:properties="clr-namespace:Files.ViewModels.Browser.Properties"
+                    xmlns:android="clr-namespace:Files.ViewModels.Browser.Files.Android"
 
                     x:Class="Files.Views.Browser.BrowserView">
     <!-- Browser view templates -->
@@ -47,7 +48,7 @@
     <RecyclingElementFactory x:Key="BrowserViewGridItemFactory"
                              RecyclePool="{StaticResource BrowserItemRecyclePool}">
         <RecyclingElementFactory.Templates>
-            <DataTemplate DataType="models:ItemViewModelBase" x:Key="BrowserViewGridItem">
+            <DataTemplate DataType="viewModels:ItemViewModelBase" x:Key="BrowserViewGridItem">
                 <Panel Name="PART_ItemRoot" ContextMenu="{StaticResource BrowserViewContextMenu}">
                     <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
                                     Content="{CompiledBinding }">
@@ -75,7 +76,7 @@
                                                         ContentTemplate="{StaticResource BrowserViewPreviewElement}" />
                                     </Panel>
 
-                                    <StackPanel Margin="8" DockPanel.Dock="Right">
+                                    <StackPanel Margin="0,8,8,8" DockPanel.Dock="Right">
                                         <StackPanel.Styles>
                                             <Style Selector="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -95,13 +96,12 @@
 
                             <!-- Folder item element template -->
                             <DataTemplate DataType="local:FolderItemViewModel">
-                                <DockPanel Margin="8"
-                                           LastChildFill="True"
+                                <DockPanel LastChildFill="True"
 
                                            Opacity="{CompiledBinding IsVisible, 
                                                Converter={StaticResource BoolToDoubleConverter}, 
                                                ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                                    <Panel Width="48" Height="48"
+                                    <Panel Width="48" Height="48" Margin="8"
                                            VerticalAlignment="Top"
                                            DockPanel.Dock="Left">
                                         <icons:MaterialIcon Width="NaN" Height="NaN"
@@ -114,7 +114,81 @@
                                                         ContentTemplate="{StaticResource BrowserItemDecorationTemplate}" />
                                     </Panel>
 
-                                    <StackPanel Margin="8,0" DockPanel.Dock="Right">
+                                    <StackPanel Margin="0,8,8,8" DockPanel.Dock="Right">
+                                        <StackPanel.Styles>
+                                            <Style Selector="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                                <Setter Property="TextAlignment" Value="Left" />
+                                            </Style>
+                                        </StackPanel.Styles>
+
+                                        <TextBlock Text="{CompiledBinding DisplayName}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                            
+                            <!-- Item templates for Android File Explorer View -->
+                            
+                            <DataTemplate DataType="android:AdbFileItemViewModel">
+                                <DockPanel LastChildFill="True"
+                                           Opacity="{CompiledBinding IsVisible, 
+                                               Converter={StaticResource BoolToDoubleConverter}, 
+                                               ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
+                                    <Panel VerticalAlignment="Top"
+                                           DockPanel.Dock="Left">
+                                        <Panel>
+                                            <icons:MaterialIcon Width="48" Height="48" Margin="8"
+                                                                Kind="File"
+                                                                VerticalAlignment="Stretch"
+                                                                HorizontalAlignment="Stretch" />
+
+                                            <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                                            ContentTemplate="{StaticResource BrowserItemDecorationTemplate}" />
+                                        </Panel>
+                                    </Panel>
+
+                                    <StackPanel Margin="0,8,8,8" DockPanel.Dock="Right">
+                                        <StackPanel.Styles>
+                                            <Style Selector="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                                <Setter Property="TextAlignment" Value="Left" />
+                                            </Style>
+                                        </StackPanel.Styles>
+
+                                        <TextBlock Text="{CompiledBinding DisplayName}" />
+                                        <TextBlock
+                                            Text="{CompiledBinding Size, Converter={StaticResource HumanizeSizeConverter}}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+
+                            <!-- Folder item element template -->
+                            <DataTemplate DataType="android:AdbFolderItemViewModel">
+                                <DockPanel LastChildFill="True"
+
+                                           Opacity="{CompiledBinding IsVisible, 
+                                               Converter={StaticResource BoolToDoubleConverter}, 
+                                               ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
+                                    <Panel Width="48" Height="48" Margin="8"
+                                           VerticalAlignment="Top"
+                                           DockPanel.Dock="Left">
+                                        <icons:MaterialIcon Width="NaN" Height="NaN"
+
+                                                            Kind="Folder"
+                                                            VerticalAlignment="Stretch"
+                                                            HorizontalAlignment="Stretch" />
+
+                                        <ContentControl Content="{CompiledBinding AdditionalIconKind}"
+                                                        ContentTemplate="{StaticResource BrowserItemDecorationTemplate}" />
+                                    </Panel>
+
+                                    <StackPanel Margin="0,8,8,8" DockPanel.Dock="Right">
                                         <StackPanel.Styles>
                                             <Style Selector="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -147,7 +221,7 @@
     <!-- Browser view -->
     <RecyclingElementFactory x:Key="BrowserViewTemplate">
         <RecyclingElementFactory.Templates>
-            <DataTemplate DataType="viewModel:LocalFilesBrowserContentViewModel" x:Key="GridView">
+            <DataTemplate DataType="browser:LocalFilesBrowserContentViewModel" x:Key="GridView">
                 <controls:SelectingItemRepeater Name="PART_ItemRepeater"
                                                 Margin="16"
                                                 VerticalCacheLength="2"
@@ -166,7 +240,7 @@
                     </controls:SelectingItemRepeater.Layout>
                     
                     <controls:SelectingItemRepeater.KeyBindings>
-                        <KeyBinding Gesture="Enter" />
+                        <KeyBinding Gesture="Enter"/>
                     </controls:SelectingItemRepeater.KeyBindings>
                 </controls:SelectingItemRepeater>
             </DataTemplate>
@@ -178,9 +252,8 @@
         <RecyclingElementFactory.Templates>
             <DataTemplate x:Key="Properties" DataType="sidesheet:PropertiesSidesheetViewModel">
                 <StackPanel>
-                    <TextBlock Classes="Headline5" Text="Properties"/>
-                    <ContentPresenter Content="{CompiledBinding Properties}">
-                        <ContentPresenter.DataTemplates>
+                    <ContentControl Content="{CompiledBinding Properties}">
+                        <ContentControl.DataTemplates>
                             <DataTemplate DataType="properties:CommonFileSystemProperties">
                                 <StackPanel Margin="0,8">
                                     <TextBlock Classes="Subtitle1" Text="{CompiledBinding Name}"/>
@@ -188,8 +261,8 @@
                                     <TextBlock Text="{CompiledBinding ActualSize, Converter={StaticResource StringFormat}, ConverterParameter='Actual size: {0}'}"/>
                                 </StackPanel>
                             </DataTemplate>
-                        </ContentPresenter.DataTemplates>
-                    </ContentPresenter>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
                     
                     <StackPanel Margin="0, 24" >
                         <TextBlock Text="This feature is not ready!"/>

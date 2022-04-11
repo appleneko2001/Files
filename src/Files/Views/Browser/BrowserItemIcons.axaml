@@ -3,10 +3,10 @@
                     
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                     xmlns:icons1="clr-namespace:Material.Icons;assembly=Material.Icons"
-                    xmlns:models="clr-namespace:Files.Views.Models">
+                    xmlns:viewModels="clr-namespace:Files.ViewModels">
     <RecyclingElementFactory x:Key="ContextMenuIconFactory">
         <RecyclingElementFactory.Templates>
-            <DataTemplate DataType="models:MaterialIconViewModel" x:Key="MaterialIcon">
+            <DataTemplate DataType="viewModels:MaterialIconViewModel" x:Key="MaterialIcon">
                 <icons:MaterialIcon Width="16" Height="16"
                                     Kind="{CompiledBinding Kind}"
                                     Foreground="{DynamicResource MaterialDesignBody}"/>

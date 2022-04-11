@@ -12,6 +12,6 @@ namespace Files.Services.Watchers
         public bool IsWorkAbnormally;
 
         public string Entry;
-        public DriveInfo DriveInfo;
+        public DriveInfo? DriveInfo;
     }
 }

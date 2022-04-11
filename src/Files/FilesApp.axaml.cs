@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Files.Commands;
 using Files.Services;
+using Files.Services.Android;
 using Files.Services.Platform;
 using Files.Views;
 
@@ -99,6 +100,7 @@ namespace Files
             CommandsBackend.Initiate(this);
             PreviewManagerBackend.Initiate(this);
             ContextMenuBackend.Initiate(this);
+            AndroidDebugBackend.Initiate(this);
         }
 
         private void RelayCommandOnExceptionOccurred(object sender, OnExecutionOccurExceptionEventArgs e)

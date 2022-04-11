@@ -7,16 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avalonia" Version="0.10.999-cibuild0017822-beta" />
-      <PackageReference Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0017822-beta" />
+      <PackageReference Include="Avalonia" Version="0.10.13" />
+      <PackageReference Include="Avalonia.Diagnostics" Version="0.10.13" />
       <PackageReference Include="FileSignatures" Version="4.2.0" />
-      <PackageReference Include="Material.Avalonia" Version="2.5.0.65-nightly" />
+      <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.87-nightly" />
       <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Assets" />
-      <Folder Include="Enums" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,6 +31,10 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**\*" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Files.Adb\Files.Adb.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using Avalonia;
+using Avalonia.Input;
 using Files.Commands;
 using Files.Services.Platform;
-using Files.Views.Models;
-using Files.Views.Models.Browser.Files.Local;
+using Files.ViewModels;
+using Files.ViewModels.Browser.Files;
+using Files.ViewModels.Browser.Files.Local;
 using Material.Dialog;
 using Material.Dialog.Enums;
 
@@ -23,9 +28,11 @@ namespace Files.Services
         {
             _appInstance = app;
             app.ApplicationInitializationCompleted += OnApplicationInitializationCompletedHandler;
+
+            CopyItemsToClipboardCommand = new ExtendedRelayCommand(OnExecuteCopyItemsToClipboardCommand);
             
             ExecuteApplicationCommand = new(OnExecuteApplicationCommand, mayExecute: MayExecuteApplicationCommand);
-            OpenFileViaPlatformCommand = new ExtendedRelayCommand(OnExecuteOpenFileViaPlatformCommand);
+            OpenFileViaPlatformCommand = new ExtendedRelayCommand(OnExecuteOpenFileViaPlatformCommand, mayExecute: MayExecuteOpenFileViaPlatformCommand);
             ShowOpenFileWithDialogCommand = new ExtendedRelayCommand(OnExecuteShowOpenWithDialogCommand,
                 mayExecute: MayExecuteShowOpenWithDialogCommand);
 
@@ -115,12 +122,49 @@ namespace Files.Services
         
         public ExtendedRelayCommand OpenFileViaPlatformCommand { get; }
         
+        private bool MayExecuteOpenFileViaPlatformCommand(object arg)
+        {
+            return arg is FileItemViewModel model && !_nativeCommands.IsExecutableApplication(model.FullPath);
+        }
+        
         private void OnExecuteOpenFileViaPlatformCommand(object obj)
         {
             if(obj is not FileItemViewModel model)
                 return;
             
             _nativeCommands.LetPlatformHandleThisFile(model.FullPath);
+        }
+        
+        
+        // Copy selected files and folders path to clipboard
+        
+        public ExtendedRelayCommand CopyItemsToClipboardCommand { get; }
+
+        private void OnExecuteCopyItemsToClipboardCommand(object arg)
+        {
+            var dataObject = new DataObject();
+            
+            switch (arg)
+            {
+                case FileSystemItemViewModel singleVm:
+                    dataObject.Set("SelectedItems", 
+                        new List<object>{singleVm}.ToImmutableList());
+                    break;
+                
+                case IReadOnlyList<object> multiSelectVm:
+                    if (multiSelectVm.Any(item => item is not FileSystemItemViewModel))
+                        throw new InvalidCastException();
+
+                    dataObject.Set("SelectedItems", multiSelectVm);
+                    break;
+                
+                default:
+                    return;
+            }
+            
+            dataObject.Set("Operation", "Copy");
+            
+            Application.Current!.Clipboard?.SetDataObjectAsync(dataObject);
         }
         
         
@@ -135,7 +179,7 @@ namespace Files.Services
             return arg is FolderItemViewModel;
         }
 
-        private void OnExecuteOpenFolderInCurrentViewCommand(object obj)
+        private void OnExecuteOpenFolderInCurrentViewCommand(object? obj)
         {
             var command = FolderItemViewModel.OpenFolderCommand;
             
@@ -278,6 +322,7 @@ namespace Files.Services
         // Avalonia property
         public ExtendedRelayCommand ShowPropertiesCommand { get; }
         
+        // TODO: Properties interface implement
         private bool MayExecuteShowPropertiesCommand(object arg)
         {
             return arg is FolderItemViewModel or FileItemViewModel;

@@ -157,7 +157,7 @@ namespace Files.Windows.Services
                             DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok),
                             Borderless = false,
                             ContentHeader = "Error",
-                            WindowTitle = "Error",
+                            WindowTitle = "Error"
                         });
                         await dialog.Show();
                     });

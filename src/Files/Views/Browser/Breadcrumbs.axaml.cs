@@ -1,6 +1,6 @@
 ﻿using System;
 using Avalonia.Controls;
-using Files.Views.Models.Breadcrumb;
+using Files.ViewModels.Breadcrumb;
 
 namespace Files.Views.Resources
 {

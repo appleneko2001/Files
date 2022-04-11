@@ -5,14 +5,14 @@ using Avalonia;
 using Files.Models.Devices;
 using Files.Services.Platform;
 using Files.Services.Watchers;
-using Files.Views.Models;
+using Files.ViewModels;
 
 namespace Files.Services
 {
     public sealed class AppBackend : ViewModelBase
     {
         private PlatformSpecificBridge? _apiBridge = null;
-        private static AppBackend _instance;
+        private static AppBackend? _instance;
         private static readonly object _get_instance_lock = new();
         
         public static AppBackend Instance

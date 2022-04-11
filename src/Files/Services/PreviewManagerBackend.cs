@@ -11,7 +11,7 @@ using Avalonia.Visuals.Media.Imaging;
 using Files.Collections;
 using Files.Tasks;
 using Files.Tasks.Schedules;
-using Files.Views.Models.Browser.Preview;
+using Files.ViewModels.Browser.Preview;
 
 namespace Files.Services
 {

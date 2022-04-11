@@ -24,13 +24,13 @@ namespace Files.Commands
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             var result = _canExecute == null || _canExecute(parameter);
             return result;
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             try
             {

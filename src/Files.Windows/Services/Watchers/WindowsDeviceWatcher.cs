@@ -103,6 +103,18 @@ namespace Files.Windows.Services.Watchers
                                     Console.WriteLine(info.ToString());
                                 } break;
 
+                                case WinDeviceKind.Port:
+                                {
+                                    var info = Marshal.PtrToStructure<DevBroadcastPort>(lParam);
+                                    
+                                    Console.WriteLine(info.ToString(), info.DeviceName);
+                                    
+                                    OnDeviceChanged?.Invoke(this, new DeviceChangedEventArgs
+                                    {
+                                        Action = DeviceStatus.Connected
+                                    });
+                                } break;
+
                                 case WinDeviceKind.Volume:
                                 {
                                     var info = Marshal.PtrToStructure<DevBroadcastVolume>(lParam);
@@ -130,6 +142,18 @@ namespace Files.Windows.Services.Watchers
                                     var info = Marshal.PtrToStructure<DevBroadcastDeviceInterface>(lParam);
 
                                     Console.WriteLine(info.ToString());
+                                } break;
+                                
+                                case WinDeviceKind.Port:
+                                {
+                                    var info = Marshal.PtrToStructure<DevBroadcastPort>(lParam);
+                                    
+                                    Console.WriteLine(info.ToString());
+
+                                    OnDeviceChanged?.Invoke(this, new DeviceChangedEventArgs
+                                    {
+                                        Action = DeviceStatus.Disconnected
+                                    });
                                 } break;
 
                                 case WinDeviceKind.Volume:

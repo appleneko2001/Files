@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Avalonia.Visuals.Media.Imaging;
-using Files.Views.Models.Browser.Preview;
+using Files.ViewModels.Browser.Preview;
 
 namespace Files.Tasks
 {

@@ -8,12 +8,12 @@ using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Files.Commands;
 using Files.Services.Platform.Interfaces;
-using Files.Views.Models;
-using Files.Views.Models.Browser.Files.Local;
-using Files.Views.Models.Context.Menus;
+using Files.ViewModels;
+using Files.ViewModels.Browser.Files.Local;
+using Files.ViewModels.Context.Menus;
 using Material.Icons;
 
-using ContextMenuItem = Files.Views.Models.Context.Menus.ContextMenuItemViewModel;
+using ContextMenuItem = Files.ViewModels.Context.Menus.ContextMenuItemViewModel;
 
 namespace Files.Services
 {
@@ -29,8 +29,9 @@ namespace Files.Services
         private CommandsBackend _commands;
         private PlatformHotkeyConfiguration? _hotkeyConfigs;
 
-        private ObservableCollection<ContextMenuItemViewModelBase> FolderContextMenus;
-        private ObservableCollection<ContextMenuItemViewModelBase> FileContextMenus;
+        private Dictionary<Type, IEnumerable<ContextMenuItemViewModelBase>> RegisteredContextMenus;
+        
+        private IEnumerable<ContextMenuItemViewModelBase> _essentialContextMenuItems;
 
         // ReSharper disable once SuggestBaseTypeForParameterInConstructor
         private ContextMenuBackend(FilesApp app)
@@ -44,11 +45,18 @@ namespace Files.Services
 
             _commands = CommandsBackend.Instance;
 
-            FolderContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFolderContextMenus());
-            FileContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFileContextMenus());
+            _essentialContextMenuItems = InitiatePostEssentialMenus();
+
+            RegisteredContextMenus = new Dictionary<Type, IEnumerable<ContextMenuItemViewModelBase>>();
+
+            //FolderContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFolderContextMenus());
+            //FileContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFileContextMenus());
             
-            AddOrModifyResource(app.Resources, FolderContextMenuResourceName, FolderContextMenus);
-            AddOrModifyResource(app.Resources, FileContextMenuResourceName, FileContextMenus);
+            //AddOrModifyResource(app.Resources, FolderContextMenuResourceName, FolderContextMenus);
+            //AddOrModifyResource(app.Resources, FileContextMenuResourceName, FileContextMenus);
+            
+            RegisteredContextMenus.Add(typeof(FileItemViewModel), InitiateFileContextMenus());
+            RegisteredContextMenus.Add(typeof(FolderItemViewModel), InitiateFolderContextMenus());
         }
 
         public static void Initiate(FilesApp app)
@@ -70,10 +78,8 @@ namespace Files.Services
                 new ContextMenuItem("Open", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.OpenFileViaPlatformCommand, KeyGesture.Parse("Enter")),
                 new ContextMenuItem("Open with ...", new MaterialIconViewModel(MaterialIconKind.Launch), _commands.ShowOpenFileWithDialogCommand),
                 
-                ContextMenuItem.Separator,
+                ContextMenuItem.Separator
             };
-
-            list.AddRange(InitiatePostEssentialMenus());
 
             return list;
         }
@@ -94,15 +100,10 @@ namespace Files.Services
                     {
                         if(o is FolderItemViewModel folder)
                             featureSupport1.OpenFolderWithNativeExplorer(folder.FullPath);
-                    }, mayExecute: delegate(object o)
-                    {
-                        return o is FolderItemViewModel;
-                    })));
+                    }, mayExecute: o => o is FolderItemViewModel)));
             }
             
             list.Add(ContextMenuItem.Separator);
-
-            list.AddRange(InitiatePostEssentialMenus());
 
             return list;
         }
@@ -114,7 +115,8 @@ namespace Files.Services
                 new ContextMenuItemViewModel("Cut", new MaterialIconViewModel(MaterialIconKind.ContentCut),
                     keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Cut)),
                 new ContextMenuItemViewModel("Copy", new MaterialIconViewModel(MaterialIconKind.ContentCopy),
-                    keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Copy)),
+                    keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Copy),
+                    command: CommandsBackend.Instance.CopyItemsToClipboardCommand),
                 new ContextMenuItemViewModel("Paste", new MaterialIconViewModel(MaterialIconKind.ContentPaste),
                     keyGesture: GetFirstDefaultGesture(_hotkeyConfigs?.Paste)),
                 ContextMenuItem.Separator,
@@ -124,6 +126,25 @@ namespace Files.Services
                 ContextMenuItem.Separator,
                 new ContextMenuItemViewModel("Properties", command: _commands.ShowPropertiesCommand)
             };
+
+            return list;
+        }
+        
+        public IEnumerable<ContextMenuItemViewModelBase> GetContextMenu(ItemViewModelBase item)
+        {
+            var list = new List<ContextMenuItemViewModelBase>();
+
+            // TODO
+            foreach (var pair in RegisteredContextMenus)
+            {
+                // .Where(pair => pair.Key == item.GetType())
+                var type = item.GetType();
+                
+                if(pair.Key == type)
+                    list.AddRange(pair.Value);
+            }
+            
+            list.AddRange(_essentialContextMenuItems);
 
             return list;
         }

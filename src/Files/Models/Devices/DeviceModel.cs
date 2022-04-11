@@ -13,6 +13,9 @@ namespace Files.Models.Devices
         }
 
         private DeviceInfo _deviceInfo;
+
+        public string Serial => _deviceInfo.Serial;
+        
         public string Name => _deviceInfo.Name;
 
         public abstract bool IsRemovable { get; }

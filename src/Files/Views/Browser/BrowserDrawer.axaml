@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:storage="clr-namespace:Files.Views.Models.Storage"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-                    xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+                    xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+                    xmlns:storage="clr-namespace:Files.ViewModels.Storage">
     
     <DataTemplate DataType="storage:StorageEntryViewModel" x:Key="BrowserDrawerStorageEntryTemplate">
         <Panel Margin="0,0,4,0">

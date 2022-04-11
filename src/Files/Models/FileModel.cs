@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Files.Views.Models;
 
 namespace Files.Models
 {

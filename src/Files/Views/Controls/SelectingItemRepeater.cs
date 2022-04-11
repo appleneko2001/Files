@@ -9,6 +9,7 @@ using Avalonia.Controls.Selection;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using Files.Views.Controls.Events;
 
 namespace Files.Views.Controls
@@ -19,12 +20,14 @@ namespace Files.Views.Controls
             RoutedEvent.Register<SelectingItemRepeater, SelectionChangedEventArgs>(
                 "SelectionChanged",
                 RoutingStrategies.Bubble);
+
         public event EventHandler<SelectionChangedEventArgs> SelectionChanged
         {
             add => AddHandler(SelectionChangedEvent, value);
             remove => RemoveHandler(SelectionChangedEvent, value);
-        } 
-        public event EventHandler<AdditionalEventArgs> DoubleTappedItemEvent; 
+        }
+
+        public event EventHandler<AdditionalEventArgs> DoubleTappedItemEvent;
 
         private readonly SelectionModel<object?> _selection = new()
         {
@@ -39,9 +42,9 @@ namespace Files.Views.Controls
             _selection.LostSelection += OnSelectionLostSelection;
             _selection.SelectionChanged += OnSelectionSelectionChanged;
             _selection.SourceReset += OnSelectionSourceReset;
-            
+
             DoubleTapped += OnDoubleTapped;
-            
+
             base.OnAttachedToLogicalTree(e);
         }
 
@@ -51,9 +54,9 @@ namespace Files.Views.Controls
             _selection.LostSelection -= OnSelectionLostSelection;
             _selection.SelectionChanged -= OnSelectionSelectionChanged;
             _selection.SourceReset -= OnSelectionSourceReset;
-            
+
             DoubleTapped -= OnDoubleTapped;
-            
+
             base.OnDetachedFromLogicalTree(e);
         }
 
@@ -63,10 +66,10 @@ namespace Files.Views.Controls
             {
                 Selection.Source = Items as IEnumerable<object?>;
             }
-            
+
             base.OnPropertyChanged(change);
         }
-        
+
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             var child = GetChildBySource(e.Source);
@@ -76,6 +79,7 @@ namespace Files.Views.Controls
                 base.OnPointerPressed(e);
                 return;
             }
+
             var prop = e.GetCurrentPoint(child).Properties;
 
             if (child is not ContentControl)
@@ -127,33 +131,38 @@ namespace Files.Views.Controls
                 else
                 {
                     // Single select
+
+                    bool IsSelected(IVisual visual) => Selection.SelectedItems.Contains(child.DataContext);
                     
-                    if (!ctrl)
+                    if (!ctrl && prop.IsLeftButtonPressed)
                     {
                         Selection.Clear();
                 
                         Selection.SelectedItem = child.DataContext;
                     }
-                    else if(!prop.IsRightButtonPressed)
+                    else if (!IsSelected(child) && prop.IsRightButtonPressed || !prop.IsRightButtonPressed)
                     {
                         // keep multiselect and pick more by clicking 
+                        /*
                         var itemsCast = new List<object>(Items.Cast<object>());
 
-                        int index = 0;
-                        foreach (var o in itemsCast)
+                        var index = 0;
+                        foreach (var target in itemsCast.Select(o => 
+                                     ReferenceEquals(o, child.DataContext) ? index : -1))
                         {
-                            var target = ReferenceEquals(o, child.DataContext) ? index : -1;
                             index++;
                             
                             if(target == -1)
                                 continue;
 
                             var isSelected = Selection.IsSelected(target);
+                            
                             if(isSelected)
                                 Selection.Deselect(target);
                             else
                                 Selection.Select(target);
-                        }
+                        }*/
+                        Selection.SelectedItem = child.DataContext;
                     }
                 }
             }
@@ -172,16 +181,16 @@ namespace Files.Views.Controls
             menu.DataContext = Selection.SelectedItem;
             menu.Open();
         }
-        
-        private void OnDoubleTapped(object sender, TappedEventArgs e)
+
+        private void OnDoubleTapped(object sender, RoutedEventArgs e)
         {
             e.Handled = false;
-            
+
             var child = GetChildBySource(e.Source);
-            if (child == null) 
+            if (child == null)
                 return;
 
-            DoubleTappedItemEvent?.Invoke(this,  new AdditionalEventArgs
+            DoubleTappedItemEvent?.Invoke(this, new AdditionalEventArgs
             {
                 Argument = child,
                 Source = e
@@ -192,23 +201,23 @@ namespace Files.Views.Controls
         {
             if (source is not Visual s)
                 return null;
-            
+
             var target = s;
             while (true)
             {
                 if (target == null)
                     throw new ArgumentNullException(nameof(target));
-                    
+
                 if (!Equals(target.Parent, this))
                     target = target.Parent as Visual;
-                    
+
                 else
                     break;
             }
 
             return target;
         }
-        
+
         private void OnSelectionSelectionChanged(object sender, SelectionModelSelectionChangedEventArgs<object?> e)
         {
             foreach (var item in e.DeselectedItems)
@@ -222,19 +231,19 @@ namespace Files.Views.Controls
                 if (item is ISelectable i)
                     i.IsSelected = true;
             }
-            
-            RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, e.DeselectedItems as IList, e.SelectedItems as IList));
+
+            RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, e.DeselectedItems.ToList(),
+                e.SelectedItems.ToList()));
         }
-        
+
         private void OnSelectionIndexesChanged(object sender, SelectionModelIndexesChangedEventArgs e)
         {
         }
-        
+
         private void OnSelectionLostSelection(object sender, EventArgs e)
         {
-            
         }
-        
+
         private void OnSelectionSourceReset(object sender, EventArgs e)
         {
         }

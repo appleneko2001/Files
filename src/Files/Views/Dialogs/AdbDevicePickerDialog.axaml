@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:android="clr-namespace:Files.ViewModels.Dialogs.Android"
+             xmlns:devices="clr-namespace:Files.ViewModels.Android.Devices"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             
+             MinWidth="360"
+             
+             x:CompileBindings="True"
+             x:DataType="android:AdbDevicePickerViewModel"
+             x:Class="Files.Views.Dialogs.AdbDevicePickerDialog">
+    <StackPanel>
+        <ListBox Items="{Binding Devices}"
+                 SelectedItem="{Binding SelectedDevice, Mode=OneWayToSource}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="devices:AdbDeviceViewModel">
+                    <DockPanel>
+                        <avalonia:MaterialIcon Kind="Android" Width="24" Height="24" Margin="8"/>
+                        <StackPanel DockPanel.Dock="Right">
+                            <TextBlock Classes="Subtitle1" Text="{Binding AdbDeviceInfo.Name}"/>
+                            <TextBlock Text="{Binding AdbDeviceInfo.ConnectionString}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Classes="Flat"
+                Content="Get devices list"
+                
+                Command="{Binding GetDevicesCommand}"/>
+        <Button Classes="Flat" Content="Connect device via Wi-Fi"/>
+    </StackPanel>
+</UserControl>

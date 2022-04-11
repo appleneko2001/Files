@@ -2,10 +2,10 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-        xmlns:models="clr-namespace:Files.Views.Models"
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-        xmlns:additional="clr-namespace:Files.Views.Additional">
-    <Style Selector="Button.TabButton" x:DataType="models:BrowserWindowTabViewModel">
+        xmlns:additional="clr-namespace:Files.Views.Additional"
+        xmlns:viewModels="clr-namespace:Files.ViewModels">
+    <Style Selector="Button.TabButton" x:DataType="viewModels:BrowserWindowTabViewModel">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Background" Value="Transparent" />

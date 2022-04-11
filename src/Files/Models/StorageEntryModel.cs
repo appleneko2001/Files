@@ -1,4 +1,5 @@
-﻿using Files.Models.Devices.Enums;
+﻿using System;
+using Files.Models.Devices.Enums;
 
 namespace Files.Models
 {

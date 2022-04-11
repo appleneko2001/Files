@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Selection;
 using Avalonia.LogicalTree;
 using Files.Services;
+using Files.ViewModels;
+using Files.ViewModels.Browser;
+using Files.ViewModels.Browser.Files.Local;
+using Files.ViewModels.Browser.Preview;
+using Files.ViewModels.Context.Menus;
 using Files.Views.Controls;
 using Files.Views.Controls.Events;
-using Files.Views.Models;
-using Files.Views.Models.Browser.Files.Local;
-using Files.Views.Models.Browser.Preview;
-using Files.Views.Models.Context.Menus;
 
 // ReSharper disable ConvertTypeCheckPatternToNullCheck
 // ReSharper disable MergeIntoPattern
@@ -53,38 +56,18 @@ namespace Files.Views.Browser
             if (Application.Current is not Application app)
                 return;
 
-            switch (menu.DataContext)
+            if (menu.DataContext is not ItemViewModelBase vm)
+                return;
+            
+            var menus = ContextMenuBackend.Instance.GetContextMenu(vm);
+            var parameter = GetSelectedItemOrItems(_currentItems.Selection);
+            
+            foreach (var model in menus)
             {
-                case FileItemViewModel:
-                {
-                    var menus = app.Resources[ContextMenuBackend.FileContextMenuResourceName] as
-                        ObservableCollection<ContextMenuItemViewModelBase>;
-                    var parameter = GetSelectedItemOrItems(_currentItems.Selection);
-                    
-                    foreach (var model in menus)
-                    {
-                        model.CommandParameter = parameter;
-                    }
-
-                    menu.Items = menus;
-                } break;
-                case FolderItemViewModel:
-                {
-                    var menus = app.Resources[ContextMenuBackend.FolderContextMenuResourceName] as
-                        ObservableCollection<ContextMenuItemViewModelBase>;
-                    var parameter = GetSelectedItemOrItems(_currentItems.Selection);
-                    
-                    foreach (var model in menus)
-                    {
-                        model.CommandParameter = parameter;
-                    }
-                    
-                    menu.Items = menus;
-                } break;
-                default:
-                    menu.Items = menu.Items;
-                    break;
+                model.CommandParameter = parameter;
             }
+            
+            menu.Items = menus;
         }
 
         private object? GetSelectedItemOrItems(object value)
@@ -109,6 +92,11 @@ namespace Files.Views.Browser
             _prevItems = _currentItems;
             
             _currentItems = itemRepeater;
+
+            if (itemRepeater.DataContext is not BrowserContentViewModelBase vm)
+                return;
+            
+            UpdateSidesheetProperties(vm.Parent, e.AddedItems);
         }
 
         private void SelectingItemRepeater_OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
@@ -118,6 +106,21 @@ namespace Files.Views.Browser
             _prevItems = _currentItems;
             
             _currentItems = itemRepeater;
+        }
+
+        private void UpdateSidesheetProperties(BrowserWindowTabViewModel vm, IList? items)
+        {
+            if (!vm.IsSidesheetVisible)
+                return;
+
+            if (items is null)
+                return;
+            
+            foreach (var item in items)
+            {
+                vm.ShowPropertiesSidesheet((item as ItemViewModelBase)!);
+                break;
+            }
         }
     }
 }

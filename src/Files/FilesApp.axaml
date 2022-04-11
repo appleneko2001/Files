@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+
              x:Class="Files.FilesApp">
     <Application.Resources>
         <ResourceDictionary>
@@ -14,8 +15,7 @@
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>
-        <!-- Material.Avalonia style library -->
-        <StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml"/>
+        <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="LightBlue" SecondaryColor="Pink"/>
         
         <!-- Material.Icons library -->
         <StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml"/>

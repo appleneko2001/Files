@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="Files/FilesApp.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Styles/Browser/BrowserTab.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Styles/Browser/BrowserView.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Styles/Overrides.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Browser/BrowserDrawer.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Browser/BrowserView.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/BrowserWindow.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Dialogs/AdbDevicePickerDialog.axaml" value="Files.Linux/Files.Linux.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
