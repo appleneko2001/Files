@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Files.Models.Android;
 using Files.Services;
 using Files.Services.Android;
-using Files.ViewModels.Android.Devices;
 using Files.ViewModels.Dialogs.Android;
 using Files.ViewModels.Storage;
 using Files.Views;
@@ -20,7 +20,7 @@ namespace Files.ViewModels
 {
     public class BrowserWindowViewModel : ViewModelBase
     {
-        private static RelayCommand _newTabCommand = new(delegate(object o)
+        private static RelayCommand _newTabCommand = new(delegate(object? o)
         {
             if (o is BrowserWindowViewModel vm)
             {
@@ -28,7 +28,7 @@ namespace Files.ViewModels
             }
         });
 
-        private static RelayCommand _fullscreenCommand = new(delegate(object o)
+        private static RelayCommand _fullscreenCommand = new(delegate(object? o)
         {
             if (o is Window w)
             {
@@ -36,7 +36,7 @@ namespace Files.ViewModels
             }
         });
 
-        private static RelayCommand _connectPhoneViaAdbCommand = new(delegate(object o)
+        private static RelayCommand _connectPhoneViaAdbCommand = new(delegate(object? o)
         {
             if (o is BrowserWindowViewModel vm)
             {
@@ -199,7 +199,7 @@ namespace Files.ViewModels
                 StorageDevices.Add(new StorageDeviceViewModel(this, device));
             }
 
-            RaiseOnPropertyChangedThroughUiThread(nameof(StorageDevices));
+            OnPropertyChanged(nameof(StorageDevices));
         }
 
         private void OnApplicationInitializationCompleted(object sender, EventArgs e)
