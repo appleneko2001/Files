@@ -75,6 +75,8 @@ namespace Files.ViewModels
                 if (_selectedTab != null)
                     _selectedTab.IsSelected = false;
 
+                value ??= TabsViewModel.Last();
+
                 _selectedTab = value;
                 OnPropertyChanged();
 
@@ -101,6 +103,8 @@ namespace Files.ViewModels
             _tabsViewModel = new ObservableCollection<BrowserWindowTabViewModel>();
 
             OnExecuteNewTabAndSelectCommand(this);
+            
+            ParentWindow.Closed += OnWindowClosed;
 
             if (Application.Current is FilesApp app)
             {
@@ -200,25 +204,51 @@ namespace Files.ViewModels
 
         private void OnApplicationInitializationCompleted(object sender, EventArgs e)
         {
-            if (sender is FilesApp app)
+            if (sender is not FilesApp app)
+                return;
+            
+            app.ApplicationInitializationCompleted -= OnApplicationInitializationCompleted;
+            app.ApplicationShutdown += OnApplicationShutdown;
+
+            UseHandlerWhileWindowAlive();
+
+            RefreshStorageDevicesCollection();
+        }
+
+        private void UseHandlerWhileWindowAlive()
+        {
+            TabsViewModel.CollectionChanged += OnTabsViewModelCollectionChanged;
+            
+            _context.DeviceCollectionChanged += OnContextDeviceCollectionChanged;
+        }
+
+        private void OnTabsViewModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (var tab in TabsViewModel)
             {
-                app.ApplicationInitializationCompleted -= OnApplicationInitializationCompleted;
-                app.ApplicationShutdown += OnApplicationShutdown;
-
-                _context.DeviceCollectionChanged += OnContextDeviceCollectionChanged;
-
-                RefreshStorageDevicesCollection();
+                tab.CloseTabCommand.RaiseCanExecuteChanged();
+                break;
             }
+        }
+
+        private void RemoveHandlerAfterWindowClosed()
+        {
+            TabsViewModel.CollectionChanged -= OnTabsViewModelCollectionChanged;
+            
+            _context.DeviceCollectionChanged -= OnContextDeviceCollectionChanged;
+        }
+
+        private void OnWindowClosed(object sender, EventArgs e)
+        {
+            RemoveHandlerAfterWindowClosed();
         }
 
         private void OnApplicationShutdown(object sender, EventArgs e)
         {
-            if (sender is FilesApp app)
-            {
-                app.ApplicationShutdown -= OnApplicationShutdown;
-
-                _context.DeviceCollectionChanged -= OnContextDeviceCollectionChanged;
-            }
+            if (sender is not FilesApp app)
+                return;
+            
+            app.ApplicationShutdown -= OnApplicationShutdown;
         }
 
         private void OnContextDeviceCollectionChanged(object sender, EventArgs e)
