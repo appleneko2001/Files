@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Files.Adb.Enums;
+using Files.Adb.Models.Sync;
 using Files.Extensions;
 using Files.Models.Android.Enums;
 
@@ -30,7 +32,7 @@ namespace Files.Models.Android.Storages
         
         public bool IsDirectory => Kind == LinuxFileSystemEntryKind.Directory;
         public bool IsSymlink => Kind == LinuxFileSystemEntryKind.Symlink;
-        public bool IsHidden => Name.StartsWith(".");
+        public bool IsHidden => Name?.StartsWith(".") ?? false;
         public bool IsSecured => _isSecured;
 
         public void Parse(string line, string parent)
