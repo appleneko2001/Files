@@ -29,7 +29,7 @@ namespace Files.ViewModels.Browser.Files.Local
             FullPath = di.FullName;
         }
         
-        public override void TryGetPreview(CancellationToken _cancellationToken = default)
+        public override void TryGetPreview(CancellationToken cancellationToken = default)
         {
             // TODO: folder previews
         }

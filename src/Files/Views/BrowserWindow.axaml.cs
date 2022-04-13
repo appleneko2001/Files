@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,7 +16,6 @@ using Avalonia.Visuals.Media.Imaging;
 using Files.Extensions;
 using Files.Services;
 using Files.ViewModels;
-using Material.Colors;
 using Material.Styles;
 using Material.Styles.Controls;
 using Material.Styles.Themes;
@@ -45,20 +43,6 @@ namespace Files.Views
         private Bitmap? _previousBackgroundBitmap;
 
         private readonly MaterialTheme materialTheme;
-
-        /*private static readonly BundledTheme _lightTheme = new()
-        {
-            BaseTheme = BaseThemeMode.Light,
-            PrimaryColor = PrimaryColor.Indigo,
-            SecondaryColor = SecondaryColor.Pink
-        };
-
-        private static readonly BundledTheme _darkTheme = new()
-        {
-            BaseTheme = BaseThemeMode.Dark,
-            PrimaryColor = PrimaryColor.LightBlue,
-            SecondaryColor = SecondaryColor.Pink
-        };*/
 
         private static readonly ITheme _lightTheme = Theme.Create(Theme.Light, Colors.SlateBlue, Colors.Pink);
 

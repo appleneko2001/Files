@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Windows.Input;
 using Files.Services;
@@ -9,8 +10,10 @@ namespace Files.ViewModels.Browser.Files.Local
 {
     public class FileItemViewModel : LocalFileSystemItemViewModel, IRequestPreviewable
     {
-        private static ICommand _onClickCommand = new RelayCommand(delegate(object o)
+        private static ICommand _onClickCommand = new RelayCommand(delegate(object? o)
         {
+            if (o == null) throw new ArgumentNullException(nameof(o));
+            
             if (o is not FileItemViewModel file)
                 return;
 

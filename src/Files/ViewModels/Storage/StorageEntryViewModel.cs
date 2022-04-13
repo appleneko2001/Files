@@ -77,11 +77,11 @@ namespace Files.ViewModels.Storage
 
         private static void ExecuteOpenStorageEntryOnCurrentTabCommand(object? arg)
         {
-            if (arg is StorageEntryViewModel entry)
-            {
-                var tab = entry.Parent.Parent.SelectedTab;
-                tab.Open(new Uri(entry.Entry));
-            }
+            if (arg is not StorageEntryViewModel entry)
+                return;
+            
+            var tab = entry.Parent.Parent.SelectedTab;
+            tab.Open(new Uri(entry.Entry));
         }
     }
 }

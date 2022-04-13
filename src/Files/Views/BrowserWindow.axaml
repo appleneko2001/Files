@@ -66,9 +66,9 @@
                               ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
                 <Button Classes="Flat"
                         Content="Connect to..."
-                        
+
                         Command="{Binding ConnectPhoneViaAdbCommand}"
-                        CommandParameter="{Binding }"/>
+                        CommandParameter="{Binding }" />
             </StackPanel>
         </material:NavigationDrawer.LeftDrawerContent>
 
@@ -84,7 +84,7 @@
                         <DataTemplate DataType="viewModels:BrowserWindowTabViewModel">
                             <material:SideSheet Name="PART_SideSheetControl" Background="{x:Null}"
                                                 SideSheetContentTemplate="{StaticResource SideSheetViewTemplate}"
-                                                
+
                                                 SideSheetContent="{Binding Sidesheet}"
                                                 SideSheetHeader="{Binding Sidesheet.Header}"
                                                 SideSheetOpened="{Binding IsSidesheetVisible, Mode=TwoWay}">
