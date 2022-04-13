@@ -6,10 +6,14 @@
         <entry key="Files/FilesApp.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Browser/BrowserTab.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Browser/BrowserView.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Styles/Include.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Overrides.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/BrowserDrawer.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Browser/BrowserTab.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/BrowserView.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Browser/Include.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/BrowserWindow.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Converters/Include.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Dialogs/AdbDevicePickerDialog.axaml" value="Files.Linux/Files.Linux.csproj" />
       </map>
     </option>
