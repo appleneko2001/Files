@@ -19,21 +19,27 @@ namespace Files.ViewModels
 {
     public class BrowserWindowTabViewModel : HeaderViewModelBase, IDisposable
     {
-        private static RelayCommand _selectTabCommand = new RelayCommand(delegate(object o)
-        {
-            if (o is BrowserWindowTabViewModel vm)
+        private static readonly ExtendedRelayCommand _closeTabCommand = 
+            new(delegate(object? o)
             {
-                OnExecuteSelectCommand(vm);
-            }
-        });
+                if (o is BrowserWindowTabViewModel vm)
+                {
+                    if(vm.CloseTabCommand.MayExecute(vm)) 
+                        OnExecuteCloseCommand(vm);
+                    
+                    vm.CloseTabCommand.RaiseMayExecuteChanged();
+                }
+            }, delegate(object? o)
+            {
+                if (o is BrowserWindowTabViewModel vm)
+                {
+                    return vm.Parent.TabsViewModel.Count > 1;
+                }
 
-        private static ExtendedRelayCommand _closeTabCommand = new ExtendedRelayCommand(delegate(object o)
-        {
-            if (o is BrowserWindowTabViewModel vm)
-            {
-                OnExecuteCloseCommand(vm);
-            }
-        });
+                return false;
+            });
+
+        
 
         private bool _shouldDispose;
         private bool _isDisposed;
