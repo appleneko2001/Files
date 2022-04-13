@@ -246,5 +246,25 @@ namespace Files.Models.Android.Storages
                 }
             }
         }
+
+        public void Apply(AdbFileEntry entry)
+        {
+            Name = Path.GetFileName(entry.Path);
+            FullPath = entry.Path;
+
+            if(entry.Mode.HasFlag(UnixFileMode.Regular))
+                Kind |= LinuxFileSystemEntryKind.File;
+            if(entry.Mode.HasFlag(UnixFileMode.Directory))
+                Kind |= LinuxFileSystemEntryKind.Directory;
+            if(entry.Mode.HasFlag(UnixFileMode.SymbolicLink))
+                Kind |= LinuxFileSystemEntryKind.Symlink;
+            if(entry.Mode.HasFlag(UnixFileMode.Character))
+                Kind |= LinuxFileSystemEntryKind.CharacterDevice;
+            if(entry.Mode.HasFlag(UnixFileMode.Block))
+                Kind |= LinuxFileSystemEntryKind.BlockDevice;
+
+            LastModified = entry.DateTime;
+            Size = entry.Size;
+        }
     }
 }

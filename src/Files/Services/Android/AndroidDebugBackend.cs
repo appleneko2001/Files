@@ -6,6 +6,8 @@ using System.Text;
 using Files.Adb;
 using Files.Adb.Extensions;
 using Files.Adb.Models.Connections;
+using Files.Adb.Models.Sync;
+using Files.Adb.Operations;
 using Files.Models.Android.Storages;
 using AdbDeviceModel = Files.Adb.Models.AdbDeviceModel;
 
@@ -209,7 +211,6 @@ namespace Files.Services.Android
             // -l long list
             // -a show hidden files
             // -p put a '/' at the end of each entry
-            // -F show file type /dir *exe @sym |FIFO
             
             // Last line will be exit code with header !!
 
@@ -262,6 +263,38 @@ namespace Files.Services.Android
                         continue;
 
                     yield return model;
+                }
+            }
+        }
+        
+        // TODO: not working
+        public async IAsyncEnumerable<AdbListFilesItemModel?> GetListFilesViaSyncAsync(IAdbConnection conn, string path)
+        {
+            using (var adbStream = _client?.CreateStream())
+            {
+                if(adbStream == null)
+                    yield break;
+
+                await foreach (var item in adbStream
+                                   .SetDevice(conn)
+                                   .UseSyncFeature()
+                                   .UseOperation(new AdbGetFilesListOperation())
+                                   .WithParameter("remotePath", path)
+                                   .PerformOperation())
+                {
+                    if (item == null)
+                        continue;
+
+                    if (item.Result is Exception e)
+                        throw e;
+
+                    if (item.Result is not AdbFileEntry entry)
+                        continue;
+                    
+                    var model = new AdbListFilesItemModel();
+                    model.Apply(entry);
+                        
+                    yield return new AdbListFilesItemModel();
                 }
             }
         }
