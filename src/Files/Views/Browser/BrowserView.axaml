@@ -221,7 +221,7 @@
     <!-- Browser view -->
     <RecyclingElementFactory x:Key="BrowserViewTemplate">
         <RecyclingElementFactory.Templates>
-            <DataTemplate DataType="browser:LocalFilesBrowserContentViewModel" x:Key="GridView">
+            <DataTemplate DataType="browser:BrowserContentViewModelBase" x:Key="GridView">
                 <controls:SelectingItemRepeater Name="PART_ItemRepeater"
                                                 Margin="16"
                                                 VerticalCacheLength="2"
@@ -229,7 +229,7 @@
 
                                                 Items="{CompiledBinding Content}"
                                                 ItemTemplate="{StaticResource BrowserViewGridItemFactory}"
-
+                                                
                                                 DoubleTappedItemEvent="SelectingItemRepeater_OnDoubleTappedItemEvent"
                                                 AttachedToLogicalTree="SelectingItemRepeater_OnAttachedToLogicalTree"
                                                 SelectionChanged="SelectingItemRepeater_OnSelectionChanged">
