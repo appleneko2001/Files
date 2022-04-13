@@ -109,6 +109,14 @@ namespace Files
             }
         }
 
+        private void PostInit()
+        {
+            CommandsBackend.Initiate(this);
+            PreviewManagerBackend.Initiate(this);
+            ContextMenuBackend.Initiate(this);
+            AndroidDebugBackend.Initiate(this);
+        }
+
         private void WhenNoActiveWindowsLeft(object sender, EventArgs e)
         {
             ApplicationShutdown.Invoke(this, EventArgs.Empty);
