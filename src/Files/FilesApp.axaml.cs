@@ -78,8 +78,7 @@ namespace Files
         
         private void PreInit()
         {
-            RelayCommand.ExceptionOccur += RelayCommandOnExceptionOccurred;
-            ExtendedRelayCommand.ExceptionOccur += RelayCommandOnExceptionOccurred;
+            CommandBase.OnErrorHandler += RelayCommandOnExceptionOccurred;
             
             _windowManager = new WindowManagerService();
             WindowManager.WhenNoActiveWindowsLeft += WhenNoActiveWindowsLeft;
@@ -96,15 +95,7 @@ namespace Files
             _context = AppBackend.Instance;
         }
 
-        private void PostInit()
-        {
-            CommandsBackend.Initiate(this);
-            PreviewManagerBackend.Initiate(this);
-            ContextMenuBackend.Initiate(this);
-            AndroidDebugBackend.Initiate(this);
-        }
-
-        private void RelayCommandOnExceptionOccurred(object sender, OnExecutionOccurExceptionEventArgs e)
+        private void RelayCommandOnExceptionOccurred(object sender, ExecutionFailExceptionArgs e)
         {
             PlatformApi?.PopupMessageWindow("Error", e.Exception.Message);
             
@@ -113,7 +104,7 @@ namespace Files
                 //case UriFormatException:
                 //case NotImplementedException:
                 case not null:
-                    e.ShouldKeepAppAlive = true;
+                    e.Handled = true;
                     break;
             }
         }
