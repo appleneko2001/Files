@@ -1,0 +1,60 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewModels="clr-namespace:Files.ViewModels"
+                    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+    <RecyclePool x:Key="BrowserTabsPool"/>
+    
+    <RecyclingElementFactory x:Key="BrowserTabItemTemplate"
+                             RecyclePool="{StaticResource BrowserTabsPool}">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate DataType="viewModels:BrowserWindowTabViewModel"
+                          x:Key="Template">
+                <Panel Name="PART_TabsPanelRoot"
+                       MinWidth="{StaticResource TabMinWidthValue}">
+                    <Panel.Width>
+                        <MultiBinding
+                            Converter="{StaticResource CountToWidthConverter}"
+                            ConverterParameter="{StaticResource GetTabWidthParameter}">
+                            <Binding ElementName="PART_TabsPanelRoot"
+                                     Path="Bounds.Width" />
+                            <CompiledBinding Path="Parent.TabsViewModel.Count" />
+                        </MultiBinding>
+                    </Panel.Width>
+
+                    <DockPanel Margin="8,0,32,0">
+                        <ProgressBar Classes="Circle Circular" Width="16"
+                                     Height="16" Margin="0,0,8,0"
+                                     IsVisible="{Binding !Progress.IsComplete}"
+                                     IsIndeterminate="{Binding Progress.IsIndeterminate}"
+                                     Value="{Binding Progress.Progress}" />
+
+                        <TextBlock Classes="Subtitle2"
+                                   DockPanel.Dock="Right"
+
+                                   FontWeight="Normal"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding Header}"
+                                   Foreground="{DynamicResource MaterialDesignBody}" />
+                    </DockPanel>
+
+                    <Button Classes="Flat"
+                            Margin="4, 0"
+                            Padding="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Close tab"
+                            Content="{materialIcons:MaterialIconExt Close}"
+
+                            Command="{Binding CloseTabCommand}"
+                            CommandParameter="{Binding }"
+                            
+                            IsVisible="{Binding $self.IsEffectivelyEnabled}"
+                            
+                            Foreground="{DynamicResource MaterialDesignBody}"/>
+                </Panel>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
+</ResourceDictionary>
