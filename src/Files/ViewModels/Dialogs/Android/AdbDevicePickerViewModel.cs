@@ -21,19 +21,17 @@ namespace Files.ViewModels.Dialogs.Android
             GetDevicesCommand = new RelayCommand(ExecuteGetDevicesCommand);
         }
 
-        private async void ExecuteGetDevicesCommand(object obj)
+        private async void ExecuteGetDevicesCommand(object? obj)
         {
             Devices.Clear();
-            for (var retry = 0; retry < 5; retry++)
+            
+            Thread.Sleep(1000);
+            
+            await foreach (var device in AndroidDebugBackend.Instance.GetDevicesAsync())
             {
-                await foreach (var device in AndroidDebugBackend.Instance.GetDevicesAsync())
-                {
-                    if(Devices.All(model => device.Connection.GetAdbConnectionString() 
-                                            != model.AdbDeviceInfo.Connection.GetAdbConnectionString()))
-                        Devices.Add(new AdbDeviceViewModel(device));
-                }
-                
-                Thread.Sleep(1000);
+                if(Devices.All(model => device.Connection.GetAdbConnectionString() 
+                                        != model.AdbDeviceInfo.Connection.GetAdbConnectionString()))
+                    Devices.Add(new AdbDeviceViewModel(device));
             }
         }
     }
