@@ -6,13 +6,13 @@ using System.Text;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Input;
-using Files.Commands;
 using Files.Services.Platform;
 using Files.ViewModels;
 using Files.ViewModels.Browser.Files;
 using Files.ViewModels.Browser.Files.Local;
 using Material.Dialog;
 using Material.Dialog.Enums;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.Services
 {

@@ -6,13 +6,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
-using Files.Commands;
 using Files.Services.Platform.Interfaces;
 using Files.ViewModels;
 using Files.ViewModels.Browser.Files.Local;
 using Files.ViewModels.Context.Menus;
 using Material.Icons;
-
+using MinimalMvvm.ViewModels.Commands;
 using ContextMenuItem = Files.ViewModels.Context.Menus.ContextMenuItemViewModel;
 
 namespace Files.Services
