@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using Files.Commands;
+using MinimalMvvm.ViewModels.Commands;
+using MinimalMvvm.ViewModels.Commands.Interfaces;
 
 // ReSharper disable HeapView.BoxingAllocation
 
