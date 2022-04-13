@@ -22,6 +22,7 @@ namespace Files.ViewModels.Breadcrumb
 
         public BrowserWindowTabViewModel Parent => _parent;
         public ObservableCollection<BreadcrumbNodeViewModel> Part => _part;
+        public Uri? FullPath => _fullPath;
         public RelayCommand SubmitEditedPathCommand => _submitEditedPathCommand;
 
         public bool IsInEditMode
