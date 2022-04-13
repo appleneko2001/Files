@@ -1,11 +1,13 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+             xmlns:pathGen="clr-namespace:Files.Views.Converters.Parameters.PathGen"
 
              x:Class="Files.FilesApp">
     <Application.Resources>
         <ResourceDictionary>
             <RecyclePool x:Key="GlobalRecyclePool"/>
+            <pathGen:FolderCardGenRecipe x:Key="FolderCardGenRecipe"/>
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Files/Views/Converters/Include.axaml"/>

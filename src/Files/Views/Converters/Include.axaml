@@ -8,4 +8,5 @@
     <converters:EdgeGradientOpacityMaskGenerator x:Key="EdgeGradientOpacityMaskGenerator"/>
     <converters:CountToWidthConverter x:Key="CountToWidthConverter"/>
     <converters:StringFormatConverter x:Key="StringFormat"/>
+    <converters:PathBuilderConverter x:Key="PathBuilder"/>
 </ResourceDictionary>
