@@ -53,6 +53,8 @@ namespace Files.ViewModels.Browser
                     var isFile = model.Kind.HasFlag(LinuxFileSystemEntryKind.File);
                     var isDir = model.Kind.HasFlag(LinuxFileSystemEntryKind.Directory);
 
+                    // Fix symlink tracker
+                    
                     /* if (model.IsSymlink && !(isDir || isFile))
                     {
                         await foreach (var e in adb.GetListFilesAsync(conn, linkTarget!)
