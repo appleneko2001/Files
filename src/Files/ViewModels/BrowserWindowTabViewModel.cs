@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Files.ViewModels.Breadcrumb;
@@ -11,6 +12,7 @@ using Files.ViewModels.Browser.Files.Local;
 using Files.ViewModels.Browser.Properties;
 using Files.ViewModels.Browser.Sidesheet;
 using Files.ViewModels.Progress;
+using Files.ViewModels.Tracker;
 using Material.Dialog;
 using Material.Dialog.Enums;
 using MinimalMvvm.ViewModels.Commands;
@@ -39,7 +41,16 @@ namespace Files.ViewModels
                 return false;
             });
 
-        
+        private static readonly ICommand _goBackCommand = new RelayCommand(delegate(object? o)
+        {
+            if (o is not BrowserWindowTabViewModel vm)
+                return;
+
+            if (!vm._tracker.TryPopAndSetCurrent(out var record))
+                return;
+
+            vm.Open(record!.Uri, false);
+        }, o => o is BrowserWindowTabViewModel vm && vm._tracker.CanGoBack);
 
         private bool _shouldDispose;
         private bool _isDisposed;
@@ -50,14 +61,17 @@ namespace Files.ViewModels
         private BreadcrumbPathViewModel _breadcrumbPath;
         private BrowserContentViewModelBase _content;
         private BreadcrumbNodeEditViewModel _breadcrumbNodeEdit;
-        private CancellationTokenSource _ctx;
+
+        private BrowseTrackerViewModel _tracker;
+        
+        private CancellationTokenSource? _ctx;
 
         private ProgressViewModel _progress;
         private SidesheetViewModelBase _sidesheet;
 
         public ExtendedRelayCommand CloseTabCommand => _closeTabCommand;
 
-        public RelayCommand SelectTabCommand => _selectTabCommand;
+        public ICommand GoBackCommand => _goBackCommand;
 
         public BrowserContentViewModelBase Content
         {
@@ -120,6 +134,10 @@ namespace Files.ViewModels
             _breadcrumbPath = new BreadcrumbPathViewModel(this);
             _breadcrumbNodeEdit = new BreadcrumbNodeEditViewModel(_breadcrumbPath, 0);
 
+            _tracker = new BrowseTrackerViewModel();
+
+            UseHandler();
+            
             Open(path == null
                 ? new Uri(Environment.GetFolderPath(Environment.SpecialFolder.Desktop))
                 : path);
@@ -130,15 +148,18 @@ namespace Files.ViewModels
             vm.Parent.CloseTab(vm);
         }
 
-        private static void OnExecuteSelectCommand(BrowserWindowTabViewModel vm)
+        public void Open(Uri path, bool record = true)
         {
-            vm.Parent.SelectedTab = vm;
-        }
-
-        public void Open(Uri path)
-        {
-            if (_ctx != null)
-                _ctx.Cancel();
+            if (record)
+            {
+                if (_breadcrumbPath.Part.Count > 0)
+                {
+                    var prevPath = _breadcrumbPath.FullPath;
+                    _tracker.PushAndSetCurrent(new BrowseTrackerRecordElement(prevPath));
+                }
+            }
+            
+            _ctx?.Cancel();
 
             _ctx = new CancellationTokenSource();
             var p = new ProgressViewModel();
@@ -154,7 +175,7 @@ namespace Files.ViewModels
 
                 if (Content == null)
                     throw new NotSupportedException("The given path is not supported.");
-                
+
                 Content.LoadContent(path, _ctx.Token);
                 Content.RequestPreviews(_ctx.Token);
             }).ContinueWith(delegate(Task task)
@@ -240,18 +261,30 @@ namespace Files.ViewModels
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-
-            _ctx.Dispose();
+            
+            _ctx?.Dispose();
         }
 
         internal void AfterClose()
         {
-            _ctx.Cancel();
+            _ctx?.Cancel();
+            
+            RemoveHandler();
 
             if (!_progress.IsComplete)
                 _shouldDispose = true;
             else
                 Dispose();
+        }
+
+        private void UseHandler()
+        {
+            
+        }
+
+        private void RemoveHandler()
+        {
+            
         }
     }
 }
