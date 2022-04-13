@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Files.Commands;
 using Files.Services;
 using Files.Services.Android;
 using Files.Services.Platform;
@@ -12,6 +11,8 @@ using Files.Views;
 using Material.Colors;
 using Material.Styles.Themes;
 using Material.Styles.Themes.Base;
+using MinimalMvvm.Events;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files
 {
