@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using Files.Adb.Operations.Results;
 
 namespace Files.Adb.Operations
 {
     public interface IAdbOperation
     {
-        void Run(IDictionary<string, object> args);
+        public AdbStream AdbStream { get; set; }
+        
+        IAsyncEnumerable<AdbOperationResult> RunAsync(IDictionary<string, object> args,
+            CancellationToken cancellationToken);
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Files.Adb.Apis;
+using Files.Adb.Builders;
 using Files.Adb.Models;
 using Files.Adb.Models.Connections;
 
@@ -127,6 +129,23 @@ namespace Files.Adb.Extensions
             
             return Encoding.GetString(buffer);
         }
+        
+        public static async Task<string> ReadStringAsync(this AdbStream stream)
+        {
+            var baseStream = stream.GetStream();
+            
+            var lenHex = new byte[4];
+            
+            await baseStream.ReadAsync(lenHex);
+
+            var lenStr = Encoding.ASCII.GetString(lenHex);
+            var size = int.Parse(lenStr, NumberStyles.HexNumber);
+            
+            var buffer = new byte[size];
+            await baseStream.ReadAsync(buffer);
+            
+            return Encoding.GetString(buffer);
+        }
 
         public static StreamReader ToStreamReader(this AdbStream stream, bool skipSize = false)
         {
@@ -143,6 +162,13 @@ namespace Files.Adb.Extensions
             var size = int.Parse(lenStr, NumberStyles.HexNumber);
 
             return new StreamReader(baseStream, Encoding);
+        }
+        
+        public static AdbSyncBuilder UseSyncFeature(this AdbStream stream)
+        {
+            SingleCommand(stream, AdbRequestStrings.Sync);
+            
+            return new AdbSyncBuilder(stream);
         }
 
         private static void SingleCommand(AdbStream stream, string command)

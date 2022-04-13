@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Files.Adb
 {
@@ -41,21 +42,46 @@ namespace Files.Adb
             return ar.IsCompleted && _socket.Connected;
         }
 
-        public int Send(string request)
+        public int Send(string request) =>
+            SendAsync(request).Result;
+        
+        public int SendSyncRequest(string header, string msg) =>
+            SendSyncRequestAsync(header, msg).Result;
+        
+        public async Task<int> SendAsync(string request)
         {
-            // Append length bytes to the start of the data bytes
-            
             var data = _encoding.GetBytes(request);
-            var length = data.Length;
-            var lengthBytes = Encoding.ASCII.GetBytes(length.ToString("X4"));
-            var lengthBytesCount = lengthBytes.Length;
-            var lengthBytesOffset = 0;
             
-            var buffer = new byte[length + lengthBytesCount];
-            Array.Copy(lengthBytes, 0, buffer, lengthBytesOffset, lengthBytesCount);
-            Array.Copy(data, 0, buffer, lengthBytesCount, length);
+            return await SendCoreAsync(null, data);
+        }
+        
+        public async Task<int> SendSyncRequestAsync(string header, string msg)
+        {
+            if(header.Length != 4)
+                throw new ArgumentException("Header must be 4 characters long");
             
-            return _socket.Send(buffer);
+            var data = _encoding.GetBytes(msg);
+
+            return await SendCoreAsync(header, data);
+        }
+
+        private async Task<int> SendCoreAsync(string? header, byte[] data)
+        {
+            var basicEnc = Encoding.ASCII;
+
+            var collection = new List<ArraySegment<byte>>();
+            
+            if(header != null)
+                collection.Add(basicEnc.GetBytes(header));
+            
+            var len = data.Length;
+            var lenBytes = basicEnc.GetBytes(len.ToString("X4"));
+            
+            collection.Add(lenBytes);
+            
+            collection.Add(data);
+            
+            return await _socket.SendAsync(collection, SocketFlags.None);
         }
 
         public string GetResult() => GetResponseCore(4);

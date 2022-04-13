@@ -42,5 +42,7 @@
         /// command - command to send to device</list>
         /// </summary>
         public static string Exec => "exec:{command}";
+        
+        public static string Sync => "sync:";
     }
 }
