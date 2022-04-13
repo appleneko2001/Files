@@ -32,7 +32,11 @@ namespace Files.Models.Android.Storages
 
         protected override void UpdateEntry(string e)
         {
-            _entry = $"{_connection.GetConnectionUri()}{e}";
+            var basePath = _connection.GetConnectionUri()
+                .ToString()
+                .TrimEnd('/');
+
+            _entry = $"{basePath}{e}";
         }
 
         protected override void UpdateLabel(string l)
