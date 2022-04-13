@@ -4,7 +4,8 @@
         xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:additional="clr-namespace:Files.Views.Additional"
-        xmlns:viewModels="clr-namespace:Files.ViewModels">
+        xmlns:viewModels="clr-namespace:Files.ViewModels"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple">
     <Style Selector="Button.TabButton" x:DataType="viewModels:BrowserWindowTabViewModel">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
@@ -79,6 +80,7 @@
     <!-- Issue: https://github.com/AvaloniaUI/Avalonia/issues/4183 -->
     <!-- PR: https://github.com/AvaloniaUI/Avalonia/pull/6992 -->
     
+    <!--
     <Style Selector="ItemsPresenter#PART_TabItemsPresenter 
                         Panel#PART_TabButtonPanel[(additional|TabButtonAdditional.IsSelected)=true]">
         <Setter Property="ContentControl.Foreground" Value="{DynamicResource PrimaryHueMidBrush}"/>
@@ -88,5 +90,80 @@
                         Panel#PART_TabButtonPanel[(additional|TabButtonAdditional.IsSelected)=true] > Button#PART_TabButton">
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHueMidBrush}"/>
         <Setter Property="BorderThickness" Value="1,1,1,0"/>
+    </Style>-->
+    
+    <Style Selector="ListBox#PART_TabItemsListBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ItemsPresenter Name="PART_ItemsPresenter"
+                                Items="{TemplateBinding Items}"
+                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                ItemTemplate="{TemplateBinding ItemTemplate}"
+                                Margin="{TemplateBinding Padding}"
+                                VirtualizationMode="{TemplateBinding VirtualizationMode}" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="ListBox#PART_TabItemsListBox > ListBoxItem">
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="CornerRadius" Value="8,8,0,0"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="TextBlock.FontWeight" Value="Medium" />
+        <Setter Property="TextBlock.FontSize" Value="14" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth2"/>
+        <Setter Property="assists:ButtonAssist.HoverColor" Value="{DynamicResource MaterialDesignBody}"/>
+        <Setter Property="BorderThickness" Value="1,1,1,0"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignBodyLight}"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_RootBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        assists:ShadowAssist.ShadowDepth="{TemplateBinding assists:ShadowAssist.ShadowDepth}">
+                    <Border Name="PART_InnerBorder"
+                            ClipToBounds="True"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Panel Name="PART_RootPanel">
+                            <ripple:RippleEffect Name="Ripple"
+                                                 Focusable="False"
+                                                 RippleFill="{TemplateBinding Foreground}">
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                            </ripple:RippleEffect>
+                        
+                            <Border Name="PART_SelectedBorder"
+                                    IsHitTestVisible="False"
+                                    Background="{TemplateBinding Foreground}"/>
+                            <Border Name="PART_HoverBorder"
+                                    IsHitTestVisible="False"
+                                    Background="{TemplateBinding assists:ButtonAssist.HoverColor}"/>
+                        </Panel>
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="ListBox#PART_TabItemsListBox > ListBoxItem /template/ Border#PART_SelectedBorder">
+        <Setter Property="Opacity" Value="0"/>
+    </Style>
+    
+    <Style Selector="ListBox#PART_TabItemsListBox > ListBoxItem:selected /template/ Border#PART_SelectedBorder">
+        <Setter Property="Opacity" Value="0.18"/>
+    </Style>
+    
+    <Style Selector="ListBox#PART_TabItemsListBox > ListBoxItem /template/ Border#PART_HoverBorder">
+        <Setter Property="Opacity" Value="0"/>
+    </Style>
+    
+    <Style Selector="ListBox#PART_TabItemsListBox > ListBoxItem:pointerover /template/ Border#PART_HoverBorder">
+        <Setter Property="Opacity" Value="0.08"/>
     </Style>
 </Styles>

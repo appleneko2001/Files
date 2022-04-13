@@ -158,7 +158,71 @@
                                 PointerPressed="RootAppBar_OnPointerPressed">
                 <!-- Layout: [*| |Header      |* * *] -->
                 <!-- Layout: [  (Breadcrumbs       )] -->
-                <Panel>
+                <Panel Name="PART_AppbarPanel">
+                    <Panel VerticalAlignment="Top"
+                           ClipToBounds="True">
+                        <!-- Tabs panel -->
+                        <Panel Name="PART_TabsPanelRoot"
+                               Margin="80, 8, 0, 0"
+                               Height="36">
+                            <DockPanel HorizontalAlignment="Left"
+                                       Margin="0, 0, 128, 0">
+                                <Button Classes="Flat"
+                                        VerticalAlignment="Stretch"
+                                        Padding="8" Margin="8, 0"
+                                        assist:ShadowAssist.ShadowDepth="CenterDepth2"
+                                        assist:ButtonAssist.CornerRadius="8,8,0,0"
+                                        Content="{icons:MaterialIconExt Plus, Size=20}"
+                                        Command="{Binding NewTabCommand}"
+                                        CommandParameter="{Binding }"
+
+                                        DockPanel.Dock="Right" />
+                                <Border Padding="0">
+                                    <Panel DockPanel.Dock="Right">
+                                        <controls:Scroller Name="PART_ScrollerRoot"
+                                                           ClipToBounds="False"
+
+                                                           AttachedToVisualTree="OnScrollerAttachedToVisualTree"
+                                                           DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
+                                            <controls:Scroller.OpacityMask>
+                                                <MultiBinding
+                                                    Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
+                                                    ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
+                                                    <Binding ElementName="PART_ScrollerRoot" Path="Bounds" />
+                                                    <Binding ElementName="PART_ScrollerRoot"
+                                                             Path="HorizontalScrollBarMaximum" />
+                                                    <Binding ElementName="PART_ScrollerRoot"
+                                                             Path="HorizontalScrollBarValue" />
+                                                </MultiBinding>
+                                            </controls:Scroller.OpacityMask>
+                                            <ListBox Name="PART_TabItemsListBox" ClipToBounds="False"
+                                                     SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
+                                                     Items="{Binding TabsViewModel}"
+
+                                                     ItemTemplate="{StaticResource BrowserTabItemTemplate}"
+
+                                                     PointerPressed="PART_TabItemsListBox_OnPointerPressed"
+                                                     PointerReleased="PART_TabItemsListBox_OnPointerReleased">
+                                                <ListBox.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </ListBox.ItemsPanel>
+                                            </ListBox>
+                                        </controls:Scroller>
+                                    </Panel>
+                                </Border>
+                            </DockPanel>
+                        </Panel>
+                        <!-- FolderCard-like geometry -->
+                        <!--Path Data="{Binding ElementName=PART_AppbarPanel,
+                              Path=Bounds,
+                              Converter={StaticResource PathBuilder},
+                              ConverterParameter={StaticResource FolderCardGenRecipe}}" 
+                              
+                              Fill="{DynamicResource MaterialDesignCardBackground }"/-->
+                    </Panel>
+
                     <Grid ClipToBounds="False"
                           Margin="8,8, 8,0" ZIndex="101"
                           ColumnDefinitions="Auto, 16, *, Auto" RowDefinitions="*, Auto">
@@ -233,104 +297,6 @@
                             </Panel>
                         </DockPanel>
                     </Grid>
-
-                    <Panel Name="PART_TabsPanelRoot"
-                           VerticalAlignment="Top"
-                           Height="48"
-                           Margin="80, 0, 0, 0">
-                        <DockPanel HorizontalAlignment="Left"
-                                   Margin="0, 0, 128, 0">
-                            <Button Classes="Flat"
-                                    Margin="0, 8, 8, 0"
-                                    Padding="8"
-                                    VerticalAlignment="Center"
-                                    Content="{icons:MaterialIconExt Plus}"
-                                    Command="{Binding NewTabCommand}"
-                                    CommandParameter="{Binding }"
-
-                                    DockPanel.Dock="Right" />
-                            <Border ClipToBounds="True"
-                                    Padding="8,8,8,0">
-                                <controls:Scroller Name="PART_ScrollerRoot"
-                                                   ClipToBounds="False"
-
-                                                   DockPanel.Dock="Right"
-                                                   AttachedToVisualTree="OnScrollerAttachedToVisualTree"
-                                                   DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
-                                    <controls:Scroller.OpacityMask>
-                                        <MultiBinding Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
-                                                      ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
-                                            <Binding ElementName="PART_ScrollerRoot" Path="Bounds" />
-                                            <Binding ElementName="PART_ScrollerRoot"
-                                                     Path="HorizontalScrollBarMaximum" />
-                                            <Binding ElementName="PART_ScrollerRoot"
-                                                     Path="HorizontalScrollBarValue" />
-                                        </MultiBinding>
-                                    </controls:Scroller.OpacityMask>
-
-                                    <ItemsPresenter Name="PART_TabItemsPresenter"
-                                                    Items="{Binding TabsViewModel}">
-                                        <ItemsPresenter.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Name="HeaderPanel" Orientation="Horizontal" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsPresenter.ItemsPanel>
-                                        <ItemsPresenter.ItemTemplate>
-                                            <DataTemplate DataType="viewModels:BrowserWindowTabViewModel">
-                                                <Panel Name="PART_TabButtonPanel"
-                                                       additional:TabButtonAdditional.IsSelected="{Binding IsSelected, Mode=OneWay}">
-                                                    <Panel.Width>
-                                                        <MultiBinding
-                                                            Converter="{StaticResource CountToWidthConverter}"
-                                                            ConverterParameter="{StaticResource GetTabWidthParameter}">
-                                                            <Binding ElementName="PART_TabsPanelRoot"
-                                                                     Path="Bounds.Width" />
-                                                            <CompiledBinding Path="Parent.TabsViewModel.Count" />
-                                                        </MultiBinding>
-                                                    </Panel.Width>
-
-                                                    <Button Name="PART_TabButton" Classes="TabButton"
-                                                            MinWidth="{StaticResource TabMinWidthValue}"
-                                                            Command="{Binding SelectTabCommand}"
-                                                            CommandParameter="{Binding }">
-                                                        <DockPanel Margin="8,0,32,0">
-                                                            <ProgressBar Classes="Circle Circular" Width="16"
-                                                                         Height="16" Margin="0,0,8,0"
-                                                                         IsVisible="{Binding !Progress.IsComplete}"
-                                                                         IsIndeterminate="{Binding Progress.IsIndeterminate}"
-                                                                         Value="{Binding Progress.Progress}" />
-
-                                                            <TextBlock Classes="Subtitle2"
-                                                                       DockPanel.Dock="Right"
-
-                                                                       FontWeight="Normal"
-                                                                       HorizontalAlignment="Left"
-                                                                       VerticalAlignment="Center"
-                                                                       TextTrimming="CharacterEllipsis"
-                                                                       Text="{Binding Header}"
-                                                                       Foreground="{DynamicResource MaterialDesignBody}" />
-                                                        </DockPanel>
-                                                    </Button>
-
-                                                    <Button Classes="Flat"
-                                                            Margin="8, 0"
-                                                            Padding="4"
-                                                            HorizontalAlignment="Right"
-                                                            VerticalAlignment="Center"
-                                                            ToolTip.Tip="Close tab"
-                                                            Content="{icons:MaterialIconExt Close}"
-
-                                                            Command="{Binding CloseTabCommand}"
-                                                            CommandParameter="{Binding }"
-                                                            Foreground="{DynamicResource MaterialDesignBody}" />
-                                                </Panel>
-                                            </DataTemplate>
-                                        </ItemsPresenter.ItemTemplate>
-                                    </ItemsPresenter>
-                                </controls:Scroller>
-                            </Border>
-                        </DockPanel>
-                    </Panel>
                 </Panel>
             </material:ColorZone>
         </Grid>

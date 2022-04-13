@@ -5,5 +5,6 @@
         <ResourceInclude Source="avares://Files/Views/Browser/BrowserDrawer.axaml"/>
         <ResourceInclude Source="avares://Files/Views/Browser/BrowserView.axaml"/>
         <ResourceInclude Source="avares://Files/Views/Browser/Breadcrumbs.axaml"/>
+        <ResourceInclude Source="avares://Files/Views/Browser/BrowserTab.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
