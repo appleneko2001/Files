@@ -2,8 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Web;
 using Avalonia.Threading;
-using Files.Commands;
 using Files.Extensions;
+using MinimalMvvm.ViewModels;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Breadcrumb
 {
@@ -29,7 +30,7 @@ namespace Files.ViewModels.Breadcrumb
             set
             {
                 _isInEditMode = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
                 
                 _editButton?.UpdateStatus();
                 UpdateEditLine();
@@ -42,7 +43,7 @@ namespace Files.ViewModels.Breadcrumb
             set
             {
                 _editLine = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -79,7 +80,7 @@ namespace Files.ViewModels.Breadcrumb
             EditLine = _isInEditMode ? HttpUtility.UrlDecode(_fullPath?.AbsoluteUri) : null;
         }
 
-        private static void OnSubmitEditedPath(object arg)
+        private static void OnSubmitEditedPath(object? arg)
         {
             if (arg is not BreadcrumbPathViewModel vm)
                 return;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Files.Models.Devices;
 using Material.Icons;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Storage
 {

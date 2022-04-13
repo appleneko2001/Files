@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Web;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Files.Commands;
 using Files.ViewModels.Breadcrumb;
 using Files.ViewModels.Browser;
 using Files.ViewModels.Browser.Files.Local;
@@ -14,6 +13,7 @@ using Files.ViewModels.Browser.Sidesheet;
 using Files.ViewModels.Progress;
 using Material.Dialog;
 using Material.Dialog.Enums;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels
 {
@@ -59,7 +59,7 @@ namespace Files.ViewModels
             private set
             {
                 _content = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
             }
         }
 
@@ -74,7 +74,7 @@ namespace Files.ViewModels
             private set
             {
                 _progress = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -84,7 +84,7 @@ namespace Files.ViewModels
             private set
             {
                 _sidesheet = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
             }
         }
 
@@ -94,7 +94,7 @@ namespace Files.ViewModels
             internal set
             {
                 _isSelected = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -104,7 +104,7 @@ namespace Files.ViewModels
             set
             {
                 _isSidesheetVisible = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

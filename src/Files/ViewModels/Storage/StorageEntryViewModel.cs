@@ -1,8 +1,8 @@
 ﻿using System;
-using Files.Commands;
 using Files.Models;
 using Files.Models.Devices.Enums;
 using Material.Icons;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Storage
 {
@@ -44,7 +44,7 @@ namespace Files.ViewModels.Storage
 
         // Static commands -- Unmount
         private static readonly RelayCommand _unmountCommand = new(ExecuteUnmountCommand, CanExecuteUnmountCommand);
-        private static bool CanExecuteUnmountCommand(object arg)
+        private static bool CanExecuteUnmountCommand(object? arg)
         {
             if (arg is StorageEntryViewModel vm)
             {
@@ -54,7 +54,7 @@ namespace Files.ViewModels.Storage
             return false;
         }
 
-        private static void ExecuteUnmountCommand(object obj)
+        private static void ExecuteUnmountCommand(object? obj)
         {
             if (obj is StorageEntryViewModel vm)
             {
@@ -65,7 +65,7 @@ namespace Files.ViewModels.Storage
         private static RelayCommand _openStorageEntryCommand =
             new(ExecuteOpenStorageEntryOnCurrentTabCommand, CanExecuteOpenStorageEntryOnCurrentTabCommand);
 
-        private static bool CanExecuteOpenStorageEntryOnCurrentTabCommand(object arg)
+        private static bool CanExecuteOpenStorageEntryOnCurrentTabCommand(object? arg)
         {
             if (arg is StorageEntryViewModel entry)
             {
@@ -75,7 +75,7 @@ namespace Files.ViewModels.Storage
             return false;
         }
 
-        private static void ExecuteOpenStorageEntryOnCurrentTabCommand(object arg)
+        private static void ExecuteOpenStorageEntryOnCurrentTabCommand(object? arg)
         {
             if (arg is StorageEntryViewModel entry)
             {

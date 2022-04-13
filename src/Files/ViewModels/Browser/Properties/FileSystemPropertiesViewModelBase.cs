@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Files.ViewModels.Interfaces;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Browser.Properties
 {
@@ -13,7 +14,7 @@ namespace Files.ViewModels.Browser.Properties
             protected set
             {
                 _isLoading = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -24,7 +25,7 @@ namespace Files.ViewModels.Browser.Properties
             protected set
             {
                 _name = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -35,7 +36,7 @@ namespace Files.ViewModels.Browser.Properties
             protected set
             {
                 _size = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -46,7 +47,7 @@ namespace Files.ViewModels.Browser.Properties
             protected set
             {
                 _actualSize = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

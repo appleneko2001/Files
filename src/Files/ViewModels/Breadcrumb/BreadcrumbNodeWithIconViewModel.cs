@@ -11,7 +11,7 @@ namespace Files.ViewModels.Breadcrumb
             protected set
             {
                 _iconKind = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
-using Files.Commands;
 using Files.Models.Android.Storages;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Browser.Files.Android
 {
@@ -10,7 +10,7 @@ namespace Files.ViewModels.Browser.Files.Android
         private static readonly RelayCommand _clickCommand = new(ExecuteOpenFolderCommand);
         public static RelayCommand OpenFolderCommand => _clickCommand;
         
-        private static void ExecuteOpenFolderCommand(object obj)
+        private static void ExecuteOpenFolderCommand(object? obj)
         {
             if (obj is AdbFolderItemViewModel vm)
             {

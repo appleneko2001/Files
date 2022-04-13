@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Windows.Input;
-using Files.Commands;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Browser.Files.Local
 {
@@ -13,7 +13,7 @@ namespace Files.ViewModels.Browser.Files.Local
 
         public override bool IsFolder => true;
 
-        private static void ExecuteOpenFolderCommand(object obj)
+        private static void ExecuteOpenFolderCommand(object? obj)
         {
             if (obj is FolderItemViewModel vm)
             {

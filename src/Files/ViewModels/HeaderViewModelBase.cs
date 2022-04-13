@@ -1,4 +1,5 @@
 ﻿using Files.ViewModels.Interfaces;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels
 {
@@ -11,7 +12,7 @@ namespace Files.ViewModels
             protected set
             {
                 _icon = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -22,7 +23,7 @@ namespace Files.ViewModels
             protected set
             {
                 _header = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
     }

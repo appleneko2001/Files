@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using Files.Commands;
 using Files.Services.Android;
 using Files.ViewModels.Android.Devices;
+using MinimalMvvm.ViewModels;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Dialogs.Android
 {

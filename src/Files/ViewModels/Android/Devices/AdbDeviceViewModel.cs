@@ -5,6 +5,7 @@ using Files.Models.Android.Props;
 using Files.Models.Devices;
 using Files.Models.Devices.Enums;
 using Files.Services.Android;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Android.Devices
 {
@@ -29,7 +30,7 @@ namespace Files.ViewModels.Android.Devices
             private set
             {
                 _deviceName = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
             }
         }
 

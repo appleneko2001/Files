@@ -6,6 +6,7 @@ using System.Threading;
 using Avalonia.Threading;
 using Files.Comparers;
 using Files.Extensions;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Browser
 {

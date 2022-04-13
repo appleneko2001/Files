@@ -1,4 +1,5 @@
 ﻿using Files.Adb.Models.Connections;
+using MinimalMvvm.ViewModels;
 using AdbDeviceModel = Files.Adb.Models.AdbDeviceModel;
 
 namespace Files.ViewModels.Android.Devices

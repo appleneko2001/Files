@@ -17,7 +17,7 @@ namespace Files.ViewModels.Browser.Sidesheet
             set
             {
                 _properties = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         

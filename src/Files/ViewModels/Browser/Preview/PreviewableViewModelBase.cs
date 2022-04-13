@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Avalonia;
 using Avalonia.Media.Imaging;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Browser.Preview
 {
@@ -29,7 +30,7 @@ namespace Files.ViewModels.Browser.Preview
             protected set
             {
                 PrivatePreviewInstance = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using Files.ViewModels.Browser;
 using Material.Icons;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels
 {
@@ -29,7 +30,7 @@ namespace Files.ViewModels
             protected set
             {
                 _name = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -40,7 +41,7 @@ namespace Files.ViewModels
             protected set
             {
                 _displayName = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -51,7 +52,7 @@ namespace Files.ViewModels
             protected set
             {
                 _isVisible = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -62,7 +63,7 @@ namespace Files.ViewModels
             protected set
             {
                 _isReadonly = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -73,7 +74,7 @@ namespace Files.ViewModels
             protected set
             {
                 _additionalIconKind = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -84,7 +85,7 @@ namespace Files.ViewModels
             set
             {
                 _isSelected = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

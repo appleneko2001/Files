@@ -1,4 +1,6 @@
-﻿namespace Files.ViewModels.Progress
+﻿using MinimalMvvm.ViewModels;
+
+namespace Files.ViewModels.Progress
 {
     public class ProgressViewModel : ViewModelBase
     {
@@ -12,14 +14,14 @@
         public void SetCompleted()
         {
             _isComplete = true;
-            RaiseOnPropertyChanged(nameof(IsComplete));
+            OnPropertyChanged(nameof(IsComplete));
         }
 
         public void SetProgress(double? p)
         {
             _progress = p;
-            RaiseOnPropertyChanged(nameof(IsIndeterminate));
-            RaiseOnPropertyChanged(nameof(Progress));
+            OnPropertyChanged(nameof(IsIndeterminate));
+            OnPropertyChanged(nameof(Progress));
         }
     }
 }

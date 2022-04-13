@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Windows.Input;
-using Files.Commands;
 using Files.Services;
 using Files.ViewModels.Browser.Preview;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Browser.Files.Local
 {
@@ -48,8 +48,8 @@ namespace Files.ViewModels.Browser.Files.Local
         private void OnCompleteGetPreviewTask(PreviewableViewModelBase model)
         {
             _previewViewModel = model;
-            RaiseOnPropertyChanged(nameof(Preview));
-            RaiseOnPropertyChanged(nameof(IsPreviewReady));
+            OnPropertyChanged(nameof(Preview));
+            OnPropertyChanged(nameof(IsPreviewReady));
         }
     }
 }

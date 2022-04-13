@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml.Templates;
-using Files.Commands;
 using Files.Models.Android;
 using Files.Services;
 using Files.Services.Android;
@@ -15,6 +13,8 @@ using Files.Views;
 using Files.Views.Dialogs;
 using Material.Dialog;
 using Material.Dialog.Enums;
+using MinimalMvvm.ViewModels;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels
 {
@@ -76,7 +76,7 @@ namespace Files.ViewModels
                     _selectedTab.IsSelected = false;
 
                 _selectedTab = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
 
                 if (value != null)
                     value.IsSelected = true;
@@ -89,7 +89,7 @@ namespace Files.ViewModels
             set
             {
                 _isNavigationDrawerOpen = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

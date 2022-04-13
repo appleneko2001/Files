@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Context.Menus
 {
@@ -12,7 +13,7 @@ namespace Files.ViewModels.Context.Menus
             set
             {
                 _commandParameter = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         

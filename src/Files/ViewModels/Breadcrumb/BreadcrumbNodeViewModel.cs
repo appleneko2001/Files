@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Breadcrumb
 {
@@ -34,17 +35,17 @@ namespace Files.ViewModels.Breadcrumb
             protected set
             {
                 _header = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
             }
         }
-        
+
         public int Index 
         {
             get => _index;
             protected set
             {
                 _index = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
             }
         }
         
@@ -54,7 +55,7 @@ namespace Files.ViewModels.Breadcrumb
             protected set
             {
                 _path = value;
-                RaiseOnPropertyChangedThroughUiThread();
+                OnPropertyChanged();
             }
         }
 

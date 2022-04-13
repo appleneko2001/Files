@@ -11,7 +11,7 @@ namespace Files.ViewModels.Browser.Files
             protected set
             {
                 _fullPath = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
@@ -23,7 +23,7 @@ namespace Files.ViewModels.Browser.Files
             protected set
             {
                 _size = value;
-                RaiseOnPropertyChanged();
+                OnPropertyChanged();
             }
         }
         
