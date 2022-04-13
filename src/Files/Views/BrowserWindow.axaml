@@ -109,8 +109,13 @@
                                 -->
                                 <Panel>
                                     <ScrollViewer>
+
+                                        <!-- Browser content -->
                                         <ContentControl Content="{Binding Content}"
-                                                        ContentTemplate="{StaticResource BrowserViewTemplate}" />
+                                                        ContentTemplate="{StaticResource BrowserViewTemplate}"
+
+                                                        Background="Transparent"
+                                                        PointerPressed="OnPointerPressed_BrowserContent" />
                                     </ScrollViewer>
                                     <material:Card Name="PART_BrowserProgressBarContainer"
                                                    VerticalAlignment="Top"

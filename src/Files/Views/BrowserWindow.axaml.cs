@@ -287,5 +287,61 @@ namespace Files.Views
                 brush.Opacity = _backgroundBrightness;
             }
         }
+
+        private void PART_TabItemsListBox_OnPointerReleased(object sender, PointerReleasedEventArgs e)
+        {
+
+        }
+
+        private void PART_TabItemsListBox_OnPointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            if(sender is not ListBox listBox)
+                return;
+
+            var point = e.Pointer.Captured;
+
+            var pointerInfo = e.GetCurrentPoint(point);
+
+            if (pointerInfo.Properties.IsMiddleButtonPressed)
+            {
+                // Close the tab by middle button click.
+                if (point is not IControl control)
+                    return;
+
+                if (control.DataContext is not BrowserWindowTabViewModel vm)
+                    return;
+                
+                vm.CloseTabCommand.Execute(vm);
+            }
+        }
+
+        private void OnPointerPressed_BrowserContent(object sender, PointerPressedEventArgs e)
+        {
+            if(sender is not Control c)
+                return;
+
+            var point = e.GetCurrentPoint(c);
+            
+            // TODO: Improve UX
+            
+            // Pressing mouse back button
+            if (point.Properties.IsXButton1Pressed)
+            {
+                if (c.DataContext is not BrowserWindowTabViewModel vm)
+                    return;
+                
+                vm.GoBackCommand.Execute(vm);
+                // Go to previous folder
+            }
+            
+            // Pressing mouse forward button
+            if (point.Properties.IsXButton2Pressed)
+            {
+                if (c.DataContext is not BrowserWindowTabViewModel vm)
+                    return;
+                
+                // Go to next folder
+            }
+        }
     }
 }
