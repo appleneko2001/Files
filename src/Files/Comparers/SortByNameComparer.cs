@@ -22,13 +22,12 @@ namespace Files.Comparers
                     return y switch
                     {
                         FileSystemItemViewModel yFsItem => xFsItem.IsFolder && yFsItem.IsFolder || !IsFolderFirst
-                            ? string.Compare(xFsItem.Name, yFsItem.Name,
-                                StringComparison.Ordinal)
+                            ? CompareByName(xFsItem, yFsItem)
                             : xFsItem.IsFolder
                                 ? -1
                                 : yFsItem.IsFolder
                                     ? 1
-                                    : string.Compare(xFsItem.Name, yFsItem.Name, StringComparison.Ordinal),
+                                    : CompareByName(xFsItem, yFsItem),
                         _ => -1
                     };
 
@@ -49,5 +48,8 @@ namespace Files.Comparers
 
             return 0;
         }
+        
+        private static int CompareByName(ItemViewModelBase x, ItemViewModelBase y) => 
+            string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase);
     }
 }
