@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Files.ViewModels.Browser.Files.Android;
 using Material.Icons;
 
 namespace Files.ViewModels.Browser.Files.Local
