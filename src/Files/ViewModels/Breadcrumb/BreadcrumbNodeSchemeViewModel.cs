@@ -48,5 +48,10 @@ namespace Files.ViewModels.Breadcrumb
                 } break;
             }
         }
+        
+        public override void Click()
+        {
+            // ignored
+        }
     }
 }
