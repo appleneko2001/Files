@@ -176,15 +176,17 @@ namespace Files.Services
         
         private bool MayExecuteOpenFolderInCurrentViewCommand(object arg)
         {
-            return arg is FolderItemViewModel;
+            return arg is FileSystemItemViewModel vm &&
+                   vm.IsFolder;
         }
 
         private void OnExecuteOpenFolderInCurrentViewCommand(object? obj)
         {
-            var command = FolderItemViewModel.OpenFolderCommand;
+            if (obj is not FileSystemItemViewModel vm)
+                return;
             
-            if(command.CanExecute(obj))
-                command.Execute(obj);
+            if(vm.IsFolder)
+                vm.Parent.Parent.Open(new Uri(vm.FullPath));
         }
 
         #endregion
@@ -195,15 +197,19 @@ namespace Files.Services
         
         private bool MayExecuteOpenFolderInNewWindowCommand(object arg)
         {
-            return arg is FolderItemViewModel;
+            return arg is FileSystemItemViewModel vm &&
+                   vm.IsFolder;
         }
 
         private void OnExecuteOpenFolderInNewWindowCommand(object obj)
         {
-            if (obj is not FolderItemViewModel folder)
+            if (obj is not FileSystemItemViewModel vm)
+                return;
+
+            if (!vm.IsFolder)
                 return;
             
-            var window = _appInstance.CreateBrowserWindow(new Uri(folder.FullPath));
+            var window = _appInstance.CreateBrowserWindow(new Uri(vm.FullPath));
             window.Show();
         }
 
