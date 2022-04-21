@@ -50,9 +50,6 @@ namespace Files.ViewModels.Browser
 
         public abstract void LoadContent(Uri uri, CancellationToken _cancellationToken = default);
 
-        public abstract void RequestPreviews(CancellationToken _cancellationToken = default);
-        
-        
         protected void AddItem(ItemViewModelBase item) => Content.SortAdd(_comparer, item);
 
         protected void AddItemOnUiThread(ItemViewModelBase item)

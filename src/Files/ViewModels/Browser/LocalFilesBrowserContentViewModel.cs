@@ -25,19 +25,6 @@ namespace Files.ViewModels.Browser
             EnumerateDirectoryAndFillCollection(di, _cancellationToken);
         }
 
-        public override void RequestPreviews(CancellationToken _cancellationToken = default)
-        {
-            /*
-            foreach (var item in Content)
-            {
-                _cancellationToken.ThrowIfCancellationRequested();
-                
-                if(item is FileItemViewModel file)
-                    file.TryGetPreview(_cancellationToken);
-            }
-            */
-        }
-
         private void EnumerateDirectoryAndFillCollection(DirectoryInfo di, CancellationToken _cancellationToken = default)
         {
             const int maxBulkCount = 32;

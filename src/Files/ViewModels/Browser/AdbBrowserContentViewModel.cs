@@ -84,10 +84,5 @@ namespace Files.ViewModels.Browser
                 }
             }
         }
-
-        public override void RequestPreviews(CancellationToken _cancellationToken = default)
-        {
-            // TODO: Implement this feature
-        }
     }
 }

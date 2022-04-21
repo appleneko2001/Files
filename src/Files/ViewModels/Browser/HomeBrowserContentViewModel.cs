@@ -13,10 +13,5 @@ namespace Files.ViewModels.Browser
         {
             throw new NotImplementedException();
         }
-
-        public override void RequestPreviews(CancellationToken _cancellationToken = default)
-        {
-            // TODO: ¯\_(ツ)_/¯
-        }
     }
 }
