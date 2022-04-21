@@ -124,15 +124,6 @@ namespace Files.ViewModels
 
         public void Open(Uri path, bool record = true)
         {
-            if (record)
-            {
-                if (_breadcrumbPath.Part.Count > 0)
-                {
-                    var prevPath = _breadcrumbPath.FullPath;
-                    _tracker.PushAndSetCurrent(new BrowseTrackerRecordElement(prevPath));
-                }
-            }
-            
             _ctx?.Cancel();
 
             _ctx = new CancellationTokenSource();
@@ -148,8 +139,15 @@ namespace Files.ViewModels
                 Content = CreateView(path);
 
                 if (Content == null)
-                    throw new NotSupportedException("The given path is not supported.");
+                    throw new NotSupportedException($"The protocol {path.Scheme} is not supported at this moment.");
 
+                OnTrackerStackChanged(this, EventArgs.Empty);
+                
+                if (record)
+                {
+                    _tracker.PushAndSetCurrent(new BrowseTrackerRecordElement(path));
+                }
+                
                 Content.LoadContent(path, _ctx.Token);
             }).ContinueWith(delegate(Task task)
             {
@@ -257,12 +255,23 @@ namespace Files.ViewModels
 
         private void UseHandler()
         {
-            
+            _tracker.ObservableStack.CollectionChanged += OnTrackerStackChanged;
+        }
+
+        private void OnTrackerStackChanged(object sender, EventArgs e)
+        {
+            Dispatcher.UIThread.InvokeAsync(delegate
+            {
+                _goBackCommand.RaiseCanExecuteChanged();
+                _goForwardCommand.RaiseCanExecuteChanged();
+
+                OnPropertyChanged(nameof(GoBackList));
+            });
         }
 
         private void RemoveHandler()
         {
-            
+            _tracker.ObservableStack.CollectionChanged -= OnTrackerStackChanged;
         }
     }
 }
