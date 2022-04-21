@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Selection;
@@ -9,11 +8,10 @@ using Avalonia.LogicalTree;
 using Files.Services;
 using Files.ViewModels;
 using Files.ViewModels.Browser;
-using Files.ViewModels.Browser.Files.Local;
 using Files.ViewModels.Browser.Preview;
-using Files.ViewModels.Context.Menus;
 using Files.Views.Controls;
 using Files.Views.Controls.Events;
+using Material.Styles.Controls;
 
 // ReSharper disable ConvertTypeCheckPatternToNullCheck
 // ReSharper disable MergeIntoPattern
@@ -96,7 +94,6 @@ namespace Files.Views.Browser
         {
             if (sender is not CustomItemRepeater itemRepeater)
                 return;
-            _prevItems = _currentItems;
             
             _currentItems = itemRepeater;
 
@@ -110,7 +107,6 @@ namespace Files.Views.Browser
         {
             if (sender is not CustomItemRepeater itemRepeater)
                 return;
-            _prevItems = _currentItems;
             
             _currentItems = itemRepeater;
         }
