@@ -134,7 +134,10 @@ namespace Files.ViewModels
             {
                 p.SetProgress(null);
 
-                _breadcrumbPath.ApplyPath(path);
+                BreadcrumbPath.ApplyPath(path);
+                
+                // Unbind events
+                Content?.Dispose();
 
                 Content = CreateView(path);
 
