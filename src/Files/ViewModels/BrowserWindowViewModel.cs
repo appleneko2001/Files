@@ -102,8 +102,6 @@ namespace Files.ViewModels
             _storageDevices = new ObservableCollection<StorageDeviceViewModel>();
             _tabsViewModel = new ObservableCollection<BrowserWindowTabViewModel>();
 
-            OnExecuteNewTabAndSelectCommand(this);
-            
             ParentWindow.Closed += OnWindowClosed;
 
             if (Application.Current is FilesApp app)
@@ -116,6 +114,16 @@ namespace Files.ViewModels
 
                 app.ApplicationInitializationCompleted += OnApplicationInitializationCompleted;
             }
+        }
+
+        public void OnStartup(Uri? startupUri)
+        {
+            var startTab = GetFirstOrCreateNewTab();
+            
+            if (startupUri == null)
+                return;
+            
+            startTab.Open(startupUri, false);
         }
 
         private static void OnExecuteNewTabAndSelectCommand(BrowserWindowViewModel vm)
@@ -200,6 +208,16 @@ namespace Files.ViewModels
             }
 
             OnPropertyChanged(nameof(StorageDevices));
+        }
+        
+        private BrowserWindowTabViewModel GetFirstOrCreateNewTab()
+        {
+            if (TabsViewModel.Count == 0)
+            {
+                OnExecuteNewTabAndSelectCommand(this);
+            }
+
+            return TabsViewModel.First();
         }
 
         private void OnApplicationInitializationCompleted(object sender, EventArgs e)

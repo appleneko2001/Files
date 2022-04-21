@@ -77,9 +77,8 @@ namespace Files.Views
                 materialTheme.CurrentTheme = _darkTheme;
                 //_paletteHelper.SetTheme(_darkTheme.GetTheme());
             }
-
-            if (startUri is not null)
-                _context.SelectedTab.Open(startUri);
+            
+            _context.OnStartup(startUri);
         }
 
         protected override void HandleWindowStateChanged(WindowState state)
