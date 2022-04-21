@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Avalonia.Input;
 using Files.Adb;
 using Files.Adb.Extensions;
 using Files.Adb.Models.Connections;
 using Files.Adb.Models.Sync;
 using Files.Adb.Operations;
 using Files.Models.Android.Storages;
+using Files.ViewModels;
+using Files.ViewModels.Browser.Files.Android;
+using Files.ViewModels.Context.Menus;
+using Material.Icons;
 using AdbDeviceModel = Files.Adb.Models.AdbDeviceModel;
+using ContextMenuItem = Files.ViewModels.Context.Menus.ContextMenuItemViewModel;
 
 namespace Files.Services.Android
 {
@@ -76,10 +82,39 @@ namespace Files.Services.Android
                 Console.WriteLine("Starting ADB daemon...");
                 Process.Start(_adbPath, $"-P {port} start-server");
             }
+
+            ContextMenuBackend
+                .RegisterContextMenuItems<AdbFileSystemItemViewModel>(InitiateFolderContextMenu());
+            ContextMenuBackend
+                .RegisterContextMenuItems<AdbFileSystemItemViewModel>(InitiateContextMenuForAdbService());
             
             app.ApplicationShutdown += OnApplicationShutdown;
             
             AppBackend.Instance.DeviceCollectionChanged += OnDeviceCollectionChanged;
+        }
+        
+        private IEnumerable<ContextMenuItemViewModelBase> InitiateFolderContextMenu()
+        {
+            var commands = CommandsBackend.Instance;
+            
+            var list = new List<ContextMenuItemViewModelBase>
+            {
+                new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"), command: commands.OpenFolderInCurrentViewCommand),
+                //new ContextMenuItemViewModel("Open folder in new tab"),
+                new ContextMenuItem("Open folder in new window", command: commands.OpenFolderInNewWindowCommand)
+            };
+
+            return list;
+        }
+
+        private IEnumerable<ContextMenuItemViewModelBase> InitiateContextMenuForAdbService()
+        {
+            var list = new List<ContextMenuItemViewModelBase>
+            {
+                new ContextMenuItem("Pull", new MaterialIconViewModel(MaterialIconKind.Android))
+            };
+
+            return list;
         }
 
         private void OnDeviceCollectionChanged(object sender, EventArgs e)
@@ -104,7 +139,6 @@ namespace Files.Services.Android
             }
         }
 
-        // TODO: Pass serial number or ip address
         public async IAsyncEnumerable<KeyValuePair<string, string>> GetPropertiesAsync(IAdbConnection conn,
             string? startWith = null)
         {
@@ -206,7 +240,6 @@ namespace Files.Services.Android
             }
         }
 
-        // TODO: Pass serial number or ip address
         public async IAsyncEnumerable<AdbListFilesItemModel?> GetListFilesAsync(IAdbConnection conn, string path)
         {
             // -l long list
