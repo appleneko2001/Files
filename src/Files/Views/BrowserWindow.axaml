@@ -172,51 +172,45 @@
                                Height="36">
                             <DockPanel HorizontalAlignment="Left"
                                        Margin="0, 0, 128, 0">
-                                <Button Classes="Flat"
-                                        VerticalAlignment="Stretch"
-                                        Padding="8" Margin="8, 0"
-                                        assist:ShadowAssist.ShadowDepth="CenterDepth2"
-                                        assist:ButtonAssist.CornerRadius="8,8,0,0"
+                                <!-- New tab button -->
+                                <Button Classes="Flat NewTabButton"
                                         Content="{icons:MaterialIconExt Plus, Size=20}"
                                         Command="{Binding NewTabCommand}"
                                         CommandParameter="{Binding }"
 
                                         DockPanel.Dock="Right" />
-                                <Border Padding="0">
-                                    <Panel DockPanel.Dock="Right">
-                                        <controls:Scroller Name="PART_ScrollerRoot"
-                                                           ClipToBounds="False"
+                                
+                                <!-- Tabs -->
+                                <controls:Scroller Name="PART_ScrollerRoot"
 
-                                                           AttachedToVisualTree="OnScrollerAttachedToVisualTree"
-                                                           DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
-                                            <controls:Scroller.OpacityMask>
-                                                <MultiBinding
-                                                    Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
-                                                    ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
-                                                    <Binding ElementName="PART_ScrollerRoot" Path="Bounds" />
-                                                    <Binding ElementName="PART_ScrollerRoot"
-                                                             Path="HorizontalScrollBarMaximum" />
-                                                    <Binding ElementName="PART_ScrollerRoot"
-                                                             Path="HorizontalScrollBarValue" />
-                                                </MultiBinding>
-                                            </controls:Scroller.OpacityMask>
-                                            <ListBox Name="PART_TabItemsListBox" ClipToBounds="False"
-                                                     SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
-                                                     Items="{Binding TabsViewModel}"
+                                                   AttachedToVisualTree="OnScrollerAttachedToVisualTree"
+                                                   DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
+                                    <controls:Scroller.OpacityMask>
+                                        <MultiBinding
+                                            Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
+                                            ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
+                                            <Binding ElementName="PART_ScrollerRoot" Path="Bounds" />
+                                            <Binding ElementName="PART_ScrollerRoot"
+                                                     Path="HorizontalScrollBarMaximum" />
+                                            <Binding ElementName="PART_ScrollerRoot"
+                                                     Path="HorizontalScrollBarValue" />
+                                        </MultiBinding>
+                                    </controls:Scroller.OpacityMask>
+                                    <ListBox Name="PART_TabItemsListBox" ClipToBounds="False"
+                                             SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
+                                             Items="{Binding TabsViewModel}"
 
-                                                     ItemTemplate="{StaticResource BrowserTabItemTemplate}"
+                                             ItemTemplate="{StaticResource BrowserTabItemTemplate}"
 
-                                                     PointerPressed="PART_TabItemsListBox_OnPointerPressed"
-                                                     PointerReleased="PART_TabItemsListBox_OnPointerReleased">
-                                                <ListBox.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
-                                                    </ItemsPanelTemplate>
-                                                </ListBox.ItemsPanel>
-                                            </ListBox>
-                                        </controls:Scroller>
-                                    </Panel>
-                                </Border>
+                                             PointerPressed="PART_TabItemsListBox_OnPointerPressed"
+                                             PointerReleased="PART_TabItemsListBox_OnPointerReleased">
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </controls:Scroller>
                             </DockPanel>
                         </Panel>
                         <!-- FolderCard-like geometry -->
