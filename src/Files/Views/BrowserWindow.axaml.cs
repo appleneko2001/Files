@@ -223,15 +223,13 @@ namespace Files.Views
 
         private void BackgroundDarknessOpacitySlider_OnPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs e)
         {
-            if (e.Property.Name == "Value" && e.NewValue is double value)
-            {
-                _backgroundBrightness = value;
+            if (e.Property.Name != "Value" || e.NewValue is not double value) return;
+            _backgroundBrightness = value;
                 
-                if (Background is not ImageBrush brush)
-                    return;
+            if (Background is not ImageBrush brush)
+                return;
 
-                brush.Opacity = _backgroundBrightness;
-            }
+            brush.Opacity = _backgroundBrightness;
         }
 
         private void PART_TabItemsListBox_OnPointerReleased(object sender, PointerReleasedEventArgs e)
