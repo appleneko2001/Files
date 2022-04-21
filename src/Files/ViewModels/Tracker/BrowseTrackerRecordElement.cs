@@ -11,5 +11,10 @@ namespace Files.ViewModels.Tracker
         {
             _uri = uri;
         }
+
+        public override string ToString()
+        {
+            return _uri.ToString();
+        }
     }
 }
