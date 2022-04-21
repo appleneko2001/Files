@@ -73,6 +73,7 @@ namespace Files.Services.Android
                     return;
                 }
 
+                Console.WriteLine("Starting ADB daemon...");
                 Process.Start(_adbPath, $"-P {port} start-server");
             }
             
