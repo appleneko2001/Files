@@ -58,6 +58,17 @@ namespace Files.Views.Browser
             if (menu.DataContext is not ItemViewModelBase vm)
                 return;
             
+            SetContextMenuOnSelectedItems(menu, vm);
+        }
+
+        private void SetContextMenuOnUnselectedState(ContextMenu menu,
+            BrowserContentViewModelBase content)
+        {
+            menu.Items = ContextMenuBackend.Instance.GetContextMenu(content);
+        }
+
+        private void SetContextMenuOnSelectedItems(ContextMenu menu, ItemViewModelBase vm)
+        {
             var menus = ContextMenuBackend.Instance.GetContextMenu(vm);
             var parameter = GetSelectedItemOrItems(_currentItems.Selection);
             
