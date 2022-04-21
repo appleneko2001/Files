@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,6 +59,7 @@ namespace Files.ViewModels
         }
 
         public BrowserWindowViewModel Parent => _parent;
+
         public BreadcrumbPathViewModel BreadcrumbPath => _breadcrumbPath;
 
         public BreadcrumbNodeEditViewModel BreadcrumbNodeEdit => _breadcrumbNodeEdit;
@@ -252,6 +254,7 @@ namespace Files.ViewModels
 
             if (!_progress?.IsComplete ?? false)
                 _shouldDispose = true;
+            
             else
                 Dispose();
         }
