@@ -241,66 +241,13 @@
                                 Content="{icons:MaterialIconExt Kind=Menu, Size=24}"
                                 Click="NavDrawerButton_OnClick" />
 
-                        <DockPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Margin="16, 8">
-                            <ContentControl Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
+                        <!-- Use browser toolbar template -->
+                        <ContentControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1"
+                                        Content="{Binding SelectedTab}"
+                                        IsVisible="{Binding SelectedTab,
+                                          Converter={x:Static ObjectConverters.IsNotNull}}"
 
-                                            Content="{Binding SelectedTab.BreadcrumbNodeEdit}"
-                                            ContentTemplate="{StaticResource BreadcrumbElementTemplate}" />
-
-                            <Panel Height="26">
-                                <TextBox Classes="Solo"
-                                         BorderBrush="{DynamicResource MaterialDesignBody}"
-
-                                         FontSize="14"
-                                         FontWeight="Light"
-                                         BorderThickness="1"
-                                         Margin="0" Padding="0"
-                                         assist:TextFieldAssist.CornerRadius="32"
-
-                                         Text="{Binding SelectedTab.BreadcrumbPath.EditLine, Mode=TwoWay}"
-                                         IsEnabled="{Binding SelectedTab.BreadcrumbPath.IsInEditMode}"
-                                         IsVisible="{Binding SelectedTab.BreadcrumbPath.IsInEditMode}">
-                                    <TextBox.KeyBindings>
-                                        <KeyBinding
-                                            Command="{Binding SelectedTab.BreadcrumbPath.SubmitEditedPathCommand}"
-                                            CommandParameter="{Binding SelectedTab.BreadcrumbPath}"
-                                            Gesture="Enter" />
-                                    </TextBox.KeyBindings>
-                                    <TextBox.Styles>
-                                        <Style Selector="TextBox.Solo /template/ Grid#PART_InnerRoot">
-                                            <Setter Property="Margin" Value="16, 0" />
-                                        </Style>
-                                    </TextBox.Styles>
-                                </TextBox>
-
-                                <controls:Scroller Name="PART_BreadcrumbScroller"
-                                                   IsEnabled="{Binding !SelectedTab.BreadcrumbPath.IsInEditMode}"
-                                                   IsVisible="{Binding !SelectedTab.BreadcrumbPath.IsInEditMode}"
-                                                   AttachedToVisualTree="OnScrollerAttachedToVisualTree"
-                                                   DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
-                                    <controls:Scroller.OpacityMask>
-                                        <MultiBinding Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
-                                                      ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
-                                            <Binding ElementName="PART_BreadcrumbScroller" Path="Bounds" />
-                                            <Binding ElementName="PART_BreadcrumbScroller"
-                                                     Path="HorizontalScrollBarMaximum" />
-                                            <Binding ElementName="PART_BreadcrumbScroller"
-                                                     Path="HorizontalScrollBarValue" />
-                                        </MultiBinding>
-                                    </controls:Scroller.OpacityMask>
-                                    <ItemsControl Items="{Binding SelectedTab.BreadcrumbPath.Part}"
-                                                  ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                </controls:Scroller>
-                            </Panel>
-                        </DockPanel>
+                                        ContentTemplate="{StaticResource BrowserToolbarTemplate}" />
                     </Grid>
                 </Panel>
             </material:ColorZone>

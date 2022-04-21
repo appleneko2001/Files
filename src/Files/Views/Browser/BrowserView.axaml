@@ -271,4 +271,112 @@
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
+
+    <!-- Browser toolbar -->
+    <RecyclingElementFactory x:Key="BrowserToolbarTemplate">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate DataType="viewModels:BrowserWindowTabViewModel" x:Key="TabViewModel">
+                <DockPanel Margin="16, 8">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                        <Button Name="NavBackButton"
+                                Classes="Flat"
+                                Width="32" Height="32"
+                                CornerRadius="16"
+
+                                Content="{icons:MaterialIconExt Kind=ArrowBack, Size=24}"
+                                Command="{Binding GoBackCommand}"
+                                CommandParameter="{Binding }"
+                                
+                                ContextMenu="{StaticResource BrowserViewGetBackListContextMenu}"/>
+                        
+                        <Button Name="NavForwardButton"
+                                Classes="Flat"
+                                Width="32" Height="32"
+                                CornerRadius="16"
+
+                                Content="{icons:MaterialIconExt Kind=ArrowForward, Size=24}"
+                                Command="{Binding GoForwardCommand}"
+                                CommandParameter="{Binding }" />
+                    </StackPanel>
+                    
+                    <ContentControl Margin="0,0,16,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+
+                                    Content="{Binding BreadcrumbNodeEdit}">
+                        <!-- Recyclable template sucks -->
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate DataType="breadcrumb:BreadcrumbNodeWithIconViewModel">
+                                <Border VerticalAlignment="Center"
+                                        CornerRadius="32" Margin="2,0" BorderThickness="1"
+                                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                                    <Button Classes="Flat" ClipToBounds="True"
+                                            Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
+                                            Command="{Binding ClickCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <icons:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
+                                                                Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
+                                                                Margin="0,0,8,0"/>
+                                            <TextBlock Text="{CompiledBinding Header}"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Border>
+                            </DataTemplate>
+                        </ContentControl.ContentTemplate>
+                    </ContentControl>
+
+                    <Panel Height="26">
+                        <TextBox Classes="Solo"
+                                 BorderBrush="{DynamicResource MaterialDesignBody}"
+
+                                 FontSize="14"
+                                 FontWeight="Light"
+                                 BorderThickness="1"
+                                 Margin="0" Padding="0"
+                                 assists:TextFieldAssist.CornerRadius="32"
+
+                                 Text="{Binding BreadcrumbPath.EditLine, Mode=TwoWay}"
+                                 IsEnabled="{Binding BreadcrumbPath.IsInEditMode}"
+                                 IsVisible="{Binding BreadcrumbPath.IsInEditMode}">
+                            <TextBox.KeyBindings>
+                                <KeyBinding
+                                    Command="{Binding BreadcrumbPath.SubmitEditedPathCommand}"
+                                    CommandParameter="{Binding BreadcrumbPath}"
+                                    Gesture="Enter" />
+                            </TextBox.KeyBindings>
+                            <TextBox.Styles>
+                                <Style Selector="TextBox.Solo /template/ Grid#PART_InnerRoot">
+                                    <Setter Property="Margin" Value="16, 0" />
+                                </Style>
+                            </TextBox.Styles>
+                        </TextBox>
+
+                        <controls1:Scroller Name="PART_BreadcrumbScroller"
+                                           IsEnabled="{Binding !BreadcrumbPath.IsInEditMode}"
+                                           IsVisible="{Binding !BreadcrumbPath.IsInEditMode}"
+                                           AttachedToVisualTree="OnScrollerAttachedToVisualTree"
+                                           DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
+                            <controls1:Scroller.OpacityMask>
+                                <MultiBinding Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
+                                              ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
+                                    <Binding ElementName="PART_BreadcrumbScroller" Path="Bounds" />
+                                    <Binding ElementName="PART_BreadcrumbScroller"
+                                             Path="HorizontalScrollBarMaximum" />
+                                    <Binding ElementName="PART_BreadcrumbScroller"
+                                             Path="HorizontalScrollBarValue" />
+                                </MultiBinding>
+                            </controls1:Scroller.OpacityMask>
+                            
+                            <ItemsRepeater Items="{Binding BreadcrumbPath.Part}"
+                                           ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
+                                <ItemsRepeater.Layout>
+                                    <StackLayout Spacing="4" Orientation="Horizontal"/>
+                                </ItemsRepeater.Layout>
+                            </ItemsRepeater>
+                        </controls1:Scroller>
+                    </Panel>
+                </DockPanel>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
 </ResourceDictionary>
