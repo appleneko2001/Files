@@ -51,9 +51,6 @@ namespace Files.Views.Browser
         {
             if (sender is not ContextMenu menu)
                 return;
-            
-            if (Application.Current is not Application app)
-                return;
 
             if (menu.DataContext is not ItemViewModelBase vm)
                 return;
