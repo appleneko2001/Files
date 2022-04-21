@@ -1,10 +1,10 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:controls="clr-namespace:Files.Views.Controls">
-    <Style Selector="controls|SelectingItemRepeater > Panel#PART_ItemRoot > Border#PART_Selection">
+    <Style Selector="controls|CustomItemRepeater > Panel#PART_ItemRoot > Border#PART_Selection">
         <Setter Property="Opacity" Value="0"/>
     </Style>
     
-    <Style Selector="controls|SelectingItemRepeater > Panel#PART_ItemRoot > Border#PART_Selection:pointerover">
+    <Style Selector="controls|CustomItemRepeater > Panel#PART_ItemRoot > Border#PART_Selection:pointerover">
         <Setter Property="Opacity" Value="{StaticResource ItemViewHovered}"/>
     </Style>
 </Styles>

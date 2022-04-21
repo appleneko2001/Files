@@ -23,8 +23,7 @@ namespace Files.Views.Browser
     // ReSharper disable once UnusedType.Global
     public class BrowserView : ResourceDictionary
     {
-        private SelectingItemRepeater _currentItems;
-        private SelectingItemRepeater _prevItems;
+        private CustomItemRepeater _currentItems;
 
         // ReSharper disable once UnusedMember.Local
         private void SelectingItemRepeater_OnDoubleTappedItemEvent(object sender, AdditionalEventArgs e)
@@ -87,7 +86,7 @@ namespace Files.Views.Browser
 
         private void SelectingItemRepeater_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is not SelectingItemRepeater itemRepeater)
+            if (sender is not CustomItemRepeater itemRepeater)
                 return;
             _prevItems = _currentItems;
             
@@ -101,7 +100,7 @@ namespace Files.Views.Browser
 
         private void SelectingItemRepeater_OnAttachedToLogicalTree(object sender, LogicalTreeAttachmentEventArgs e)
         {
-            if (sender is not SelectingItemRepeater itemRepeater)
+            if (sender is not CustomItemRepeater itemRepeater)
                 return;
             _prevItems = _currentItems;
             
