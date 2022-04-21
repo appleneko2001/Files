@@ -151,7 +151,6 @@ namespace Files.ViewModels
                     throw new NotSupportedException("The given path is not supported.");
 
                 Content.LoadContent(path, _ctx.Token);
-                Content.RequestPreviews(_ctx.Token);
             }).ContinueWith(delegate(Task task)
             {
                 p.SetProgress(1.0);
@@ -234,6 +233,11 @@ namespace Files.ViewModels
 
         public void Dispose()
         {
+            if (_isDisposed)
+                return;
+            
+            _isDisposed = true;
+            
             GC.SuppressFinalize(this);
             
             _ctx?.Dispose();
