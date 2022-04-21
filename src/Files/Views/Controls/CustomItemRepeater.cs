@@ -10,39 +10,30 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
+using Files.ViewModels.Browser;
 using Files.Views.Controls.Events;
 
 namespace Files.Views.Controls
 {
-    public class SelectingItemRepeater : ItemsRepeater
+    public class CustomItemRepeater : ItemsRepeater
     {
-        public static readonly RoutedEvent<SelectionChangedEventArgs> SelectionChangedEvent =
-            RoutedEvent.Register<SelectingItemRepeater, SelectionChangedEventArgs>(
-                "SelectionChanged",
-                RoutingStrategies.Bubble);
+        private SelectionModel<object?>? _selection;
+        public SelectionModel<object?> Selection => _selection ?? throw new NullReferenceException();
+        
+        public event EventHandler<AdditionalEventArgs>? DoubleTappedItemEvent;
 
-        public event EventHandler<SelectionChangedEventArgs> SelectionChanged
+        protected override void OnDataContextChanged(EventArgs e)
         {
-            add => AddHandler(SelectionChangedEvent, value);
-            remove => RemoveHandler(SelectionChangedEvent, value);
+            base.OnDataContextChanged(e);
+
+            if (DataContext is not BrowserContentViewModelBase content)
+                return;
+            
+            _selection = content.Selection;
         }
-
-        public event EventHandler<AdditionalEventArgs> DoubleTappedItemEvent;
-
-        private readonly SelectionModel<object?> _selection = new()
-        {
-            SingleSelect = false
-        };
-
-        public SelectionModel<object?> Selection => _selection;
 
         protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
         {
-            _selection.IndexesChanged += OnSelectionIndexesChanged;
-            _selection.LostSelection += OnSelectionLostSelection;
-            _selection.SelectionChanged += OnSelectionSelectionChanged;
-            _selection.SourceReset += OnSelectionSourceReset;
-
             DoubleTapped += OnDoubleTapped;
 
             base.OnAttachedToLogicalTree(e);
@@ -50,11 +41,6 @@ namespace Files.Views.Controls
 
         protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
         {
-            _selection.IndexesChanged -= OnSelectionIndexesChanged;
-            _selection.LostSelection -= OnSelectionLostSelection;
-            _selection.SelectionChanged -= OnSelectionSelectionChanged;
-            _selection.SourceReset -= OnSelectionSourceReset;
-
             DoubleTapped -= OnDoubleTapped;
 
             base.OnDetachedFromLogicalTree(e);
@@ -216,36 +202,6 @@ namespace Files.Views.Controls
             }
 
             return target;
-        }
-
-        private void OnSelectionSelectionChanged(object sender, SelectionModelSelectionChangedEventArgs<object?> e)
-        {
-            foreach (var item in e.DeselectedItems)
-            {
-                if (item is ISelectable i)
-                    i.IsSelected = false;
-            }
-
-            foreach (var item in e.SelectedItems)
-            {
-                if (item is ISelectable i)
-                    i.IsSelected = true;
-            }
-
-            RaiseEvent(new SelectionChangedEventArgs(SelectionChangedEvent, e.DeselectedItems.ToList(),
-                e.SelectedItems.ToList()));
-        }
-
-        private void OnSelectionIndexesChanged(object sender, SelectionModelIndexesChangedEventArgs e)
-        {
-        }
-
-        private void OnSelectionLostSelection(object sender, EventArgs e)
-        {
-        }
-
-        private void OnSelectionSourceReset(object sender, EventArgs e)
-        {
         }
     }
 }
