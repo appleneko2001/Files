@@ -1,8 +1,7 @@
-﻿using System;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Files.ViewModels.Breadcrumb;
 
-namespace Files.Views.Resources
+namespace Files.Views.Browser
 {
     public class Breadcrumbs : ResourceDictionary
     {
