@@ -230,27 +230,26 @@
     <RecyclingElementFactory x:Key="BrowserViewTemplate">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="browser:BrowserContentViewModelBase" x:Key="GridView">
-                <controls:SelectingItemRepeater Name="PART_ItemRepeater"
+                <controls:CustomItemRepeater Name="PART_ItemRepeater"
                                                 Margin="16"
                                                 VerticalCacheLength="2"
                                                 HorizontalCacheLength="2"
 
                                                 Items="{CompiledBinding Content}"
                                                 ItemTemplate="{StaticResource BrowserViewGridItemFactory}"
-                                                
+
                                                 DoubleTappedItemEvent="SelectingItemRepeater_OnDoubleTappedItemEvent"
-                                                AttachedToLogicalTree="SelectingItemRepeater_OnAttachedToLogicalTree"
-                                                SelectionChanged="SelectingItemRepeater_OnSelectionChanged">
-                    <controls:SelectingItemRepeater.Layout>
+                                                AttachedToLogicalTree="SelectingItemRepeater_OnAttachedToLogicalTree">
+                    <controls:CustomItemRepeater.Layout>
                         <UniformGridLayout ItemsJustification="Start" ItemsStretch="Fill"
                                            MinColumnSpacing="16" MinRowSpacing="16" MinItemWidth="240"
                                            MinItemHeight="64" />
-                    </controls:SelectingItemRepeater.Layout>
-                    
-                    <controls:SelectingItemRepeater.KeyBindings>
-                        <KeyBinding Gesture="Enter"/>
-                    </controls:SelectingItemRepeater.KeyBindings>
-                </controls:SelectingItemRepeater>
+                    </controls:CustomItemRepeater.Layout>
+
+                    <controls:CustomItemRepeater.KeyBindings>
+                        <KeyBinding Gesture="Enter" />
+                    </controls:CustomItemRepeater.KeyBindings>
+                </controls:CustomItemRepeater>
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
