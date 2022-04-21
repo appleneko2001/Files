@@ -2,12 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-                    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
                     xmlns:breadcrumb="clr-namespace:Files.ViewModels.Breadcrumb"
 
-                    x:Class="Files.Views.Resources.Breadcrumbs">
+                    x:Class="Files.Views.Browser.Breadcrumbs">
     <RecyclingElementFactory x:Key="BreadcrumbElementTemplate"
-                             RecyclePool="{StaticResource GlobalRecyclePool}"
                              SelectTemplateKey="RecyclingElementFactory_OnSelectTemplateKey">
         <RecyclingElementFactory.Templates>
             <DataTemplate x:Key="Node" DataType="breadcrumb:BreadcrumbNodeViewModel">
@@ -15,8 +13,8 @@
                         CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
                     <Button Classes="Flat" ClipToBounds="True"
-                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16"
-                            Command="{Binding Click}">
+                            Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
+                            Command="{Binding ClickCommand}">
                         <TextBlock Text="{CompiledBinding Header}" FontWeight="Normal"/>
                     </Button>
                 </Border>
@@ -27,8 +25,8 @@
                         CornerRadius="32" Margin="2,0" BorderThickness="1"
                         BorderBrush="{DynamicResource PrimaryHueMidBrush}">
                     <Button Classes="Flat" ClipToBounds="True"
-                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16"
-                            Command="{Binding Click}">
+                            Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
+                            Command="{Binding ClickCommand}">
                         <StackPanel Orientation="Horizontal">
                             <icons:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
                                                    Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
@@ -39,32 +37,9 @@
                 </Border>
             </DataTemplate>
             
-            <!--DataTemplate x:Key="HostNode" DataType="viewModel:BreadcrumbNodeHostViewModel">
-                <Border VerticalAlignment="Center"
-                        CornerRadius="32" Margin="2,0" BorderThickness="1"
-                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
-                    <Button Classes="Flat" ClipToBounds="True"
-                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
-                        <TextBlock Text="{CompiledBinding Header}"/>
-                    </Button>
-                </Border>
+            <DataTemplate x:Key="DummyNode">
+                <Panel/>
             </DataTemplate>
-            
-            <DataTemplate x:Key="EditNode" DataType="viewModel:BreadcrumbNodeEditViewModel">
-                <Border VerticalAlignment="Center"
-                        CornerRadius="32" Margin="2,0" BorderThickness="1"
-                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
-                    <Button Classes="Flat" ClipToBounds="True"
-                            Height="24" Padding="8, 0" Margin="0" assists:ButtonAssist.CornerRadius="16">
-                        <StackPanel Orientation="Horizontal">
-                            <icons:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
-                                                   Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
-                                                   Margin="0,0,8,0"/>
-                            <TextBlock Text="{CompiledBinding Header}"/>
-                        </StackPanel>
-                    </Button>
-                </Border>
-            </DataTemplate-->
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
 </ResourceDictionary>

@@ -22,7 +22,10 @@ namespace Files.Views.Resources
                     break;
 
                 default:
-                    throw new NotSupportedException();
+                    // Use dummy template to avoid exception
+                    e.TemplateKey = "DummyNode";
+                    break;
+                    //throw new NotSupportedException();
             }
         }
     }
