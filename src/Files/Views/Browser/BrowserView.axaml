@@ -10,11 +10,15 @@
                     xmlns:sidesheet="clr-namespace:Files.ViewModels.Browser.Sidesheet"
                     xmlns:properties="clr-namespace:Files.ViewModels.Browser.Properties"
                     xmlns:android="clr-namespace:Files.ViewModels.Browser.Files.Android"
+                    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+                    xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+                    xmlns:breadcrumb="clr-namespace:Files.ViewModels.Breadcrumb"
+                    xmlns:tracker="clr-namespace:Files.ViewModels.Tracker"
 
                     x:Class="Files.Views.Browser.BrowserView">
     <!-- Browser view templates -->
     <!-- Browser view context menu -->
-    
+
     <!-- ReSharper disable once Xaml.InvalidResourceType -->
     <ContextMenu x:Key="BrowserViewContextMenu"
                  Name="PART_BrowserViewContextMenu"
@@ -137,9 +141,9 @@
                                     </StackPanel>
                                 </DockPanel>
                             </DataTemplate>
-                            
+
                             <!-- Item templates for Android File Explorer View -->
-                            
+
                             <DataTemplate DataType="android:AdbFileItemViewModel">
                                 <DockPanel LastChildFill="True"
                                            Opacity="{CompiledBinding IsVisible, 
@@ -253,7 +257,7 @@
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
-    
+
     <!-- Browser side sheet -->
     <RecyclingElementFactory x:Key="SideSheetViewTemplate">
         <RecyclingElementFactory.Templates>
@@ -263,17 +267,19 @@
                         <ContentControl.DataTemplates>
                             <DataTemplate DataType="properties:CommonFileSystemProperties">
                                 <StackPanel Margin="0,8">
-                                    <TextBlock Classes="Subtitle1" Text="{CompiledBinding Name}"/>
-                                    <TextBlock Text="{CompiledBinding Size, Converter={StaticResource StringFormat}, ConverterParameter='Size: {0}'}"/>
-                                    <TextBlock Text="{CompiledBinding ActualSize, Converter={StaticResource StringFormat}, ConverterParameter='Actual size: {0}'}"/>
+                                    <TextBlock Classes="Subtitle1" Text="{CompiledBinding Name}" />
+                                    <TextBlock
+                                        Text="{CompiledBinding Size, Converter={StaticResource StringFormat}, ConverterParameter='Size: {0}'}" />
+                                    <TextBlock
+                                        Text="{CompiledBinding ActualSize, Converter={StaticResource StringFormat}, ConverterParameter='Actual size: {0}'}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ContentControl.DataTemplates>
                     </ContentControl>
-                    
-                    <StackPanel Margin="0, 24" >
-                        <TextBlock Text="This feature is not ready!"/>
-                        <TextBlock Text="Please come back later!"/>
+
+                    <StackPanel Margin="0, 24">
+                        <TextBlock Text="This feature is not ready!" />
+                        <TextBlock Text="Please come back later!" />
                     </StackPanel>
                 </StackPanel>
             </DataTemplate>
