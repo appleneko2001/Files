@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Files.Services.Platform.Interfaces;
 using Files.ViewModels;
+using Files.ViewModels.Browser;
 using Files.ViewModels.Browser.Files.Local;
 using Files.ViewModels.Context.Menus;
 using Material.Icons;
@@ -17,9 +18,6 @@ namespace Files.Services
 {
     public class ContextMenuBackend
     {
-        public const string FolderContextMenuResourceName = "FolderContextMenu";
-        public const string FileContextMenuResourceName = "FileContextMenu";
-
         private static ContextMenuBackend _instance;
         public static ContextMenuBackend Instance => _instance;
 
@@ -27,13 +25,19 @@ namespace Files.Services
         private CommandsBackend _commands;
         private PlatformHotkeyConfiguration? _hotkeyConfigs;
 
-        private Dictionary<Type, IEnumerable<ContextMenuItemViewModelBase>> RegisteredContextMenus;
+        private Collection<KeyValuePair<Type, 
+            IEnumerable<ContextMenuItemViewModelBase>>> RegisteredContextMenus = new ();
         
         private IEnumerable<ContextMenuItemViewModelBase> _essentialContextMenuItems;
 
         // ReSharper disable once SuggestBaseTypeForParameterInConstructor
         private ContextMenuBackend(FilesApp app)
         {
+            if(_instance != null)
+                throw new Exception("ContextMenuBackend already instantiated");
+            
+            _instance = this;
+            
             _appInstance = app;
             _hotkeyConfigs = AvaloniaLocator.Current.GetService<PlatformHotkeyConfiguration>();
 
@@ -45,16 +49,8 @@ namespace Files.Services
 
             _essentialContextMenuItems = InitiatePostEssentialMenus();
 
-            RegisteredContextMenus = new Dictionary<Type, IEnumerable<ContextMenuItemViewModelBase>>();
-
-            //FolderContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFolderContextMenus());
-            //FileContextMenus = new ObservableCollection<ContextMenuItemViewModelBase>(InitiateFileContextMenus());
-            
-            //AddOrModifyResource(app.Resources, FolderContextMenuResourceName, FolderContextMenus);
-            //AddOrModifyResource(app.Resources, FileContextMenuResourceName, FileContextMenus);
-            
-            RegisteredContextMenus.Add(typeof(FileItemViewModel), InitiateFileContextMenus());
-            RegisteredContextMenus.Add(typeof(FolderItemViewModel), InitiateFolderContextMenus());
+            RegisterContextMenuItems<FileItemViewModel>(InitiateFileContextMenus());
+            RegisterContextMenuItems<FolderItemViewModel>(InitiateFolderContextMenus());
         }
 
         public static void Initiate(FilesApp app)
@@ -62,10 +58,22 @@ namespace Files.Services
             _instance = new ContextMenuBackend(app);
         }
 
-        private static void AddOrModifyResource(IResourceDictionary dict, object key, object? value)
+        public static bool RegisterContextMenuItems<T>(IEnumerable<ContextMenuItemViewModelBase> item)
+            where T : ItemViewModelBase
         {
-            if (!dict.TryAdd(key, value))
-                dict[key] = value;
+            var inst = Instance;
+            try
+            {
+                var menus = new KeyValuePair<Type, IEnumerable<ContextMenuItemViewModelBase>>(
+                    typeof(T), item);
+                inst.RegisteredContextMenus.Add(menus);
+                return inst.RegisteredContextMenus.Contains(menus);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
 
         private IEnumerable<ContextMenuItemViewModelBase> InitiateFileContextMenus()
@@ -88,12 +96,12 @@ namespace Files.Services
             {
                 new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"), command: _commands.OpenFolderInCurrentViewCommand),
                 //new ContextMenuItemViewModel("Open folder in new tab"),
-                new ContextMenuItemViewModel("Open folder in new window", command: _commands.OpenFolderInNewWindowCommand),
+                new ContextMenuItem("Open folder in new window", command: _commands.OpenFolderInNewWindowCommand)
             };
 
             if (_appInstance.PlatformApi is IPlatformSupportNativeExplorer featureSupport1)
             {
-                list.Add(new ContextMenuItemViewModel($"Open folder with {featureSupport1.NativeExplorerName}", command: new ExtendedRelayCommand(
+                list.Add(new ContextMenuItem($"Open folder with {featureSupport1.NativeExplorerName}", command: new ExtendedRelayCommand(
                     delegate(object o)
                     {
                         if(o is FolderItemViewModel folder)
@@ -108,6 +116,9 @@ namespace Files.Services
         
         private IEnumerable<ContextMenuItemViewModelBase> InitiatePostEssentialMenus()
         {
+            // Not ready, yet
+            // TODO: Complete the feature
+            /*
             var list = new List<ContextMenuItemViewModelBase>
             {
                 new ContextMenuItemViewModel("Cut", new MaterialIconViewModel(MaterialIconKind.ContentCut),
@@ -125,28 +136,46 @@ namespace Files.Services
                 new ContextMenuItemViewModel("Properties", command: _commands.ShowPropertiesCommand)
             };
 
-            return list;
+            return list;*/
+            return new List<ContextMenuItemViewModelBase>();
         }
         
         public IEnumerable<ContextMenuItemViewModelBase> GetContextMenu(ItemViewModelBase item)
         {
             var list = new List<ContextMenuItemViewModelBase>();
 
-            // TODO
-            foreach (var pair in RegisteredContextMenus)
+            foreach (var (key, value) in RegisteredContextMenus)
+            { 
+                // Add items from the registered menus if the item is subclass or equal to the registered type
+                if (key.IsInstanceOfType(item) || key == item.GetType())
+                {
+                    list.AddRange(value);
+                }
+            }
+
+            list.AddRange(_essentialContextMenuItems);
+
+            return list;
+        }
+
+        public IEnumerable<ContextMenuItemViewModelBase> GetContextMenu(BrowserContentViewModelBase content)
+        {
+            var list = new List<ContextMenuItemViewModelBase>();
+
+            foreach (var pair in 
+                     from pair in RegisteredContextMenus
+                     let type = content.GetType()
+                     where pair.Key == type
+                     select pair)
             {
-                // .Where(pair => pair.Key == item.GetType())
-                var type = item.GetType();
-                
-                if(pair.Key == type)
-                    list.AddRange(pair.Value);
+                list.AddRange(pair.Value);
             }
             
             list.AddRange(_essentialContextMenuItems);
 
             return list;
         }
-
+        
         private KeyGesture? GetFirstDefaultGesture(List<KeyGesture>? keyGestures) =>
             keyGestures?.FirstOrDefault() ?? null;
     }
