@@ -20,6 +20,15 @@
                  Name="PART_BrowserViewContextMenu"
                  DataContextChanged="BrowserViewContextMenu_OnDataContextChanged">
     </ContextMenu>
+    
+    <ContextMenu x:Key="BrowserViewGetBackListContextMenu"
+                 Items="{Binding GoBackList}">
+        <ContextMenu.ItemTemplate>
+            <DataTemplate DataType="tracker:BrowseTrackerRecordElement">
+                <MenuItem Header="{Binding }"/>
+            </DataTemplate>
+        </ContextMenu.ItemTemplate>
+    </ContextMenu>
 
     <!-- Browser view item global recycle pool -->
     <RecyclePool x:Key="BrowserItemRecyclePool" />
