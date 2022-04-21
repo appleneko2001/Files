@@ -14,7 +14,7 @@
                     UseLayoutRounding="True" ClipToBounds="True"
                     
                     Height="40" Margin="0,0,40,0" 
-                    assists:ButtonAssist.CornerRadius="0, 32, 32, 0"
+                    CornerRadius="0, 32, 32, 0"
                     
                     Command="{Binding OpenStorageEntryCommand}"
                     CommandParameter="{Binding }">
@@ -39,7 +39,7 @@
                     HorizontalAlignment="Right"
                     ToolTip.Tip="Unmount entry"
                     
-                    Padding="8" assists:ButtonAssist.CornerRadius="32"
+                    Padding="8" CornerRadius="32"
                     
                     Content="{icons:MaterialIconExt Kind=Eject, Size=20}"
                     
