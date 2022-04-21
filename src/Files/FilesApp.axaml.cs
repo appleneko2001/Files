@@ -111,6 +111,7 @@ namespace Files
 
         private void PostInit()
         {
+            BackgroundTaskBackend.Initiate(this);
             CommandsBackend.Initiate(this);
             PreviewManagerBackend.Initiate(this);
             ContextMenuBackend.Initiate(this);
