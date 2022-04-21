@@ -205,11 +205,11 @@ namespace Files.ViewModels
             }
         }
 
-        private BrowserContentViewModelBase CreateView(Uri uri)
+        private BrowserContentViewModelBase? CreateView(Uri uri)
         {
             Header = HttpUtility.UrlDecode(uri.Segments.Last());
 
-            BrowserContentViewModelBase viewModel = null;
+            BrowserContentViewModelBase? viewModel = null;
 
             switch (uri.Scheme.ToLowerInvariant())
             {
