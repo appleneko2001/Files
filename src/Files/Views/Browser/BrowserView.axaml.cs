@@ -122,5 +122,44 @@ namespace Files.Views.Browser
                 break;
             }
         }
+        
+        private Dictionary<Scroller, IDisposable>? _toolbarScrollDisposables;
+
+        // Binding observable to opacity mask and update visual after scrolling
+        // ReSharper disable once UnusedMember.Local
+        private void OnScrollerAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (sender is not Scroller scroller)
+                return;
+            _toolbarScrollDisposables ??= new Dictionary<Scroller, IDisposable>();
+
+            _toolbarScrollDisposables.Add(scroller, scroller.GetObservable(Visual.OpacityMaskProperty).Subscribe(delegate
+            {
+                scroller.InvalidateVisual();
+            }));
+        }
+
+        // Unbind observable when scroller is detached from visual tree
+        // ReSharper disable once UnusedMember.Local
+        private void OnScrollerDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (sender is not Scroller scroller)
+                return;
+            
+            if(_toolbarScrollDisposables is null)
+                return;
+
+            if (_toolbarScrollDisposables.TryGetValue(scroller, out var disposable))
+            {
+                disposable.Dispose();
+                _toolbarScrollDisposables.Remove(scroller);
+            }
+
+            if (_toolbarScrollDisposables.Count != 0)
+                return;
+            
+            _toolbarScrollDisposables.Clear();
+            _toolbarScrollDisposables = null;
+        }
     }
 }
