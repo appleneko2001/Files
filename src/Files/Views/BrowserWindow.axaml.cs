@@ -221,43 +221,6 @@ namespace Files.Views
             _previousBackgroundBitmap = null;
         }
 
-        private Dictionary<string, IDisposable>? _disposables;
-
-        private void OnScrollerAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
-        {
-            if (sender is Scroller scroller)
-            {
-                if (_disposables == null)
-                {
-                    _disposables = new();
-                }
-
-                _disposables.Add(scroller.Name, scroller.GetObservable(OpacityMaskProperty).Subscribe(delegate
-                {
-                    scroller.InvalidateVisual();
-                }));
-            }
-        }
-
-        private void OnScrollerDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
-        {
-            if (sender is Scroller scroller)
-            {
-                var name = scroller.Name;
-                if (_disposables.TryGetValue(name, out var disposable))
-                {
-                    disposable.Dispose();
-                    _disposables.Remove(name);
-                }
-
-                if (_disposables.Count == 0)
-                {
-                    _disposables.Clear();
-                    _disposables = null;
-                }
-            }
-        }
-
         private void BackgroundDarknessOpacitySlider_OnPropertyChanged(object sender, AvaloniaPropertyChangedEventArgs e)
         {
             if (e.Property.Name == "Value" && e.NewValue is double value)
@@ -325,6 +288,43 @@ namespace Files.Views
                 if (vm.GoForwardCommand.CanExecute(vm))
                     vm.GoForwardCommand.Execute(vm);
             }
+        }
+        
+        private Dictionary<Scroller, IDisposable>? _toolbarScrollDisposables;
+        
+        // ReSharper disable once UnusedMember.Local
+        private void OnScrollerAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (sender is not Scroller scroller)
+                return;
+            _toolbarScrollDisposables ??= new Dictionary<Scroller, IDisposable>();
+
+            _toolbarScrollDisposables.Add(scroller, scroller.GetObservable(OpacityMaskProperty).Subscribe(delegate
+            {
+                scroller.InvalidateVisual();
+            }));
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private void OnScrollerDetachedFromVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (sender is not Scroller scroller)
+                return;
+            
+            if(_toolbarScrollDisposables is null)
+                return;
+
+            if (_toolbarScrollDisposables.TryGetValue(scroller, out var disposable))
+            {
+                disposable.Dispose();
+                _toolbarScrollDisposables.Remove(scroller);
+            }
+
+            if (_toolbarScrollDisposables.Count != 0)
+                return;
+            
+            _toolbarScrollDisposables.Clear();
+            _toolbarScrollDisposables = null;
         }
     }
 }
