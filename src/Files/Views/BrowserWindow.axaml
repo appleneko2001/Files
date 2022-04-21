@@ -42,18 +42,15 @@
         <material:NavigationDrawer.LeftDrawerContent>
             <StackPanel Margin="0, 16">
                 <Button Classes="Flat"
-                        Content="Switch theme"
-                        assist:ButtonAssist.CornerRadius="0"
+                        Content="Switch theme" CornerRadius="0"
                         Click="SwitchThemeButton_OnClick" />
 
                 <Button Classes="Flat"
-                        Content="Use background"
-                        assist:ButtonAssist.CornerRadius="0"
+                        Content="Use background" CornerRadius="0"
                         Click="UseBackgroundImageButton_OnClick" />
 
                 <Button Classes="Flat"
-                        Content="Use default background"
-                        assist:ButtonAssist.CornerRadius="0"
+                        Content="Use default background" CornerRadius="0"
                         Click="UseDefaultBackgroundButton_OnClick" />
 
                 <DockPanel>
@@ -243,6 +240,14 @@
 
                                         ContentTemplate="{StaticResource BrowserToolbarTemplate}" />
                     </Grid>
+                    
+                    <Separator HorizontalAlignment="Stretch"
+                               VerticalAlignment="Bottom"
+                               Height="1"
+                               Width="NaN"
+                               Margin="0"
+                               
+                               BorderBrush="{DynamicResource MaterialDesignBody}"/>
                 </Panel>
             </material:ColorZone>
         </Grid>
