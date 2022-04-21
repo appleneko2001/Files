@@ -63,6 +63,7 @@ namespace Files.Services.Android
             
             app.ApplicationInitializationCompleted -= OnApplicationInitializationCompleted;
 
+            // Default adb daemon port
             const int port = 5037;
             
             _client = new AdbClient(port: port)
