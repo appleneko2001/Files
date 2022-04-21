@@ -28,21 +28,26 @@ namespace Files.ViewModels
         private bool _isSidesheetVisible;
         private BrowserWindowViewModel _parent;
         private BreadcrumbPathViewModel _breadcrumbPath;
-        private BrowserContentViewModelBase _content;
+        private BrowserContentViewModelBase? _content;
         private BreadcrumbNodeEditViewModel _breadcrumbNodeEdit;
 
         private BrowseTrackerViewModel _tracker;
         
         private CancellationTokenSource? _ctx;
 
-        private ProgressViewModel _progress;
-        private SidesheetViewModelBase _sidesheet;
+        private ProgressViewModel? _progress;
+        private SidesheetViewModelBase? _sidesheet;
 
         public ExtendedRelayCommand CloseTabCommand => _closeTabCommand;
 
         public ICommand GoBackCommand => _goBackCommand;
+        
+        public ICommand GoForwardCommand => _goForwardCommand;
+        
+        public IEnumerable<BrowseTrackerRecordElement> GoBackList => _tracker.GetBackList(); 
 
-        public BrowserContentViewModelBase Content
+        
+        public BrowserContentViewModelBase? Content
         {
             get => _content;
             private set
@@ -57,7 +62,7 @@ namespace Files.ViewModels
 
         public BreadcrumbNodeEditViewModel BreadcrumbNodeEdit => _breadcrumbNodeEdit;
 
-        public ProgressViewModel Progress
+        public ProgressViewModel? Progress
         {
             get => _progress;
             private set
@@ -67,7 +72,7 @@ namespace Files.ViewModels
             }
         }
 
-        public SidesheetViewModelBase Sidesheet
+        public SidesheetViewModelBase? Sidesheet
         {
             get => _sidesheet;
             private set
@@ -240,7 +245,7 @@ namespace Files.ViewModels
             
             RemoveHandler();
 
-            if (!_progress.IsComplete)
+            if (!_progress?.IsComplete ?? false)
                 _shouldDispose = true;
             else
                 Dispose();
