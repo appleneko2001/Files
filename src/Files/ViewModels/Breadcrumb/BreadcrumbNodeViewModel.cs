@@ -1,34 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using MinimalMvvm.ViewModels;
+using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Breadcrumb
 {
     public class BreadcrumbNodeViewModel : ViewModelBase
     {
-        private BreadcrumbPathViewModel _parent;
-        
-        private string _header;
-        private int _index;
-        private string _path;
-
-        protected BreadcrumbPathViewModel Parent => _parent;
-        
-        protected BreadcrumbNodeViewModel(BreadcrumbPathViewModel parent, int index)
-        {
-            _parent = parent;
-            _index = index;
-        }
-        
-        public BreadcrumbNodeViewModel(BreadcrumbPathViewModel parent, int index, string path, string header)
-        {
-            _parent = parent;
-            _index = index;
-            _path = path;
-            _header = header;
-        }
-
         public string Header
         {
             get => _header;
@@ -58,6 +38,51 @@ namespace Files.ViewModels.Breadcrumb
                 OnPropertyChanged();
             }
         }
+        
+        public ICommand ClickCommand
+        {
+            get => _clickCommand;
+            protected set
+            {
+                _clickCommand = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private BreadcrumbPathViewModel _parent;
+        
+        private string _header;
+        private int _index;
+        private string _path;
+        
+        private ICommand _clickCommand;
+
+        protected BreadcrumbPathViewModel Parent => _parent;
+
+        protected BreadcrumbNodeViewModel(BreadcrumbPathViewModel parent, int index)
+        {
+            _parent = parent;
+            _index = index;
+
+            _clickCommand = new RelayCommand(delegate
+            {
+                Click();
+            });
+        }
+        
+        public BreadcrumbNodeViewModel(BreadcrumbPathViewModel parent, int index, string path, string header)
+        {
+            _parent = parent;
+            _index = index;
+            _path = path;
+            _header = header;
+            
+            _clickCommand = new RelayCommand(delegate
+            {
+                Click();
+            });
+        }
+
 
         public virtual void Click()
         {
