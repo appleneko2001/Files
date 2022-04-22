@@ -1,0 +1,11 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Button.Flat.Drawer">
+        <Setter Property="CornerRadius" Value="0, 32, 32, 0"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Margin" Value="0, 0, 8, 0"/>
+    </Style>
+</Styles>

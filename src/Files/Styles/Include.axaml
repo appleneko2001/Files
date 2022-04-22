@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui">
     <StyleInclude Source="avares://Files/Styles/Browser/BrowserTab.axaml"/>
     <StyleInclude Source="avares://Files/Styles/Browser/BrowserView.axaml"/>
+    <StyleInclude Source="avares://Files/Styles/Browser/BrowserDrawer.axaml"/>
     <StyleInclude Source="avares://Files/Styles/Window/WindowStyle.axaml"/>
     <StyleInclude Source="avares://Files/Styles/Overrides.axaml"/>
 </Styles>

@@ -91,14 +91,20 @@
                             PropertyChanged="BackgroundDarknessOpacitySlider_OnPropertyChanged" />
                 </DockPanel-->
 
-                <ItemsControl Items="{Binding StorageDevices}"
-                              ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
-                <Button Classes="Flat"
-                        Content="Connect to..."
+                        <ItemsControl Items="{Binding StorageDevices}"
+                                      ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
+                
+                        <Button Classes="Flat Drawer"
+                                Content="Connect to..."
 
-                        Command="{Binding ConnectPhoneViaAdbCommand}"
-                        CommandParameter="{Binding }" />
-            </StackPanel>
+                                Command="{Binding ConnectPhoneViaAdbCommand}"
+                                CommandParameter="{Binding }" />
+                    
+                        <Button Classes="Flat Drawer"
+                                Content="Settings"/>
+                    </StackPanel>
+                </DockPanel>
+            </ScrollViewer>
         </material:NavigationDrawer.LeftDrawerContent>
 
         <Grid Name="PART_BrowserViewRoot" RowDefinitions="Auto, *">
