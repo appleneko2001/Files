@@ -40,8 +40,40 @@
                                LeftDrawerWidth="360"
                                LeftDrawerOpened="{Binding IsNavigationDrawerOpen, Mode=TwoWay}">
         <material:NavigationDrawer.LeftDrawerContent>
-            <StackPanel Margin="0, 16">
-                <Button Classes="Flat"
+            <ScrollViewer>
+                <DockPanel>
+                    <Panel Height="200"
+                           DockPanel.Dock="Top">
+                        <Border assist:ShadowAssist.ShadowDepth="Depth3">
+                            <Viewbox Stretch="UniformToFill">
+                                <Viewbox.Styles>
+                                    <Style Selector=":is(Border):not(.noshadow)">
+                                        <Setter Property="assist:ShadowAssist.ShadowDepth" Value="Depth2"/>
+                                    </Style>
+                                    
+                                    <Style Selector=":is(Border):not(.background)">
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                        <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                    </Style>
+                                </Viewbox.Styles>
+                                
+                                <ContentControl ContentTemplate="{StaticResource DrawerHeaderTemplate}">
+                                    <ContentControl.Content>
+                                        <headers:DefaultDrawerHeaderViewModel/>
+                                    </ContentControl.Content>
+                                </ContentControl>
+                            </Viewbox>
+                        </Border>
+                        
+                        <TextBlock Classes="Headline6"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Bottom"
+                                   Margin="16"
+                                   Text="Files"/>
+                    </Panel>
+                    
+                    <StackPanel Margin="0,24,8,0">
+                        <!--Button Classes="Flat"
                         Content="Switch theme" CornerRadius="0"
                         Click="SwitchThemeButton_OnClick" />
 
@@ -57,7 +89,7 @@
                     <TextBlock Text="Background brightness" Margin="16,0,0,0" />
                     <Slider Classes="Discrete" Margin="16,0" Minimum="0" Maximum="1"
                             PropertyChanged="BackgroundDarknessOpacitySlider_OnPropertyChanged" />
-                </DockPanel>
+                </DockPanel-->
 
                 <ItemsControl Items="{Binding StorageDevices}"
                               ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />

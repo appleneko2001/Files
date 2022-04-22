@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:headers="clr-namespace:Files.ViewModels.Drawers.Headers">
+    <RecyclingElementFactory x:Key="DrawerHeaderTemplate">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate DataType="headers:DefaultDrawerHeaderViewModel" x:Key="Default">
+                <Canvas Width="64"
+                        Height="48">
+                    <Border Classes="noshadow background"
+                            Background="{DynamicResource MaterialDesignPaper}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
+                    
+                    <Border Classes="rotate"
+                            Background="#B42B51"
+                            Width="32"
+                            Height="16"
+                            Canvas.Left="16"
+                            Canvas.Bottom="12"
+                            RenderTransform="rotate(125deg)"/>
+                    <Border Classes="rotate"
+                            Background="#E63E6D"
+                            Width="32"
+                            Height="16"
+                            Canvas.Left="32"
+                            Canvas.Bottom="12"
+                            RenderTransform="rotate(125deg)"/>
+                </Canvas>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
+</ResourceDictionary>
