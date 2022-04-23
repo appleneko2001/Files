@@ -32,19 +32,17 @@ namespace Files.Services
             {
                 app.ApplicationInitializationCompleted += OnApplicationInitializationCompletedHandler;
             }
-            
-            //_devices = new List<DeviceModel>();
         }
 
         private void OnApplicationInitializationCompletedHandler(object sender, EventArgs e)
         {
-            if (sender is FilesApp app)
-            {
-                app.ApplicationInitializationCompleted -= OnApplicationInitializationCompletedHandler;
-                app.ApplicationShutdown += OnApplicationShutdown;
+            if (sender is not FilesApp app)
+                return;
+            
+            app.ApplicationInitializationCompleted -= OnApplicationInitializationCompletedHandler;
+            app.ApplicationShutdown += OnApplicationShutdown;
                 
-                _apiBridge = app.PlatformApi;
-            }
+            _apiBridge = app.PlatformApi;
         }
 
         private void OnApplicationShutdown(object sender, EventArgs e)
