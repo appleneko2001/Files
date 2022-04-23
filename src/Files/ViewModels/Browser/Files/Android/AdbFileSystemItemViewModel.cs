@@ -1,5 +1,5 @@
 ﻿using System;
-using Files.Adb.Models.Connections;
+using Files.Adb.Models;
 using Files.Models.Android.Storages;
 using Material.Icons;
 
