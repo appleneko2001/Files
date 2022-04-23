@@ -30,5 +30,15 @@ namespace Files.Windows.Services.Native
 
         [DllImport(WinShell, EntryPoint="#4", CharSet=CharSet.Auto)]
         public static extern bool SHChangeNotifyDeregister(ulong ulId);
+        
+        [DllImport(WinShell, CharSet = CharSet.Unicode)]
+        public static extern IntPtr ExtractIcon (IntPtr hInst, string lpszFile, int nIconIndex);
+        
+        [DllImport(WinShell, CharSet = CharSet.Unicode)]
+        public static extern int ExtractIconEx (string lpszFile,
+            int nIconIndex, out IntPtr phIconLarge, out IntPtr phIconSmall, int nIcons);
+        
+        [DllImport(WinShell, EntryPoint="DestroyIcon", SetLastError=true)]
+        public static extern int DestroyIcon(IntPtr hIcon);
     }
 }

@@ -13,5 +13,11 @@ namespace Files.Windows.Services.Native
             IntPtr lpInBuffer, uint nInBufferSize,
             IntPtr lpOutBuffer, uint nOutBufferSize,
             out uint lpBytesReturned, IntPtr lpOverlapped);
+
+        [DllImport(WinKernel, CharSet = CharSet.Unicode)]
+        public static extern IntPtr LoadLibraryEx(string lpLibFileName, IntPtr hFile, int dwFlags);
+        
+        [DllImport(WinKernel, CharSet = CharSet.Auto)]
+        public static extern bool FreeLibrary(IntPtr hModule);
     }
 }

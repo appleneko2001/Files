@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Threading;
@@ -20,7 +22,7 @@ using Material.Dialog.Enums;
 
 namespace Files.Windows.Services
 {
-    public class WindowsApiBridge : PlatformSpecificBridge, IPlatformSupportNativeExplorer
+    public class WindowsApiBridge : PlatformSpecificBridge, IPlatformSupportNativeExplorer, IPlatformSupportGetIcon
     {
         private const string _nativeExplorerName = "Windows Explorer";
         public string NativeExplorerName => _nativeExplorerName;
@@ -182,6 +184,49 @@ namespace Files.Windows.Services
         public void OpenFolderWithNativeExplorer(string path)
         {
             InvokeNewProcess("explorer.exe", path);
+        }
+
+        public bool CanGetIconForFile(string path)
+        {
+            // TODO: Support shortcut file (.lnk)
+            return Path.GetExtension(path).ToLowerInvariant() switch
+            {
+                ".exe" => true,
+                _ => false
+            };
+        }
+
+        /// <summary>
+        /// Used for extract icon by parsing executable file 
+        /// </summary>
+        public NativeResourcePointer GetIconForFile(string path, int w, int h)
+        {
+            /*const int DONT_RESOLVE_DLL_REFERENCES = 0x00000001;
+            const int LOAD_IGNORE_CODE_AUTHZ_LEVEL = 0x00000010;
+            const int LOAD_LIBRARY_AS_DATAFILE = 0x00000002;
+
+            const int flags = DONT_RESOLVE_DLL_REFERENCES | LOAD_LIBRARY_AS_DATAFILE | LOAD_IGNORE_CODE_AUTHZ_LEVEL;
+
+            var hModule = new Win32NativeLibPointer(NativeApi.LoadLibraryEx(path, IntPtr.Zero, flags));*/
+
+            return new Win32NativeIconPointer(IntPtr.Zero);
+        }
+
+        public Stream? GetIconStreamForFile(string path, int w, int h)
+        {
+            var hIcon = NativeApi.ExtractIcon(
+                Marshal.GetHINSTANCE(GetType().Module), path, 0);
+
+            if (hIcon == IntPtr.Zero)
+                return null;
+            
+            using var icon = Icon.FromHandle(hIcon);
+
+            var memoryStream = new MemoryStream();
+            
+            icon.Save(memoryStream);
+
+            return memoryStream;
         }
     }
 }
