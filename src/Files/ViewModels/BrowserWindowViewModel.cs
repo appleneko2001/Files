@@ -157,9 +157,9 @@ namespace Files.ViewModels
             UpdateDevicesListHandler(null, EventArgs.Empty);
             
             var result = await dialog.ShowDialog(vm.ParentWindow);
-
-            AndroidDebugBackend.Instance.UpdateDevicesEvent -= UpdateDevicesListHandler;
             
+            context.UnloadEvents();
+
             if (result.GetResult != "ok")
                 return;
 
@@ -170,17 +170,11 @@ namespace Files.ViewModels
 
             // Do not connect to the same device twice
             if (vm.StorageDevices.Any(
-                    delegate(StorageDeviceViewModel model)
-                    {
-                        if (model.GetDeviceModel() is not AdbStorageDeviceModel d)
-                            return false;
-
-                        return device.AdbDeviceInfo.Connection == d.Connection;
-                    }))
+                    model => model.GetDeviceModel() is AdbStorageDeviceModel d &&
+                             Equals(device.Connection, d.Connection)))
                 return;
 
-            device.GetDeviceProps();
-            vm.StorageDevices.Add(new StorageDeviceViewModel(vm, device.GetDeviceModel()));
+            vm.StorageDevices.Add(new StorageDrawerSectionViewModel(vm, device.GetDeviceModel()));
         }
 
         internal void CloseTab(BrowserWindowTabViewModel tab)
