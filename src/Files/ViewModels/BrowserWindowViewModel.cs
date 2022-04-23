@@ -6,9 +6,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Files.Models.Android;
 using Files.Services;
-using Files.Services.Android;
 using Files.ViewModels.Dialogs.Android;
-using Files.ViewModels.Storage;
+using Files.ViewModels.Drawers.Sections;
 using Files.Views;
 using Files.Views.Dialogs;
 using Material.Dialog;
@@ -47,7 +46,7 @@ namespace Files.ViewModels
         private BrowserWindow _parentWindow;
 
         private AppBackend _context;
-        private ObservableCollection<StorageDeviceViewModel> _storageDevices;
+        private ObservableCollection<StorageDrawerSectionViewModel> _storageDevices;
         private ObservableCollection<BrowserWindowTabViewModel> _tabsViewModel;
         private bool _isNavigationDrawerOpen;
         private BrowserWindowTabViewModel? _selectedTab;
@@ -58,7 +57,7 @@ namespace Files.ViewModels
         public AppBackend Context => _context;
         public BrowserWindow ParentWindow => _parentWindow;
 
-        public ObservableCollection<StorageDeviceViewModel> StorageDevices => _storageDevices;
+        public ObservableCollection<StorageDrawerSectionViewModel> StorageDevices => _storageDevices;
         public ObservableCollection<BrowserWindowTabViewModel> TabsViewModel => _tabsViewModel;
 
         public RelayCommand ConnectPhoneViaAdbCommand => _connectPhoneViaAdbCommand;
@@ -99,7 +98,7 @@ namespace Files.ViewModels
         {
             _context = context;
             _parentWindow = parentWindow;
-            _storageDevices = new ObservableCollection<StorageDeviceViewModel>();
+            _storageDevices = new ObservableCollection<StorageDrawerSectionViewModel>();
             _tabsViewModel = new ObservableCollection<BrowserWindowTabViewModel>();
 
             ParentWindow.Closed += OnWindowClosed;
@@ -152,8 +151,6 @@ namespace Files.ViewModels
                 context.GetDevicesCommand.Execute(null);
             }
 
-            AndroidDebugBackend.Instance.UpdateDevicesEvent += UpdateDevicesListHandler;
-            
             UpdateDevicesListHandler(null, EventArgs.Empty);
             
             var result = await dialog.ShowDialog(vm.ParentWindow);
@@ -198,7 +195,7 @@ namespace Files.ViewModels
             StorageDevices.Clear();
             foreach (var device in result)
             {
-                StorageDevices.Add(new StorageDeviceViewModel(this, device));
+                StorageDevices.Add(new StorageDrawerSectionViewModel(this, device));
             }
 
             OnPropertyChanged(nameof(StorageDevices));
