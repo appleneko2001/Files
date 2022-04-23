@@ -1,4 +1,7 @@
-﻿namespace Files.ViewModels.Breadcrumb
+﻿using System;
+using System.Linq;
+
+namespace Files.ViewModels.Breadcrumb
 {
     public class BreadcrumbNodeHostViewModel : BreadcrumbNodeViewModel
     {
@@ -13,7 +16,23 @@
             }
             else
             {
-                Header = path;
+                if (!path.Contains('@'))
+                {
+                    Header = path;
+                    return;
+                }
+
+                var part = path.Split('@');
+                if (!part.Any())
+                    throw new ArgumentNullException();
+
+                var host = part[1];
+                var ui = part[0];
+
+                if (ui.Contains(':'))
+                    ui = ui[..ui.IndexOf(':')];
+
+                Header = $"{host} {ui}";
             }
         }
     }

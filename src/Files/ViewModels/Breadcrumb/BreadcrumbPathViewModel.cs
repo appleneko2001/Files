@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Web;
 using Avalonia.Threading;
 using Files.Extensions;
@@ -114,7 +115,17 @@ namespace Files.ViewModels.Breadcrumb
                         }
                         case 1:
                         {
-                            var vm = new BreadcrumbNodeHostViewModel(this, index, uri.Host);
+                            var builder = new StringBuilder();
+
+                            var ui = uri.UserInfo;
+                            if (!string.IsNullOrWhiteSpace(ui))
+                            {
+                                builder.Append($"{ui}@");
+                            }
+
+                            builder.Append(uri.Host);
+                            
+                            var vm = new BreadcrumbNodeHostViewModel(this, index, builder.ToString());
                             Part.Add(vm);
                         
                             index++;
