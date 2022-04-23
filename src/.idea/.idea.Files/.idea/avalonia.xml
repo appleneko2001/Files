@@ -4,12 +4,14 @@
     <option name="projectPerEditor">
       <map>
         <entry key="Files/FilesApp.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Styles/Browser/BrowserDrawer.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Browser/BrowserTab.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Browser/BrowserView.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Include.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Styles/Overrides.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/Breadcrumbs.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/BrowserDrawer.axaml" value="Files.Linux/Files.Linux.csproj" />
+        <entry key="Files/Views/Browser/BrowserItemIcons.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/BrowserTab.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/BrowserView.axaml" value="Files.Linux/Files.Linux.csproj" />
         <entry key="Files/Views/Browser/Include.axaml" value="Files.Linux/Files.Linux.csproj" />
