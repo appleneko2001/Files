@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Files.Adb.Apis;
 using Files.Adb.Builders;
 using Files.Adb.Models;
-using Files.Adb.Models.Connections;
 
 namespace Files.Adb.Extensions
 {
@@ -32,20 +31,38 @@ namespace Files.Adb.Extensions
         /// <summary>
         /// Set target device for the instance of ADB stream.
         /// </summary>
-        public static AdbStream SetDevice(this AdbStream stream, IAdbConnection target)
+        public static AdbStream SetDevice(this AdbStream stream, AdbConnection target)
         {
-            SingleCommand(stream, $"host:transport:{target.GetAdbConnectionString()}");
+            ExtractDeviceAndAdbHost(target.GetConnectionUri(), out var device, out var adb);
+            SingleCommand(stream, $"host:transport:{device}");
 
+            return stream;
+        }
+        
+        /// <summary>
+        /// Send get devices command to adb server.
+        /// </summary>
+        public static AdbStream GetDevices(this AdbStream stream)
+        {
+            SingleCommand(stream, AdbRequestStrings.GetDevicesList);
+            
             return stream;
         }
 
         /// <summary>
         /// Send get devices command to adb server.
         /// </summary>
-        public static AdbStream GetDevices(this AdbStream stream)
+        public static AdbStream GetDevicesFullList(this AdbStream stream)
         {
             SingleCommand(stream, AdbRequestStrings.GetDevicesFullList);
             
+            return stream;
+        }
+
+        public static AdbStream TrackDevices(this AdbStream stream)
+        {
+            SingleCommand(stream, AdbRequestStrings.TrackDevices);
+
             return stream;
         }
         
@@ -74,6 +91,16 @@ namespace Files.Adb.Extensions
         public static IReadOnlyList<AdbDeviceModel> ToDevicesList(this AdbStream stream)=>
             ProcessAndToList(stream, AdbDeviceModel.Parse);
 
+        public static IEnumerable<string> ReceiveLinesContinuous(this AdbStream stream)
+        {
+            var baseStream = stream.GetStream();
+            
+            while (baseStream.CanRead)
+            {
+                yield return ReadLineCoreAsync(baseStream).Result;
+            }
+        }
+
         /// <summary>
         /// Processes the stream and returns the result as a list of the specified type.
         /// </summary>
@@ -97,54 +124,29 @@ namespace Files.Adb.Extensions
             return result;
         }
 
-        public static IReadOnlyList<string> ToList(this AdbStream stream, bool skipSize = false)
+        public static async IAsyncEnumerable<string> ToEnumerableAsync(this AdbStream stream, bool skipSize = false)
         {
-            var result = new List<string>();
-            using (var reader = ToStreamReader(stream, skipSize))
+            using var reader = ToStreamReader(stream, skipSize);
+            string? line;
+
+            while ((line = await reader.ReadLineAsync()) != null)
             {
-                string? line;
-
-                while ((line = reader?.ReadLine()) != null)
-                {
-                    result.Add(line);
-                }
+                yield return line;
             }
-
-            return result;
         }
 
         public static string ReadString(this AdbStream stream)
         {
             var baseStream = stream.GetStream();
             
-            var lenHex = new byte[4];
-            
-            baseStream.Read(lenHex);
-
-            var lenStr = Encoding.ASCII.GetString(lenHex);
-            var size = int.Parse(lenStr, NumberStyles.HexNumber);
-            
-            var buffer = new byte[size];
-            baseStream.Read(buffer);
-            
-            return Encoding.GetString(buffer);
+            return ReadLineCoreAsync(baseStream).Result;
         }
         
         public static async Task<string> ReadStringAsync(this AdbStream stream)
         {
             var baseStream = stream.GetStream();
             
-            var lenHex = new byte[4];
-            
-            await baseStream.ReadAsync(lenHex);
-
-            var lenStr = Encoding.ASCII.GetString(lenHex);
-            var size = int.Parse(lenStr, NumberStyles.HexNumber);
-            
-            var buffer = new byte[size];
-            await baseStream.ReadAsync(buffer);
-            
-            return Encoding.GetString(buffer);
+            return await ReadLineCoreAsync(baseStream);
         }
 
         public static StreamReader ToStreamReader(this AdbStream stream, bool skipSize = false)
@@ -180,6 +182,15 @@ namespace Files.Adb.Extensions
             }
         }
 
+        /// <summary>
+        /// Extract device serial (or IP address and port) and target ADB host from URI
+        /// </summary>
+        public static void ExtractDeviceAndAdbHost(this Uri uri, out string device, out string host)
+        {
+            device = uri.UserInfo;
+            host = uri.Host;
+        }
+
         private static bool HandleResult(AdbStream stream, out string? reason)
         {
             var r = stream.GetResult();
@@ -197,6 +208,21 @@ namespace Files.Adb.Extensions
                 default:
                     return false;
             }
+        }
+
+        private static async Task<string> ReadLineCoreAsync(this Stream stream)
+        {
+            var lenHex = new byte[4];
+            
+            await stream.ReadAsync(lenHex);
+
+            var lenStr = Encoding.ASCII.GetString(lenHex);
+            var size = int.Parse(lenStr, NumberStyles.HexNumber);
+            
+            var buffer = new byte[size];
+            await stream.ReadAsync(buffer);
+            
+            return Encoding.GetString(buffer);
         }
     }
 }

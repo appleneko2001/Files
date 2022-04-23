@@ -29,7 +29,7 @@ namespace Files.ViewModels.Browser.Files.Android
             }
         }
 
-        private static Uri MixFullPath(IAdbConnection conn, string remotePath)
+        private static Uri MixFullPath(AdbConnection conn, string remotePath)
         {
             return new Uri(conn.GetConnectionUri(), "." + remotePath);
         } 

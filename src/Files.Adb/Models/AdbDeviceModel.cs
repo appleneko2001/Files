@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Text;
-using Files.Adb.Models.Connections;
 
 namespace Files.Adb.Models
 {
     public class AdbDeviceModel
     {
-        private IAdbConnection _connection;
+        private AdbConnection _connection;
         private string _status;
         private IReadOnlyDictionary<string, string> _properties;
 
-        public IAdbConnection Connection => _connection;
+        public AdbConnection Connection => _connection;
         
         public string Model => _properties["model"];
         public bool IsReady => _status == "device";
@@ -180,23 +178,10 @@ namespace Files.Adb.Models
                     properties.Add(propertyName!, propertyValue);
                 }
 
-                IAdbConnection connection;
-
-                if (serialOrIpAddress?.Contains(':') ?? throw new ArgumentNullException())
-                {
-                    var split = serialOrIpAddress.Split(':');
-
-                    connection = new AdbWifiConnection(split[0], int.Parse(split[1]));
-                }
-                else
-                {
-                    connection = new AdbNormalConnection(serialOrIpAddress);
-                }
-
                 return new AdbDeviceModel
                 {
                     _properties = properties.ToImmutableDictionary(),
-                    _connection = connection,
+                    _connection = new AdbConnection(serialOrIpAddress!),
                     _status = status?.ToLowerInvariant()
                 };
             }

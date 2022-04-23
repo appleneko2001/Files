@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Files.Adb.Models.Connections;
+using Files.Adb.Extensions;
+using Files.Adb.Models;
 using Files.Models.Android.Enums;
 using Files.Services.Android;
 using Files.ViewModels.Browser.Files.Android;
@@ -10,7 +11,7 @@ namespace Files.ViewModels.Browser
 {
     public class AdbBrowserContentViewModel : BrowserContentViewModelBase
     {
-        public IAdbConnection Connection { get; private set; }
+        public AdbConnection Connection { get; private set; }
 
         public AdbBrowserContentViewModel(BrowserWindowTabViewModel parent) : base(parent)
         {
@@ -24,11 +25,11 @@ namespace Files.ViewModels.Browser
 
         private async Task EnumerateDirectoryAndFillCollection(Uri uri, CancellationToken _cancellationToken = default)
         {
-            IAdbConnection Parse(Uri uri)
+            AdbConnection Parse(Uri connectionUri)
             {
-                if (uri.Host.Contains(':'))
-                    return new AdbWifiConnection(uri.Host, uri.Port);
-                return new AdbNormalConnection(uri.Host);
+                connectionUri.ExtractDeviceAndAdbHost(out var device, out var adb);
+
+                return new AdbConnection(device, adb);
             }
 
             var adb = AndroidDebugBackend.Instance;

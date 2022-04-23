@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using Files.Services.Android;
 using Files.ViewModels.Android.Devices;
 using MinimalMvvm.ViewModels;
@@ -15,24 +17,66 @@ namespace Files.ViewModels.Dialogs.Android
         public AdbDeviceViewModel? SelectedDevice { get; set; }
         
         public RelayCommand GetDevicesCommand { get; }
+
+        private readonly AndroidDebugBackend _inst = AndroidDebugBackend.Instance;
         
         public AdbDevicePickerViewModel()
         {
+            _inst.UpdateDevicesEvent += OnUpdateDevicesEvent;
+            
             GetDevicesCommand = new RelayCommand(ExecuteGetDevicesCommand);
+
+            foreach (var device in _inst.Devices)
+            {
+                AddDevice(device);
+            }
+        }
+
+        private void OnUpdateDevicesEvent(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (string item in e.NewItems)
+                        AddDevice(item);
+                    break;
+                    
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in Devices.Where(
+                                 model => e.OldItems.Cast<string>().Contains(model.Connection.ToString())))
+                        Devices.Remove(item);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private async void ExecuteGetDevicesCommand(object? obj)
         {
             Devices.Clear();
-            
-            Thread.Sleep(1000);
-            
-            await foreach (var device in AndroidDebugBackend.Instance.GetDevicesAsync())
+
+            await foreach (var device in _inst.GetDevicesAsync())
             {
-                if(Devices.All(model => device.Connection.GetAdbConnectionString() 
-                                        != model.AdbDeviceInfo.Connection.GetAdbConnectionString()))
-                    Devices.Add(new AdbDeviceViewModel(device));
+                AddDevice(device);
             }
+        }
+
+        private void AddDevice(string device)
+        {
+            if(Devices.Any(model => device ==
+                model.Connection.GetAdbConnectionString()))
+                return;
+
+            var vm = new AdbDeviceViewModel(device);
+            Devices.Add(vm);
+
+            Task.Factory.StartNew(vm.GetDeviceProps);
+        }
+
+        public void UnloadEvents()
+        {
+            _inst.UpdateDevicesEvent -= OnUpdateDevicesEvent;
         }
     }
 }

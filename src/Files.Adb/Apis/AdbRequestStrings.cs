@@ -24,6 +24,8 @@
         /// id - device id</list>
         /// </summary>
         public static string SetDevice => "host:transport:{id}";
+
+        public static string TrackDevices => "host:track-devices";
         
         /// <summary>
         /// <p>Send command to device. Requires pass a argument named 'command'.</p>

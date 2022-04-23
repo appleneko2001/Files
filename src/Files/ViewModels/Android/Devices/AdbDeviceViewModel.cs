@@ -1,59 +1,78 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
 using Files.Adb.Models;
 using Files.Models.Android;
 using Files.Models.Android.Props;
 using Files.Models.Devices;
 using Files.Models.Devices.Enums;
 using Files.Services.Android;
+using MinimalMvvm.Extensions;
 using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Android.Devices
 {
     public class AdbDeviceViewModel : ViewModelBase
     {
-        private AdbDeviceInfoViewModel _adbDeviceInfo;
-        private AdbDeviceProps _adbDeviceProps;
-        
-        private string? _deviceName;
+        private readonly AdbDeviceProps _adbDeviceProps;
+        private readonly AdbConnection _connection;
+        private string? _deviceName = "RETRIEVING";
 
         public AdbDeviceViewModel(AdbDeviceModel model)
         {
-            _adbDeviceInfo = new AdbDeviceInfoViewModel(model);
             _adbDeviceProps = new AdbDeviceProps();
+            _connection = model.Connection;
+        }
 
-            GetDeviceProps().Wait(50);
+        public AdbDeviceViewModel(string device)
+        {
+            if (device.Contains('\t'))
+                device = device.Split('\t')[0];
+            
+            _adbDeviceProps = new AdbDeviceProps();
+            _connection = new AdbConnection(device);
         }
 
         public string? DeviceName
         {
             get => _deviceName;
-            private set
-            {
-                _deviceName = value;
-                OnPropertyChanged();
-            }
+            private set => this.SetAndUpdateIfChanged(ref _deviceName, value);
         }
-
-        public AdbDeviceInfoViewModel AdbDeviceInfo => _adbDeviceInfo;
 
         public DeviceModel GetDeviceModel()
         {
-            return new AdbStorageDeviceModel(_adbDeviceInfo.Connection ,new DeviceInfo
+            return new AdbStorageDeviceModel(Connection, new DeviceInfo
             {
                 Kind = DeviceKind.UsbStorage,
-                Name = DeviceName
+                Name = DeviceName!
             });
         }
 
-        public async Task GetDeviceProps()
+        public void GetDeviceProps()
         {
             var backend = AndroidDebugBackend.Instance;
-            await foreach (var pair in backend.GetPropertiesAsync(AdbDeviceInfo.Connection, "ro.product."))
+            
+            for (var retry = 0; retry < 3; retry++)
             {
-                _adbDeviceProps.AddOrUpdate(pair);
-            }
+                try
+                {
+                    foreach (var pair in backend
+                                 .GetProperties(Connection, "ro.product."))
+                    {
+                        _adbDeviceProps.AddOrUpdate(pair);
+                    }
 
-            DeviceName = _adbDeviceProps.GetBrandModel();
+                    DeviceName = _adbDeviceProps.GetBrandModel();
+                    
+                    break;
+                }
+                catch
+                {
+                    DeviceName = "Unable to retrieve info.";
+                    
+                    Thread.Sleep(100);
+                }
+            }
         }
+
+        public AdbConnection Connection => _connection;
     }
 }
