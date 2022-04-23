@@ -4,31 +4,16 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <Product>The core of Files app</Product>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Appleneko2001.MinimalMvvm" Version="0.10.3.8-alpha" />
+      <PackageReference Include="Appleneko2001.MinimalMvvm" Version="0.10.3.10-alpha" />
       <PackageReference Include="Avalonia" Version="0.10.13" />
       <PackageReference Include="Avalonia.Diagnostics" Version="0.10.13" />
       <PackageReference Include="FileSignatures" Version="4.2.0" />
       <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.90-nightly" />
       <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Assets" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Views\BrowserWindow.axaml.cs">
-        <DependentUpon>BrowserWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Browser\Breadcrumbs.axaml.cs">
-        <DependentUpon>Breadcrumbs.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Remove="ViewModels\ViewModelBase.cs" />
     </ItemGroup>
 
     <ItemGroup>
