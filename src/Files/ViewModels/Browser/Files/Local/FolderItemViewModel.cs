@@ -2,10 +2,11 @@
 using System.Threading;
 using System.Windows.Input;
 using Files.Services;
+using Files.ViewModels.Browser.Files.Interfaces;
 
 namespace Files.ViewModels.Browser.Files.Local
 {
-    public class FolderItemViewModel : LocalFileSystemItemViewModel
+    public class FolderItemViewModel : LocalFileSystemItemViewModel, IFolderViewModel
     {
         public override bool IsFolder => true;
 

@@ -3,12 +3,13 @@ using System.IO;
 using System.Threading;
 using System.Windows.Input;
 using Files.Services;
+using Files.ViewModels.Browser.Files.Interfaces;
 using Files.ViewModels.Browser.Preview;
 using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Browser.Files.Local
 {
-    public class FileItemViewModel : LocalFileSystemItemViewModel, IRequestPreviewable
+    public class FileItemViewModel : LocalFileSystemItemViewModel, IRequestPreviewable, IFileViewModel
     {
         private static ICommand _onClickCommand = new RelayCommand(delegate(object? o)
         {
@@ -30,6 +31,8 @@ namespace Files.ViewModels.Browser.Files.Local
         public PreviewableViewModelBase? Preview => _previewViewModel;
         public bool IsPreviewReady => Preview != null;
 
+        public IconViewModelBase Icon => FileIdentityService.GetIconByExtension(FullPath);
+        
         public override bool IsFolder => false;
 
         public FileItemViewModel(LocalFilesBrowserContentViewModel parent, FileInfo fi) : base(parent, fi)
@@ -46,7 +49,7 @@ namespace Files.ViewModels.Browser.Files.Local
             PreviewManagerBackend.Instance?.ScheduleGetPreview(new FileInfo(FullPath), OnCompleteGetPreviewTask, _cancellationToken);
         }
 
-        public override ICommand? OnClickCommand => _onClickCommand;
+        public override ICommand OnClickCommand => _onClickCommand;
 
         private void OnCompleteGetPreviewTask(PreviewableViewModelBase model)
         {

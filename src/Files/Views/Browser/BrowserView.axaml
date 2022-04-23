@@ -65,7 +65,7 @@
                     <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
                                     Content="{CompiledBinding }">
                         <ContentControl.DataTemplates>
-                            <DataTemplate DataType="local:FileItemViewModel">
+                            <DataTemplate DataType="{x:Type local:IFileViewModel}">
                                 <DockPanel LastChildFill="True"
                                            Opacity="{CompiledBinding IsVisible, 
                                                Converter={StaticResource BoolToDoubleConverter}, 
@@ -107,81 +107,7 @@
                             </DataTemplate>
 
                             <!-- Folder item element template -->
-                            <DataTemplate DataType="local:FolderItemViewModel">
-                                <DockPanel LastChildFill="True"
-
-                                           Opacity="{CompiledBinding IsVisible, 
-                                               Converter={StaticResource BoolToDoubleConverter}, 
-                                               ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                                    <Panel Width="48" Height="48" Margin="8"
-                                           VerticalAlignment="Top"
-                                           DockPanel.Dock="Left">
-                                        <icons:MaterialIcon Width="NaN" Height="NaN"
-
-                                                            Kind="Folder"
-                                                            VerticalAlignment="Stretch"
-                                                            HorizontalAlignment="Stretch" />
-
-                                        <ContentControl Content="{CompiledBinding AdditionalIconKind}"
-                                                        ContentTemplate="{StaticResource BrowserItemDecorationTemplate}" />
-                                    </Panel>
-
-                                    <StackPanel Margin="0,8,8,8" DockPanel.Dock="Right">
-                                        <StackPanel.Styles>
-                                            <Style Selector="TextBlock">
-                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                                <Setter Property="VerticalAlignment" Value="Stretch" />
-                                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                                <Setter Property="TextWrapping" Value="NoWrap" />
-                                                <Setter Property="TextAlignment" Value="Left" />
-                                            </Style>
-                                        </StackPanel.Styles>
-
-                                        <TextBlock Text="{CompiledBinding DisplayName}" />
-                                    </StackPanel>
-                                </DockPanel>
-                            </DataTemplate>
-
-                            <!-- Item templates for Android File Explorer View -->
-
-                            <DataTemplate DataType="android:AdbFileItemViewModel">
-                                <DockPanel LastChildFill="True"
-                                           Opacity="{CompiledBinding IsVisible, 
-                                               Converter={StaticResource BoolToDoubleConverter}, 
-                                               ConverterParameter={StaticResource IsNotVisibleDoubleValue}}">
-                                    <Panel VerticalAlignment="Top"
-                                           DockPanel.Dock="Left">
-                                        <Panel>
-                                            <icons:MaterialIcon Width="48" Height="48" Margin="8"
-                                                                Kind="File"
-                                                                VerticalAlignment="Stretch"
-                                                                HorizontalAlignment="Stretch" />
-
-                                            <ContentControl Content="{CompiledBinding AdditionalIconKind}"
-                                                            ContentTemplate="{StaticResource BrowserItemDecorationTemplate}" />
-                                        </Panel>
-                                    </Panel>
-
-                                    <StackPanel Margin="0,8,8,8" DockPanel.Dock="Right">
-                                        <StackPanel.Styles>
-                                            <Style Selector="TextBlock">
-                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                                <Setter Property="VerticalAlignment" Value="Stretch" />
-                                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                                <Setter Property="TextWrapping" Value="NoWrap" />
-                                                <Setter Property="TextAlignment" Value="Left" />
-                                            </Style>
-                                        </StackPanel.Styles>
-
-                                        <TextBlock Text="{CompiledBinding DisplayName}" />
-                                        <TextBlock
-                                            Text="{CompiledBinding Size, Converter={StaticResource HumanizeSizeConverter}}" />
-                                    </StackPanel>
-                                </DockPanel>
-                            </DataTemplate>
-
-                            <!-- Folder item element template -->
-                            <DataTemplate DataType="android:AdbFolderItemViewModel">
+                            <DataTemplate DataType="{x:Type local:IFolderViewModel}">
                                 <DockPanel LastChildFill="True"
 
                                            Opacity="{CompiledBinding IsVisible, 

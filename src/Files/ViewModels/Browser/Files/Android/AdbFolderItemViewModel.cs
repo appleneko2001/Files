@@ -1,12 +1,11 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Files.Models.Android.Storages;
 using Files.Services;
-using MinimalMvvm.ViewModels.Commands;
+using Files.ViewModels.Browser.Files.Interfaces;
 
 namespace Files.ViewModels.Browser.Files.Android
 {
-    public class AdbFolderItemViewModel : AdbFileSystemItemViewModel
+    public class AdbFolderItemViewModel : AdbFileSystemItemViewModel, IFolderViewModel
     {
         public AdbFolderItemViewModel(BrowserContentViewModelBase parent,
             AdbListFilesItemModel model) : base(parent, model)

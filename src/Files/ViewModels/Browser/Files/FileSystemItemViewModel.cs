@@ -1,8 +1,9 @@
 ﻿using System.Threading;
+using Files.ViewModels.Browser.Files.Interfaces;
 
 namespace Files.ViewModels.Browser.Files
 {
-    public abstract class FileSystemItemViewModel : ItemViewModelBase
+    public abstract class FileSystemItemViewModel : ItemViewModelBase, IFileSystemViewModel
     {
         private string _fullPath = string.Empty;
         public string FullPath
