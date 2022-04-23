@@ -5,11 +5,10 @@
                     xmlns:controls="clr-namespace:Files.Views.Controls"
                     xmlns:preview="clr-namespace:Files.ViewModels.Browser.Preview"
                     xmlns:viewModels="clr-namespace:Files.ViewModels"
-                    xmlns:local="clr-namespace:Files.ViewModels.Browser.Files.Local"
+                    xmlns:local="clr-namespace:Files.ViewModels.Browser.Files.Interfaces"
                     xmlns:browser="clr-namespace:Files.ViewModels.Browser"
                     xmlns:sidesheet="clr-namespace:Files.ViewModels.Browser.Sidesheet"
                     xmlns:properties="clr-namespace:Files.ViewModels.Browser.Properties"
-                    xmlns:android="clr-namespace:Files.ViewModels.Browser.Files.Android"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
                     xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
                     xmlns:breadcrumb="clr-namespace:Files.ViewModels.Breadcrumb"
@@ -73,10 +72,9 @@
                                     <Panel VerticalAlignment="Top"
                                            DockPanel.Dock="Left">
                                         <Panel IsVisible="{CompiledBinding !IsPreviewReady}">
-                                            <icons:MaterialIcon Width="48" Height="48" Margin="8"
-                                                                Kind="File"
-                                                                VerticalAlignment="Stretch"
-                                                                HorizontalAlignment="Stretch" />
+                                            <ContentControl Width="48" Height="48" Margin="8"
+                                                            Content="{Binding Icon}"
+                                                            ContentTemplate="{StaticResource BrowserIconTemplate}"/>
 
                                             <ContentControl Content="{CompiledBinding AdditionalIconKind}"
                                                             ContentTemplate="{StaticResource BrowserItemDecorationTemplate}" />

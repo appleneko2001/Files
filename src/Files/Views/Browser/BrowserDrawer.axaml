@@ -1,31 +1,48 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
                     xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-                    xmlns:storage="clr-namespace:Files.ViewModels.Storage"
                     xmlns:converters="clr-namespace:Files.Views.Converters"
-                    
+                    xmlns:entries="clr-namespace:Files.ViewModels.Drawers.Entries"
+                    xmlns:sections="clr-namespace:Files.ViewModels.Drawers.Sections"
+
                     x:CompileBindings="True">
     <converters:StringTrimConverter x:Key="StringTrimStart"/>
     
-    <DataTemplate DataType="storage:StorageEntryViewModel" x:Key="BrowserDrawerStorageEntryTemplate">
-        <Panel Margin="0,0,4,0">
+    <DataTemplate DataType="entries:StorageDrawerEntryViewModel" x:Key="BrowserDrawerStorageEntryTemplate">
+        <DockPanel Margin="0">
+            <Button Classes="Flat"
+                    DockPanel.Dock="Right"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    ToolTip.Tip="Unmount entry"
+                    
+                    Margin="0,0,8,0"
+                    Padding="8" CornerRadius="32"
+                    
+                    Content="{icons:MaterialIconExt Kind=Eject, Size=20}"
+                    
+                    Command="{Binding ExtraCommand}"
+                    CommandParameter="{Binding }"
+                    
+                    IsVisible="{Binding IsRemovable}"/>
+            
             <Button Classes="Flat" HorizontalContentAlignment="Stretch"
                     UseLayoutRounding="True" ClipToBounds="True"
                     
-                    Height="40" Margin="0,0,40,0" 
+                    Height="40" Margin="0,0,8,0" 
                     CornerRadius="0, 32, 32, 0"
                     
-                    Command="{Binding OpenStorageEntryCommand}"
+                    Command="{Binding ClickCommand}"
                     CommandParameter="{Binding }">
                 <Panel>
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Center">
-                        <ContentControl Content="{CompiledBinding IconKind}"
-                                        ContentTemplate="{StaticResource BrowserDrawerStorageItemIconTemplate}"/>
+                        <ContentControl Content="{CompiledBinding Icon}"
+                                        ContentTemplate="{StaticResource BrowserDrawerIconTemplate}"/>
                         
                         <TextBlock VerticalAlignment="Center"
-                                   Text="{Binding Entry, Converter={StaticResource StringTrimStart}}" />
+                                   Text="{Binding Name,
+                                   Converter={StaticResource StringTrimStart}}" />
                     </StackPanel>
                     
                     <TextBlock VerticalAlignment="Center"
@@ -33,36 +50,28 @@
                                Text="{Binding Label}" />
                 </Panel>
             </Button>
-
-            <Button Classes="Flat"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    ToolTip.Tip="Unmount entry"
-                    
-                    Padding="8" CornerRadius="32"
-                    
-                    Content="{icons:MaterialIconExt Kind=Eject, Size=20}"
-                    
-                    Command="{Binding UnmountCommand}"
-                    CommandParameter="{Binding }"
-                    
-                    IsVisible="{Binding IsRemovable}"/>
-        </Panel>
+        </DockPanel>
     </DataTemplate>
     
-    <DataTemplate DataType="storage:StorageDeviceViewModel" x:Key="BrowserDrawerStorageDeviceTemplate">
+    <DataTemplate DataType="sections:StorageDrawerSectionViewModel" x:Key="BrowserDrawerStorageDeviceTemplate">
         <StackPanel>
-            <Panel Margin="16, 8">
-                <icons:MaterialIcon HorizontalAlignment="Left" 
-                                    Width="20" Height="20"
-                                    Kind="{CompiledBinding IconKind}" />
+            <DockPanel Margin="16, 8">
+                <DockPanel.Styles>
+                    <Style Selector="icons|MaterialIcon">
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                    </Style>
+                </DockPanel.Styles>
+                
+                <ContentControl HorizontalAlignment="Left" 
+                                Content="{CompiledBinding Icon}"
+                                ContentTemplate="{StaticResource BrowserDrawerIconTemplate}"/>
+                
                 <TextBlock Classes="Subtitle1"
-                           Margin="28,0,0,0"
-                           Text="{CompiledBinding Name}" />
-            </Panel>
+                           Text="{CompiledBinding Header}" />
+            </DockPanel>
 
             <ItemsControl KeyboardNavigation.TabNavigation="Continue"
-                          Items="{CompiledBinding StorageEntries}"
+                          Items="{CompiledBinding Entries}"
                           ItemTemplate="{StaticResource BrowserDrawerStorageEntryTemplate}"/>
         </StackPanel>
     </DataTemplate>

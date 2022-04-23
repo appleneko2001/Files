@@ -4,8 +4,8 @@
         xmlns:assist="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-        xmlns:additional="clr-namespace:Files.Views.Additional"
         xmlns:viewModels="clr-namespace:Files.ViewModels"
+        xmlns:headers="clr-namespace:Files.ViewModels.Drawers.Headers"
 
         x:Class="Files.Views.BrowserWindow"
         x:CompileBindings="True"
@@ -23,16 +23,7 @@
         <KeyBinding Gesture="F11" Command="{CompiledBinding FullscreenCommand}"
                     CommandParameter="{ResolveByName PART_RootBrowserWindow}" />
     </Window.KeyBindings>
-    <!--Window.Styles>
-        <Style Selector="Window:fullscreen material|NavigationDrawer#PART_NavDrawerHost">
-            <Setter Property="Margin" Value="0"/>
-        </Style>
-        
-        <Style Selector="Window:not(:fullscreen) material|NavigationDrawer#PART_NavDrawerHost">
-            <Setter Property="Margin" Value="0,32,0,0"/>
-        </Style>
-    </Window.Styles-->
-
+    
     <!-- ReSharper disable file InconsistentNaming -->
     <!-- ReSharper disable Xaml.StyleClassNotFound -->
 

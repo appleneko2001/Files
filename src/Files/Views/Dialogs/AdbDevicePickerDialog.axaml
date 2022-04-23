@@ -20,8 +20,8 @@
                     <DockPanel>
                         <avalonia:MaterialIcon Kind="Android" Width="24" Height="24" Margin="8"/>
                         <StackPanel DockPanel.Dock="Right">
-                            <TextBlock Classes="Subtitle1" Text="{Binding AdbDeviceInfo.Name}"/>
-                            <TextBlock Text="{Binding AdbDeviceInfo.ConnectionString}"/>
+                            <TextBlock Classes="Subtitle1" Text="{Binding DeviceName}"/>
+                            <TextBlock Text="{Binding Connection}"/>
                         </StackPanel>
                     </DockPanel>
                 </DataTemplate>

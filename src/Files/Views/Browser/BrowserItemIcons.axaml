@@ -22,10 +22,21 @@
                             Foreground="{DynamicResource SecondaryHueMidBrush}"/>
     </DataTemplate>
     
-    <DataTemplate DataType="icons1:MaterialIconKind" x:Key="BrowserDrawerStorageItemIconTemplate">
-        <icons:MaterialIcon Width="24" Height="24" Margin="0,0,8,0"
+    <DataTemplate DataType="viewModels:MaterialIconViewModel" x:Key="BrowserDrawerIconTemplate">
+        <icons:MaterialIcon Width="20" Height="20"
+                            Margin="0,0,8,0"
                                 
-                            Kind="{CompiledBinding }"
-                            Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                            Kind="{CompiledBinding Kind}"/>
     </DataTemplate>
+    
+    <RecyclingElementFactory x:Key="BrowserIconTemplate">
+        <RecyclingElementFactory.Templates>
+            <DataTemplate DataType="viewModels:MaterialIconViewModel" x:Key="MaterialIcon">
+                <icons:MaterialIcon Width="NaN" Height="NaN"
+                                    Margin="0,0,8,0"
+                                    
+                                    Kind="{CompiledBinding Kind}"/>
+            </DataTemplate>
+        </RecyclingElementFactory.Templates>
+    </RecyclingElementFactory>
 </ResourceDictionary>
