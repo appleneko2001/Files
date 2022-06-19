@@ -11,7 +11,7 @@
             <DataTemplate x:Key="Node" DataType="breadcrumb:BreadcrumbNodeViewModel">
                 <Border VerticalAlignment="Center"
                         CornerRadius="32" Margin="2,0" BorderThickness="1"
-                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                        BorderBrush="Transparent">
                     <Button Classes="Flat" ClipToBounds="True"
                             Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
                             Command="{Binding ClickCommand}">
@@ -23,7 +23,7 @@
             <DataTemplate x:Key="NodeWithIcon" DataType="breadcrumb:BreadcrumbNodeWithIconViewModel">
                 <Border VerticalAlignment="Center"
                         CornerRadius="32" Margin="2,0" BorderThickness="1"
-                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
+                        BorderBrush="Transparent">
                     <Button Classes="Flat" ClipToBounds="True"
                             Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
                             Command="{Binding ClickCommand}">
