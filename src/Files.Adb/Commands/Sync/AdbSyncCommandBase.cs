@@ -1,6 +1,6 @@
-﻿namespace Files.Adb.Operations
+﻿namespace Files.Adb.Commands.Sync
 {
-    public class AdbOperationBase
+    public class AdbSyncCommandBase
     {
         public const string Done = "DONE";
         public const string Fail = "FAIL";
