@@ -1,41 +1,55 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
-using Files.Adb.Operations;
-using Files.Adb.Operations.Results;
+using Files.Adb.Commands.Sync;
 
 namespace Files.Adb.Builders
 {
     public class AdbSyncBuilder
     {
-        private IAdbOperation _operation;
-        private AdbStream _adbStream;
-        private IDictionary<string, object> parameters;
+        public AdbStream AdbStream { get; }
+
+        public IDictionary<string, object> Parameters { get; }
 
         public AdbSyncBuilder(AdbStream adbStream)
         {
-            _adbStream = adbStream;
-            parameters = new Dictionary<string, object>();
+            AdbStream = adbStream;
+            Parameters = new Dictionary<string, object>();
         }
 
-        public AdbSyncBuilder UseOperation(IAdbOperation operation)
+        public AdbSyncBuilder<TResult> UseCommand<TResult>(IAdbSyncCommand<TResult> operation) 
+            where TResult : AdbSyncCommandResultBase
         {
+            return new AdbSyncBuilder<TResult>(this, operation);
+        }
+    }
+
+    public class AdbSyncBuilder<TResult> where TResult : AdbSyncCommandResultBase
+    {
+        private readonly AdbSyncBuilder _inherit;
+        private readonly IAdbSyncCommand<TResult> _operation;
+
+        public AdbSyncBuilder(AdbSyncBuilder inherit, IAdbSyncCommand<TResult> operation)
+        {
+            _inherit = inherit;
             _operation = operation;
+        }
+        
+        public AdbSyncBuilder<TResult> WithParameter(string k, object v)
+        {
+            _inherit.Parameters.Add(k, v);
 
             return this;
         }
 
-        public AdbSyncBuilder WithParameter(string k, object v)
+        public IAsyncEnumerable<TResult> Execute(CancellationToken cancellationToken = default)
         {
-            parameters.Add(k, v);
-
-            return this;
-        }
-
-        public IAsyncEnumerable<AdbOperationResult> PerformOperation(CancellationToken cancellationToken = default)
-        {
-            _operation.AdbStream = _adbStream;
+            if(_operation == null)
+                throw new ArgumentNullException(nameof(_operation));
             
-            return _operation.RunAsync(parameters, cancellationToken);
+            _operation.AdbStream = _inherit.AdbStream;
+            
+            return _operation.RunAsync(_inherit.Parameters, cancellationToken);
         }
     }
 }
