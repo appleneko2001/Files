@@ -6,6 +6,11 @@
         /// <p>Returns the version of the ADB host.</p>
         /// </summary>
         public static string Version => "host:version";
+
+        /// <summary>
+        /// <p>Returns features that current ADB host supported.</p>
+        /// </summary>
+        public static string Features => "host:features";
         
         /// <summary>
         /// <p>Returns the list of all connected devices</p>
@@ -41,7 +46,8 @@
         /// <p>Send command to device. Requires pass a argument named 'command'.</p>
         /// <p>Parameters:</p>
         /// <list type="bullet">
-        /// command - command to send to device</list>
+        /// <item>command - command to send to device</item>
+        /// </list>
         /// </summary>
         public static string Exec => "exec:{command}";
         
