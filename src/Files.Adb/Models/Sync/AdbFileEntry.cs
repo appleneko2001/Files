@@ -23,10 +23,19 @@ namespace Files.Adb.Models.Sync
             Path = path;
         }
         
+        public AdbFileEntry(int mode, int size, int modTime, string path)
+        {
+            Mode = (UnixFileMode)mode;
+            Size = size;
+            DateTime = DateTime.FromFileTimeUtc(modTime);
+            Path = path;
+        }
+        
         public UnixFileMode Mode { get; }
         public long Size { get; }
         public string Path { get; }
         public DateTime DateTime { get; }
         
+        public bool IsDirectory => Enum.IsDefined(typeof(UnixFileMode), UnixFileMode.Directory);
     }
 }
