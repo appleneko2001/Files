@@ -12,7 +12,6 @@ namespace Files.ViewModels.Breadcrumb
 
         public override void Click()
         {
-            // TODO: Breadcrumb edit line (Editable address line)
             Parent.IsInEditMode = !Parent.IsInEditMode;
 
             OnStatusChanged();
