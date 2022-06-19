@@ -18,7 +18,7 @@ namespace Files.Linux
                         WmClass = "Material.Files"
                     });
             
-            builder.StartWithClassicDesktopLifetime(args, ShutdownMode.OnLastWindowClose);
+            builder.StartWithClassicDesktopLifetime(args, ShutdownMode.OnExplicitShutdown);
         }
     }
 }
