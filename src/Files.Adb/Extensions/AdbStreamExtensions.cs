@@ -30,8 +30,18 @@ namespace Files.Adb.Extensions
         
         public static AdbStream Shell(this AdbStream stream, string command)
         {
-            SingleCommand(stream, AdbRequestStrings.Shell.AppendParam("command", command).AppendParam("args", ",raw"));
+            SingleCommand(stream, AdbRequestStrings.Shell
+                .AppendParam("command", command)
+                .AppendParam("args", ",raw"));
             
+            return stream;
+        }
+
+        public static AdbStream Execute(this AdbStream stream, string cmd)
+        {
+            SingleCommand(stream, AdbRequestStrings.Exec
+                .AppendParam("command", cmd));
+
             return stream;
         }
         
