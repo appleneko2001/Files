@@ -191,6 +191,11 @@ namespace Files.Adb.Extensions
             host = uri.Host;
         }
 
+        public static AdbConnection ExtractAdbConnectionModelFromUri(this Uri uri)
+        {
+            return new AdbConnection(uri.UserInfo, uri.Host);
+        }
+
         private static bool HandleResult(AdbStream stream, out string? reason)
         {
             var r = stream.GetResult();
