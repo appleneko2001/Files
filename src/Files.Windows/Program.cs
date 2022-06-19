@@ -10,6 +10,7 @@ namespace Files.Windows
     {
         private const string AppName = "Files";
         
+        [STAThread]
         private static int Main(string[] args)
         {
             var result = 0;
