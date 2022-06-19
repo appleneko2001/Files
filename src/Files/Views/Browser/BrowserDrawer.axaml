@@ -26,10 +26,11 @@
                     
                     IsVisible="{Binding IsRemovable}"/>
             
-            <Button Classes="Flat" HorizontalContentAlignment="Stretch"
+            <Button Classes="Flat browser-drawer-item" HorizontalContentAlignment="Stretch"
                     UseLayoutRounding="True" ClipToBounds="True"
                     
-                    Height="40" Margin="0,0,8,0" 
+                    Height="40"
+                    Margin="0,0,8,0" 
                     CornerRadius="0, 32, 32, 0"
                     
                     Command="{Binding ClickCommand}"

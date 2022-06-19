@@ -85,13 +85,13 @@
                         <ItemsControl Items="{Binding StorageDevices}"
                                       ItemTemplate="{StaticResource BrowserDrawerStorageDeviceTemplate}" />
                 
-                        <Button Classes="Flat Drawer"
+                        <Button Classes="Flat Drawer browser-drawer-item"
                                 Content="Connect to..."
 
                                 Command="{Binding ConnectPhoneViaAdbCommand}"
                                 CommandParameter="{Binding }" />
                     
-                        <Button Classes="Flat Drawer"
+                        <Button Classes="Flat Drawer browser-drawer-item"
                                 Content="Settings"/>
                     </StackPanel>
                 </DockPanel>
