@@ -11,7 +11,7 @@ namespace Files.Adb
 {
     public class AdbClient
     {
-        private Encoding _encoding;
+        private Encoding _encoding = Encoding.UTF8;
 
         public Encoding Encoding
         {
