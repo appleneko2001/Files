@@ -61,8 +61,9 @@ namespace Files.Views.Converters
             {
                 var geometry = GenerateRoundedCornerGeometry(rect, args.CornerRadius);
                 var newInstance = InitiateBitmapInstance(geometry, args.Brush);
-
-                _reusePool.Add(args.ReuseId, new RoundedCornerBrushInstance(newInstance, rect));
+                
+                if(newInstance != null)
+                    _reusePool.Add(args.ReuseId, new RoundedCornerBrushInstance(newInstance, rect));
 
                 return newInstance;
             }
@@ -70,7 +71,7 @@ namespace Files.Views.Converters
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         private static Geometry GenerateRoundedCornerGeometry(Rect rect, CornerRadius corner)
