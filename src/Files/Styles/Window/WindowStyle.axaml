@@ -4,14 +4,15 @@
         xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
         xmlns:chrome="clr-namespace:Files.Chrome">
-    
+
     <Style Selector="Window">
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
                     <Border Name="PART_TransparencyFallback" Background="Black" IsHitTestVisible="False" />
                     <Border Background="{TemplateBinding Background}" IsHitTestVisible="False" />
-                    <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
+                    <Panel Background="Transparent"
+                           Margin="{TemplateBinding WindowDecorationMargin}" />
                     <Border Name="PART_WindowClipBorder">
                         <VisualLayerManager Name="PART_VisualLayerManagerRoot">
                             <VisualLayerManager.ChromeOverlayLayer>
@@ -20,55 +21,55 @@
                             <ContentPresenter Name="PART_ContentPresenter"
                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}"
-                                              Margin="{TemplateBinding Padding}"
+                                              Padding="{TemplateBinding Padding}"
                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </VisualLayerManager>
                     </Border>
                 </Panel>
             </ControlTemplate>
         </Setter>
     </Style>
-    
+
     <!-- Window title bar -->
     <Style Selector="chrome|TitleBar">
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Height" Value="32" />
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="CaptionButtonsAlign" Value="Right"/>
+        <Setter Property="CaptionButtonsAlign" Value="Right" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel HorizontalAlignment="{TemplateBinding HorizontalAlignment}" 
+                <Panel HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                        VerticalAlignment="Stretch">
                     <Panel Name="PART_MouseTracker" Height="1" VerticalAlignment="Top" />
-                    
+
                     <Panel Name="PART_Container" HorizontalAlignment="Stretch">
-                        <Border Name="PART_Background" 
+                        <Border Name="PART_Background"
                                 Background="{TemplateBinding Background}" />
-                        
+
                         <styles:ColorZone Name="PART_AppTitleBorder">
                             <StackPanel Name="PART_TitleContainer" Orientation="Horizontal">
-                                <TextBlock Text="{TemplateBinding Title}" VerticalAlignment="Center" Margin="8,0"/>
+                                <TextBlock Text="{TemplateBinding Title}" VerticalAlignment="Center" Margin="8,0" />
                             </StackPanel>
                         </styles:ColorZone>
-                        
+
                         <!--Border Name="PART_DragZone" 
                                 Background="Black" 
                                 HorizontalAlignment="Stretch"
                                 Opacity="0"/-->
-                        <chrome:TitleBarCaptionButtons Name="PART_CaptionButtons" 
-                                                       VerticalAlignment="Top"/>
+                        <chrome:TitleBarCaptionButtons Name="PART_CaptionButtons"
+                                                       VerticalAlignment="Top" />
                     </Panel>
                 </Panel>
             </ControlTemplate>
         </Setter>
     </Style>
-    
+
     <!-- Buttons -->
     <Style Selector="chrome|TitleBarCaptionButtons">
-        <Setter Property="Height" Value="{TemplateBinding Height}"/>
+        <Setter Property="Height" Value="{TemplateBinding Height}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Name="PART_ButtonsPanel"
@@ -76,89 +77,90 @@
                             VerticalAlignment="Stretch">
                     <StackPanel.Styles>
                         <Style Selector="Panel">
-                            <Setter Property="Width" Value="{TemplateBinding Height}"/>
-                            <Setter Property="Height" Value="{TemplateBinding Height}"/>
-                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Width" Value="{TemplateBinding Height}" />
+                            <Setter Property="Height" Value="{TemplateBinding Height}" />
+                            <Setter Property="Background" Value="Transparent" />
                         </Style>
-                        
+
                         <Style Selector="Panel > icons|MaterialIcon">
-                            <Setter Property="Margin" Value="8"/>
-                            <Setter Property="Width" Value="16"/>
-                            <Setter Property="Height" Value="16"/>
+                            <Setter Property="Margin" Value="8" />
+                            <Setter Property="Width" Value="16" />
+                            <Setter Property="Height" Value="16" />
                         </Style>
                     </StackPanel.Styles>
-                    
+
                     <Panel Name="PART_FullScreenButton"
                            ToolTip.Tip="Fullscreen (F11)">
-                        <icons:MaterialIcon Name="PART_FullScreenButtonIcon"/>
+                        <icons:MaterialIcon Name="PART_FullScreenButtonIcon" />
                     </Panel>
                     <Panel Name="PART_MinimizeButton"
                            ToolTip.Tip="Minimize">
                         <Viewbox Margin="8" Width="16" Height="16">
                             <Canvas Width="24" Height="24">
-                                <Path Data="M20,20H4V16H20"                                   
+                                <Path Data="M20,20H4V16H20"
                                       Fill="{TemplateBinding Foreground}" />
                             </Canvas>
                         </Viewbox>
                     </Panel>
                     <Panel Name="PART_RestoreButton"
                            ToolTip.Tip="Maximize / restore">
-                        <icons:MaterialIcon Name="PART_RestoreButtonIcon"/>
+                        <icons:MaterialIcon Name="PART_RestoreButtonIcon" />
                     </Panel>
                     <Panel Name="PART_CloseButton"
                            ToolTip.Tip="Close window (Alt+F4)">
-                        <icons:MaterialIcon Kind="WindowClose"/>
+                        <icons:MaterialIcon Kind="WindowClose" />
                     </Panel>
                 </StackPanel>
             </ControlTemplate>
         </Setter>
     </Style>
-    
+
     <!-- Behaviours - Buttons -->
     <Style Selector="chrome|TitleBarCaptionButtons /template/ icons|MaterialIcon#PART_RestoreButtonIcon">
         <Setter Property="Kind" Value="WindowMaximize" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBarCaptionButtons:maximized /template/ icons|MaterialIcon#PART_RestoreButtonIcon">
         <Setter Property="Kind" Value="WindowRestore" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBarCaptionButtons /template/ icons|MaterialIcon#PART_FullScreenButtonIcon">
         <Setter Property="Kind" Value="Fullscreen" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBarCaptionButtons:fullscreen /template/ icons|MaterialIcon#PART_FullScreenButtonIcon">
         <Setter Property="Kind" Value="FullscreenExit" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBarCaptionButtons /template/ Panel:pointerover">
-        <Setter Property="Background" Value="{DynamicResource MaterialDesignBodyLight}"/>
+        <Setter Property="Background" Value="{DynamicResource MaterialDesignBodyLight}" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBarCaptionButtons /template/ Panel#PART_CloseButton:pointerover">
-        <Setter Property="Background" Value="Red"/>
+        <Setter Property="Background" Value="Red" />
     </Style>
-    
+
     <!-- Behaviours - TitleBar -->
     <Style Selector="chrome|TitleBar:left-aligned-buttons /template/ chrome|TitleBarCaptionButtons#PART_CaptionButtons">
-        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
-    
-    <Style Selector="chrome|TitleBar:right-aligned-buttons /template/ chrome|TitleBarCaptionButtons#PART_CaptionButtons">
-        <Setter Property="HorizontalAlignment" Value="Right"/>
+
+    <Style
+        Selector="chrome|TitleBar:right-aligned-buttons /template/ chrome|TitleBarCaptionButtons#PART_CaptionButtons">
+        <Setter Property="HorizontalAlignment" Value="Right" />
     </Style>
-    
+
     <!-- Behaviours - TitleBar - Normal -->
-    
+
     <Style Selector="chrome|TitleBar /template/ styles|ColorZone#PART_AppTitleBorder">
-        <Setter Property="assists:ShadowAssist.Darken" Value="False"/>
-        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth0"/>
+        <Setter Property="assists:ShadowAssist.Darken" Value="False" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth0" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBar:not(:fullscreen) /template/ styles|ColorZone#PART_AppTitleBorder">
-        <Setter Property="IsVisible" Value="False"/>
+        <Setter Property="IsVisible" Value="False" />
     </Style>
-    
+
     <!-- Behaviours - TitleBar - Fullscreen -->
     <Style Selector="chrome|TitleBar /template/ Border#PART_Background">
         <Setter Property="IsHitTestVisible" Value="False" />
@@ -173,10 +175,10 @@
     </Style>
 
     <Style Selector="chrome|TitleBar:fullscreen /template/ styles|ColorZone#PART_AppTitleBorder">
-        <Setter Property="assists:ShadowAssist.Darken" Value="True"/>
-        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth2"/>
+        <Setter Property="assists:ShadowAssist.Darken" Value="True" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="CenterDepth2" />
     </Style>
-    
+
     <Style Selector="chrome|TitleBar:fullscreen /template/ Panel#PART_Container">
         <Setter Property="RenderTransform" Value="translateY(-32px)" />
         <Setter Property="Transitions">
