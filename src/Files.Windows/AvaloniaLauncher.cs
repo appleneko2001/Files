@@ -7,7 +7,7 @@ namespace Files.Windows
 {
     public class AvaloniaLauncher
     {
-        private WindowsService windowsService;
+        private WindowsService? _windowsService;
         
         public void Start(string[] args, CancellationToken cancellationToken)
         {
@@ -32,16 +32,16 @@ namespace Files.Windows
 
         private void PostSetup(AppBuilder builder, CancellationToken cancellationToken)
         {
-            windowsService = new WindowsService(cancellationToken);
+            _windowsService = new WindowsService(cancellationToken);
             
             if (builder.Instance is FilesApp app)
             {
-                app.RegisterOSService(windowsService);
+                app.RegisterOSService(_windowsService);
             }
             
             //VisualLayerManager.
         }
 
-        internal WindowsService GetService() => windowsService;
+        internal WindowsService? GetService() => _windowsService;
     }
 }
