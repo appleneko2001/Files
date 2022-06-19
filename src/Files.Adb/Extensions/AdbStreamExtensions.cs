@@ -20,6 +20,13 @@ namespace Files.Adb.Extensions
             
             return stream;
         }
+
+        public static AdbStream GetFeatures(this AdbStream stream)
+        {
+            SingleCommand(stream, AdbRequestStrings.Features);
+
+            return stream;
+        }
         
         public static AdbStream Shell(this AdbStream stream, string command)
         {
