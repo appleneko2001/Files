@@ -110,6 +110,8 @@ namespace Files.Adb
         public string GetResult() => GetResponseCore(AdbProtocolSizeHeader);
 
         public Stream GetStream() => new NetworkStream(_socket);
+        
+        public Stream GetReadOnlyStream() => new NetworkStream(_socket, FileAccess.Read, true);
 
         private byte[] GetBytes(int len)
         {
