@@ -170,19 +170,23 @@ namespace Files.Adb.Extensions
         {
             var baseStream = stream.GetStream();
 
-            if (skipSize)
-                return new StreamReader(baseStream, Encoding);
+            // ReSharper disable once InvertIf
+            if (!skipSize)
+            {
+                var lenHex = new byte[AdbProtocolSizeHeader];
             
-            var lenHex = new byte[4];
-            
-            baseStream.Read(lenHex);
+                var actualLen = baseStream.Read(lenHex);
+                
+                if (actualLen != AdbProtocolSizeHeader)
+                    throw new IndexOutOfRangeException("Protocol error.");
 
-            var lenStr = Encoding.ASCII.GetString(lenHex);
-            var size = int.Parse(lenStr, NumberStyles.HexNumber);
+                // NetworkStream not supports set length and StreamReader doesn't support it too
+                // we could just read it and don't use them.
+            }
 
             return new StreamReader(baseStream, Encoding);
         }
-        
+
         public static AdbSyncBuilder UseSyncFeature(this AdbStream stream)
         {
             SingleCommand(stream, AdbRequestStrings.Sync);
