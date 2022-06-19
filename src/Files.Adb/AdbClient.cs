@@ -60,14 +60,6 @@ namespace Files.Adb
             }
         }
 
-        private string GetStringOnce(Stream stream)
-        {
-            using (var reader = new StreamReader(stream))
-            {
-                return ReadString(reader);
-            }
-        }
-
         private string ReadString(StreamReader reader)
         {
             var lenBuf = new char[4];
