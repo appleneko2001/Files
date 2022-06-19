@@ -8,6 +8,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Files.Adb.Apis.AdbProtocolConstants;
+
 namespace Files.Adb
 {
     public class AdbStream : IDisposable
@@ -57,8 +59,8 @@ namespace Files.Adb
         
         public async Task<int> SendSyncRequestAsync(string header, string msg)
         {
-            if(header.Length != 4)
-                throw new ArgumentException("Header must be 4 characters long");
+            if(header.Length != AdbProtocolSizeHeader)
+                throw new ArgumentException($"Header must be {AdbProtocolSizeHeader} characters long");
             
             var data = _encoding.GetBytes(msg);
 
@@ -95,8 +97,8 @@ namespace Files.Adb
             if(header != null)
                 collection.Add(basicEnc.GetBytes(header));
             
-            var len = data.Length;
-            var lenBytes = basicEnc.GetBytes(len.ToString("X4"));
+            var len = data.LongLength;
+            var lenBytes = basicEnc.GetBytes(len.ToString(AdbNumericToHexFormat));
             
             collection.Add(lenBytes);
             
@@ -105,7 +107,7 @@ namespace Files.Adb
             return await _socket.SendAsync(collection, SocketFlags.None);
         }
 
-        public string GetResult() => GetResponseCore(4);
+        public string GetResult() => GetResponseCore(AdbProtocolSizeHeader);
 
         public Stream GetStream() => new NetworkStream(_socket);
 
