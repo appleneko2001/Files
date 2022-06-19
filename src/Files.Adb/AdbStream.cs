@@ -62,9 +62,30 @@ namespace Files.Adb
             
             var data = _encoding.GetBytes(msg);
 
-            return await SendCoreAsync(header, data);
+            return await SendSyncRequestCoreAsync(header, data);
         }
+        
+        // send some data with 8 bytes header (command id and binary of length data)
+        private async Task<int> SendSyncRequestCoreAsync(string? header, byte[] data)
+        {
+            var basicEnc = Encoding.ASCII;
 
+            var collection = new List<ArraySegment<byte>>();
+            
+            if(header != null)
+                collection.Add(basicEnc.GetBytes(header));
+            
+            // Get binary-style int32 data
+            var len = data.Length;
+            var lenBytes = BitConverter.GetBytes(len);
+            
+            collection.Add(lenBytes);
+            
+            collection.Add(data);
+            
+            return await _socket.SendAsync(collection, SocketFlags.None);
+        }
+        
         private async Task<int> SendCoreAsync(string? header, byte[] data)
         {
             var basicEnc = Encoding.ASCII;
