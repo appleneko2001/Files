@@ -317,4 +317,46 @@
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
+
+    <DataTemplate x:Key="BrowserViewProgressIndicatorTemplate"
+                  DataType="progress:ProgressViewModel">
+        <material:Card Name="PART_BrowserProgressBarContainer"
+                       Margin="16"
+                       CornerRadius="32"
+                       IsVisible="{Binding !IsComplete}"
+                       assists:ShadowAssist.ShadowDepth="CenterDepth2">
+            <material:Card.Styles>
+                <Style Selector="material|Card#PART_BrowserProgressBarContainer[IsVisible=True]:not(.no-transitions)">
+                    <Style.Animations>
+                        <Animation Duration="0.25" Easing="CircularEaseOut">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="ScaleTransform.ScaleY" Value="0" />
+                                <Setter Property="ScaleTransform.ScaleX" Value="0" />
+                            </KeyFrame>
+
+                            <KeyFrame Cue="100%">
+                                <Setter Property="ScaleTransform.ScaleY" Value="1" />
+                                <Setter Property="ScaleTransform.ScaleX" Value="1" />
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </material:Card.Styles>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <ProgressBar Classes="Circle Circular"
+                             IsIndeterminate="{Binding IsIndeterminate}"
+                             Value="{Binding Progress}"
+                             VerticalAlignment="Center"/>
+                
+                <Button Classes="Flat"
+                        Command="{Binding CancelCommand}"
+                        CommandParameter="{Binding }"
+                        Content="Cancel"
+                        
+                        VerticalAlignment="Center"
+                        CornerRadius="16"/>
+            </StackPanel>
+        </material:Card>
+    </DataTemplate>
 </ResourceDictionary>

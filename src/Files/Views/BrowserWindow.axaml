@@ -143,37 +143,11 @@
                                                         Background="Transparent"
                                                         PointerPressed="OnPointerPressed_BrowserContent" />
                                     </ScrollViewer>
-                                    <material:Card Name="PART_BrowserProgressBarContainer"
-                                                   VerticalAlignment="Top"
-                                                   HorizontalAlignment="Center"
-
-                                                   Margin="16"
-                                                   CornerRadius="32"
-                                                   IsVisible="{Binding !Progress.IsComplete}"
-                                                   assist:ShadowAssist.ShadowDepth="CenterDepth2">
-                                        <material:Card.Styles>
-                                            <Style
-                                                Selector="material|Card#PART_BrowserProgressBarContainer[IsVisible=True]:not(.notransitions)">
-                                                <Style.Animations>
-                                                    <Animation Duration="0.25" Easing="CircularEaseOut">
-                                                        <KeyFrame Cue="0%">
-                                                            <Setter Property="ScaleTransform.ScaleY" Value="0" />
-                                                            <Setter Property="ScaleTransform.ScaleX" Value="0" />
-                                                        </KeyFrame>
-
-                                                        <KeyFrame Cue="100%">
-                                                            <Setter Property="ScaleTransform.ScaleY" Value="1" />
-                                                            <Setter Property="ScaleTransform.ScaleX" Value="1" />
-                                                        </KeyFrame>
-                                                    </Animation>
-                                                </Style.Animations>
-                                            </Style>
-                                        </material:Card.Styles>
-
-                                        <ProgressBar Classes="Circle Circular"
-                                                     IsIndeterminate="{Binding Progress.IsIndeterminate}"
-                                                     Value="{Binding Progress.Progress}" />
-                                    </material:Card>
+                                    
+                                    <ContentControl VerticalAlignment="Top"
+                                                    HorizontalAlignment="Center"
+                                                    Content="{Binding Progress}" 
+                                                    ContentTemplate="{StaticResource BrowserViewProgressIndicatorTemplate}"/>
                                 </Panel>
                             </material:SideSheet>
                         </DataTemplate>
