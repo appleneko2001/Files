@@ -27,12 +27,13 @@ namespace Files.Windows
             catch (Exception exception)
             {
                 var builder = new StringBuilder();
-                builder.AppendLine("An exception occurred while running application.");
+                builder.AppendLine("An critical exception occurred while running application.");
                 builder.AppendLine(exception.Message);
                 builder.AppendLine();
                 builder.AppendLine("Stacktrace:");
                 builder.AppendLine(exception.StackTrace);
                 builder.AppendLine("Please copy above message and contact developer for report exception.");
+                builder.AppendLine("https://github.com/appleneko2001/Files/issues");
 
                 Console.WriteLine(builder.ToString());
 
@@ -43,12 +44,12 @@ namespace Files.Windows
                 NativeApi.MessageBox(IntPtr.Zero, message.ToString(), $"{AppName}: Aborted!",
                     (long) (MessageBoxKind.IconStop | MessageBoxKind.SystemModal));
 
-                result = -1;
+                result = exception.HResult;
             }
             finally
             {
                 var service = launcher?.GetService();
-                //service?.Stop();
+                
                 service?.SendEmptyMessage();
                 ctx.Cancel();
             }
