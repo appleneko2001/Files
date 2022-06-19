@@ -8,6 +8,8 @@ using Files.Adb.Apis;
 using Files.Adb.Builders;
 using Files.Adb.Models;
 
+using static Files.Adb.Apis.AdbProtocolConstants;
+
 namespace Files.Adb.Extensions
 {
     public static class AdbStreamExtensions
@@ -238,15 +240,21 @@ namespace Files.Adb.Extensions
 
         private static async Task<string> ReadLineCoreAsync(this Stream stream)
         {
-            var lenHex = new byte[4];
+            var lenHex = new byte[AdbProtocolSizeHeader];
             
-            await stream.ReadAsync(lenHex);
+            var count = await stream.ReadAsync(lenHex);
+
+            if (count != AdbProtocolSizeHeader)
+                throw new Exception("Buffer length not match");
 
             var lenStr = Encoding.ASCII.GetString(lenHex);
             var size = int.Parse(lenStr, NumberStyles.HexNumber);
             
             var buffer = new byte[size];
-            await stream.ReadAsync(buffer);
+            count = await stream.ReadAsync(buffer);
+            
+            if (count != size)
+                throw new Exception("Buffer length not match");
             
             return Encoding.GetString(buffer);
         }
