@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
+using Avalonia.Threading;
 
 namespace Files.Extensions
 {
     public static class ListExtensions
     {
-        // I dont sure why copilot want this lmao
+        // I don't sure why copilot want this lmao
+        /*
         public static List<T> Shuffle<T>(this List<T> list)
         {
             var rng = new Random();
@@ -20,19 +22,41 @@ namespace Files.Extensions
                 list[n] = value;
             }
             return list;
-        }
+        }*/
 
         public static void SortAdd<T>(this Collection<T> collection, IComparer<T> comparer, T element)
         {
-            collection.Add(element);
+            var i = SortCore(collection, comparer, element);
+            
+            collection.Insert(i, element);
+        }
+        
+        public static void SortAddOnUiThread<T>(this Collection<T> collection, IComparer<T> comparer, T element)
+        {
+            var i = SortCore(collection, comparer, element);
 
-            var i = collection.Count - 1;
-            for (; i > 0 && comparer.Compare(collection[i - 1], element) < 0; i--)
+            Dispatcher.UIThread.InvokeAsync(delegate
             {
-                collection[i] = collection[i - 1];
+                collection.Insert(i, element);
+            }, DispatcherPriority.Background).Wait();
+
+            if (Dispatcher.UIThread.HasJobsWithPriority(DispatcherPriority.Background))
+                Thread.Sleep(1);
+        }
+
+        private static int SortCore<T>(IReadOnlyList<T> collection, IComparer<T> comparer, T element)
+        {
+            if (collection.Count == 0)
+                return 0;
+            
+            var i = collection.Count;
+
+            while (i > 0 && comparer.Compare(collection[i - 1], element) < 0)
+            {
+                i--;
             }
 
-            collection[i] = element;
+            return i;
         }
     }
 }
