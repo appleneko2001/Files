@@ -3,7 +3,8 @@
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:cc="clr-namespace:Material.Styles;assembly=Material.Styles"
         xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-        xmlns:menus="clr-namespace:Files.ViewModels.Context.Menus">
+        xmlns:menus="clr-namespace:Files.ViewModels.Context.Menus"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple">
     <Style Selector="OverlayPopupHost">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
@@ -76,5 +77,37 @@
             </Setter.Value>
         </Setter>
         <Setter Property="CommandParameter" Value="{CompiledBinding CommandParameter}"/>
+    </Style>
+    
+    <Style Selector="Button.browser-drawer-item">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border BorderBrush="Transparent"
+                        BorderThickness="1"
+                        Margin="-1">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Panel>
+                            <Border Background="{TemplateBinding assists:ButtonAssist.HoverColor}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" 
+                                    Opacity="0"/>
+                            <Border CornerRadius="{TemplateBinding CornerRadius}"
+                                    ClipToBounds="True" >
+                                <ripple:RippleEffect RippleFill="{TemplateBinding assists:ButtonAssist.ClickFeedbackColor}"
+                                                     RippleOpacity="{StaticResource ButtonPressedOpacity}" >
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      Padding="{TemplateBinding Padding}"
+                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                </ripple:RippleEffect>
+                            </Border>
+                        </Panel>
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
     </Style>
 </Styles>
