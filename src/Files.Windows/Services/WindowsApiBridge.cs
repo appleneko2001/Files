@@ -15,6 +15,7 @@ using Files.Services.Platform.Interfaces;
 using Files.Windows.Models;
 using Files.Windows.Services.Native;
 using Files.Windows.Services.Native.Enums;
+using Files.Windows.Services.Platform;
 using Material.Dialog;
 using Material.Dialog.Enums;
 
@@ -22,24 +23,28 @@ using Material.Dialog.Enums;
 
 namespace Files.Windows.Services
 {
-    public class WindowsApiBridge : PlatformSpecificBridge, IPlatformSupportNativeExplorer, IPlatformSupportGetIcon
+    public class WindowsApiBridge : IPlatformSupportNativeExplorer,
+        IPlatformSupportGetIcon,
+        IPlatformSupportOpenFilePrimaryAction,
+        IPlatformSupportShowMessage,
+        IPlatformSupportDeviceEntries
     {
         private const string _nativeExplorerName = "Windows Explorer";
         public string NativeExplorerName => _nativeExplorerName;
         
-        private Collection<DeviceModel> _devices;
-        private MyComputerDeviceModel _myComputerModel;
+        private readonly Collection<DeviceModel> _devices;
+
         public WindowsApiBridge()
         {
-            _myComputerModel = new MyComputerDeviceModel();
+            var myComputerModel = new MyComputerDeviceModel();
             
             _devices = new Collection<DeviceModel>
             {
-                _myComputerModel
+                myComputerModel
             };
         }
         
-        public override void PopupMessageWindow(string title, string content)
+        public void PopupMessageWindow(string title, string content)
         {
             NativeApi.MessageBox(IntPtr.Zero, content, title, (long) MessageBoxKind.Default);
         }
@@ -48,142 +53,112 @@ namespace Files.Windows.Services
         /// Get all storage entries, including removable storage.
         /// </summary>
         /// <returns>Return all available storages.</returns>
-        public override IReadOnlyCollection<DeviceModel> GetDeviceEntries()
+        public IReadOnlyCollection<DeviceModel> GetDeviceEntries()
         {
             return _devices;
         }
 
-        public override void NativeExecuteApplication(string execPath)
+        public void NativeExecuteApplication(string execPath)
         {
-            InvokeNewProcess(execPath, null);
+            ExecuteApplicationHandler.InvokeNewProcess(execPath, null);
         }
 
-        public override bool IsExecutableApplication(string path)
+        public void LetPlatformHandleThisFile(string path)
         {
-            return Path.GetExtension(path).ToLowerInvariant() switch
-            {
-                ".exe" => true,
-                ".com" => true,
-                _ => false
-            };
+            Task.Factory.StartNew(OpenFilePrimaryActionProcedure, path)
+                .ContinueWith(PostOpenFileProcedureTask, path);
         }
 
-        public override void LetPlatformHandleThisFile(string path)
-        {
-            OpenFileProcedure(delegate
-            {
-                var param = new ProcessStartInfo
-                {
-                    FileName = path,
-                    UseShellExecute = true,
-                    Verb = "open",
-                    WorkingDirectory = Path.GetDirectoryName(path)!
-                };
-                Process.Start(param);
-            }, $"The file \"{path}\" cannot be opened or executed: ", path);
-        }
-
-        public override void ShowOpenWithApplicationDialog(string path)
-        {
-            ShowOpenWithDialog(path);
-        }
-
-        private static void InvokeNewProcess(string execPath, string? args)
-        {
-            Task.Factory.StartNew(delegate
-            {
-                var param = new ProcessStartInfo
-                {
-                    FileName = execPath,
-                    Arguments = args ?? string.Empty,
-                    WorkingDirectory = Path.GetDirectoryName(execPath)!,
-                };
-                Process.Start(param);
-            }).ContinueWith(delegate(Task task)
-            {
-                if (!task.IsFaulted) 
-                    return;
-                
-                var exception = task.Exception?.InnerException ?? new NullReferenceException("Unknown exception");
-                var builder = new StringBuilder();
-
-                builder.AppendLine("Cannot start process:");
-                builder.AppendLine(exception.Message);
-
-                Dispatcher.UIThread.Post(async delegate
-                {
-                    var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams
-                    {
-                        SupportingText = builder.ToString(),
-                        DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok),
-                        Borderless = false,
-                        ContentHeader = "Error",
-                        WindowTitle = "Error"
-                    });
-                    await dialog.Show();
-                });
-            });
-        }
-
-        private static void OpenFileProcedure(Action del, string errorMsg, string path)
-        {
-            Task.Factory.StartNew(del).ContinueWith(delegate(Task task)
-            {
-                if (task.IsFaulted)
-                {
-                    var exception = task.Exception.InnerException;
-
-                    if (exception is Win32Exception e)
-                    {
-                        // 1155 - No application is associated with the specified file for this operation.
-                        if (e.NativeErrorCode == 1155)
-                        {
-                            if (path != null)
-                            {
-                                ShowOpenWithDialog(path);
-                                return;
-                            }
-                        }
-                    }
-                    
-                    var builder = new StringBuilder();
-
-                    builder.AppendLine(errorMsg);
-                    builder.AppendLine(task.Exception.InnerException.Message);
-
-                    Dispatcher.UIThread.Post(async delegate
-                    {
-                        var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams()
-                        {
-                            SupportingText = builder.ToString(),
-                            DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok),
-                            Borderless = false,
-                            ContentHeader = "Error",
-                            WindowTitle = "Error"
-                        });
-                        await dialog.Show();
-                    });
-                }
-            });
-        }
         
-        /// <summary>
-        /// Show "open file with" dialog. Feature is supported on Windows OS only, not sure how to implement in Unix.
-        /// </summary>
-        /// <param name="path">The file location.</param>
-        private static void ShowOpenWithDialog(string path) {
-            // Works only in Windows OS
-            OpenFileProcedure(delegate
+
+
+
+        private static void OpenFilePrimaryActionProcedure(object? arg)
+        {
+            if (arg is not string path)
+                return;
+            
+            var param = new ProcessStartInfo
             {
-                var args = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
-                args += ",OpenAs_RunDLL " + path;
-                Process.Start("rundll32.exe", args);
-            }, $"The file \"{path}\" cannot be opened or executed: ", path);
+                FileName = path,
+                UseShellExecute = true,
+                Verb = "open",
+                WorkingDirectory = Path.GetDirectoryName(path)!
+            };
+            Process.Start(param);
+        }
+
+        internal static void OpenFileWithProgramProcedure(object? arg)
+        {
+            if (arg is not string path)
+                return;
+
+            var shellPath = Path
+                .Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), 
+                    "shell32.dll");
+            
+            var builder = new StringBuilder(shellPath);
+            
+            builder.Append(",OpenAs_RunDLL ");
+            builder.Append(path);
+            
+            Process.Start("rundll32.exe", builder.ToString());
+        }
+
+        internal static void PostOpenFileProcedureTask(Task task, object? arg)
+        {
+            if (!task.IsFaulted)
+                return;
+
+            if (arg is not string path)
+                return;
+                
+            var exception = task.Exception?.InnerException;
+
+            if (exception is Win32Exception e)
+            {
+                // 1155 - No application is associated with the specified file for this operation.
+                // ReSharper disable once MergeIntoPattern
+                if (e.NativeErrorCode == 1155)
+                {
+                    if (!string.IsNullOrWhiteSpace(path))
+                    {
+                        Task.Factory.StartNew(OpenFileWithProgramProcedure, path)
+                            .ContinueWith(PostOpenFileProcedureTask, path);
+                        return;
+                    }
+                }
+            }
+                    
+            var builder = new StringBuilder();
+
+            builder.AppendLine($"The file \"{path}\" cannot be opened or executed: ");
+            builder.AppendLine(exception?.Message);
+
+            var message = builder.ToString();
+
+            Dispatcher.UIThread.InvokeAsync(delegate
+            {
+                var dialog = DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams
+                {
+                    SupportingText = message,
+                    DialogButtons = DialogHelper.CreateSimpleDialogButtons(DialogButtonsEnum.Ok),
+                    Borderless = false,
+                    ContentHeader = "Error",
+                    WindowTitle = "Error"
+                });
+                dialog.Show();
+            });
         }
 
         public void OpenFolderWithNativeExplorer(string path)
         {
-            InvokeNewProcess("explorer.exe", path);
+            ExecuteApplicationHandler.InvokeNewProcess("explorer.exe", path);
+        }
+
+        public bool CanOpenFolderWithNativeExplorer(string path)
+        {
+            return true;
         }
 
         public bool CanGetIconForFile(string path)
@@ -227,6 +202,16 @@ namespace Files.Windows.Services
             icon.Save(memoryStream);
 
             return memoryStream;
+        }
+
+        public bool CanHandleThisFile(string path)
+        {
+            return Path.GetExtension(path).ToLowerInvariant() switch
+            {
+                ".exe" => false,
+                ".com" => false,
+                _ => true
+            };
         }
     }
 }

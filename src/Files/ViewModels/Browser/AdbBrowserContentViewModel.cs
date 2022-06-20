@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Files.Adb.Extensions;
 using Files.Adb.Models;
-using Files.Models.Android.Enums;
 using Files.Services.Android;
 using Files.ViewModels.Browser.Files.Android;
 
@@ -11,76 +10,50 @@ namespace Files.ViewModels.Browser
 {
     public class AdbBrowserContentViewModel : BrowserContentViewModelBase
     {
-        public AdbConnection Connection { get; private set; }
+        public AdbConnection? Connection { get; private set; }
+        
+        public string CurrentDirectory { get; private set; }
 
         public AdbBrowserContentViewModel(BrowserWindowTabViewModel parent) : base(parent)
         {
+            Connection = null;
+            CurrentDirectory = string.Empty;
         }
 
-        public override void LoadContent(Uri uri, CancellationToken _cancellationToken = default)
+        public override void LoadContent(Uri uri, CancellationToken cancellationToken = default)
         {
-            EnumerateDirectoryAndFillCollection(uri, _cancellationToken)
-                .Wait(_cancellationToken);
+            EnumerateDirectoryAndFillCollection(uri, cancellationToken)
+                .Wait(cancellationToken);
         }
 
-        private async Task EnumerateDirectoryAndFillCollection(Uri uri, CancellationToken _cancellationToken = default)
+        private async Task EnumerateDirectoryAndFillCollection(Uri uri, CancellationToken cancellationToken = default)
         {
-            AdbConnection Parse(Uri connectionUri)
-            {
-                connectionUri.ExtractDeviceAndAdbHost(out var device, out var adb);
-
-                return new AdbConnection(device, adb);
-            }
-
             var adb = AndroidDebugBackend.Instance;
 
-            var conn = Parse(uri);
+            var conn = uri.ExtractAdbConnectionModelFromUri();
             var dir = uri.LocalPath;
 
             Connection = conn;
 
-            await foreach (var model in adb.GetListFilesAsync(conn, dir)
-                               .WithCancellation(_cancellationToken))
+            CurrentDirectory = dir;
+
+            await foreach (var model in adb.SyncBackend?.GetListFilesViaSyncAsync(conn, dir)
+                               .WithCancellation(cancellationToken)!)
             {
                 if(model == null)
                     continue;
 
-                var linkTarget = model.LinkTarget;
-
                 while (true)
                 {
-                    _cancellationToken.ThrowIfCancellationRequested();
-                    
-                    var isFile = model.Kind.HasFlag(LinuxFileSystemEntryKind.File);
-                    var isDir = model.Kind.HasFlag(LinuxFileSystemEntryKind.Directory);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    // Fix symlink tracker
-                    
-                    /* if (model.IsSymlink && !(isDir || isFile))
-                    {
-                        await foreach (var e in adb.GetListFilesAsync(conn, linkTarget!)
-                                           .WithCancellation(_cancellationToken))
-                        {
-                            model.Kind |= linkTargetModel.Kind;
-                            linkTarget = linkTargetModel.LinkTarget;
-                        }
-
-                        continue;
-                    }*/
-
-                    if (isDir)
+                    if (model.IsDirectory)
                     {
                         AddItemOnUiThread(new AdbFolderItemViewModel(this, model));
+                        break;
                     }
-                    else if (isFile)
-                    {
-                        AddItemOnUiThread(new AdbFileItemViewModel(this, model));
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
+                    
+                    AddItemOnUiThread(new AdbFileItemViewModel(this, model));
                     break;
                 }
             }

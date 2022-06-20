@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using Files.Models.Android.Storages;
-using Files.Services;
 using Files.ViewModels.Browser.Files.Interfaces;
+using Files.ViewModels.Context.Menus.Presets;
 
 namespace Files.ViewModels.Browser.Files.Android
 {
@@ -12,7 +12,7 @@ namespace Files.ViewModels.Browser.Files.Android
         {
         }
         
-        public override ICommand OnClickCommand => CommandsBackend.Instance.OpenFolderInCurrentViewCommand;
+        public override ICommand OnClickCommand => OpenFolderContextMenuAction.Instance.Command;
 
         public override bool IsFolder => true;
     }

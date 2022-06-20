@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Files.Services;
 using Files.ViewModels.Browser.Files.Interfaces;
 using Files.ViewModels.Browser.Preview;
+using Files.ViewModels.Context.Menus.Presets;
 using MinimalMvvm.ViewModels.Commands;
 
 namespace Files.ViewModels.Browser.Files.Local
@@ -18,13 +19,23 @@ namespace Files.ViewModels.Browser.Files.Local
             if (o is not FileItemViewModel file)
                 return;
 
-            var command = CommandsBackend.GetPrimaryCommandForThisFile(file);
+            var executeCommand = ExecuteApplicationContextMenuAction.Instance?.Command;
+            if (executeCommand != null)
+            {
+                if (executeCommand.CanExecute(file))
+                {
+                    executeCommand.Execute(file);
+                    return;
+                }
+            }
 
-            if (command == null)
+            var openFileCommand = OpenFileContextMenuAction.Instance?.Command;
+            if (openFileCommand == null)
                 return;
             
-            if(command.CanExecute(file))
-                command.Execute(file);
+            if (!openFileCommand.CanExecute(file))
+                return;
+            openFileCommand.Execute(file);
         });
 
         private PreviewableViewModelBase? _previewViewModel;

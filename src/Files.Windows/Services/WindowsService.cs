@@ -2,14 +2,14 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Files.Services.Platform;
-using Files.Services.Watchers;
+using Avalonia;
+using Files.Services.Platform.Interfaces;
 using Files.Windows.Services.Native;
 using Files.Windows.Services.Watchers;
 
 namespace Files.Windows.Services
 {
-    public class WindowsService : OperationSystemService
+    public class WindowsService
     {
         private readonly ServiceWindow _nativeServiceInst;
         private readonly CancellationToken _cancellationToken;
@@ -28,9 +28,9 @@ namespace Files.Windows.Services
             var instance = Marshal.GetHINSTANCE(GetType().Module);
             _nativeServiceInst = new ServiceWindow(instance);
 
-            _apiBridge = new WindowsApiBridge();
+            var deviceWatcher = new WindowsDeviceWatcher(_nativeServiceInst);
 
-            _deviceWatcher = new WindowsDeviceWatcher(_nativeServiceInst);
+            AvaloniaLocator.CurrentMutable.Bind<IPlatformSupportDeviceWatcherService>().ToConstant(deviceWatcher);
             
             longTaskThread.Start();
         }
@@ -54,10 +54,10 @@ namespace Files.Windows.Services
             }
         }
 
-        public override void Stop()
+        private void Stop()
         {
             // ReSharper disable once ConstantConditionalAccessQualifier
-            _deviceWatcher?.Stop();
+            //_deviceWatcher.Stop();
             
             _nativeServiceInst.Dispose();
         }
@@ -71,12 +71,5 @@ namespace Files.Windows.Services
                 throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }
-
-        private readonly DeviceWatcher _deviceWatcher;
-        public override DeviceWatcher DeviceWatcher => _deviceWatcher;
-
-        private readonly PlatformSpecificBridge? _apiBridge;
-        // ReSharper disable once ConvertToAutoProperty
-        public override PlatformSpecificBridge? ApiBridge => _apiBridge;
     }
 }

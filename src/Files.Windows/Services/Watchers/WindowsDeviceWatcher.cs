@@ -3,8 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using Files.Models.Devices;
-using Files.Models.Devices.Enums;
+using Files.Services.Platform.Interfaces;
 using Files.Services.Watchers;
 using Files.Services.Watchers.Enums;
 using Files.Windows.Services.Native;
@@ -15,20 +14,16 @@ using Files.Windows.Services.Native.Shell.Enums;
 
 namespace Files.Windows.Services.Watchers
 {
-    public class WindowsDeviceWatcher : DeviceWatcher
+    public class WindowsDeviceWatcher : IPlatformSupportDeviceWatcherService
     {
         private const string DeviceLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        
-        private ServiceWindow service;
-        private ulong _shellNotifyId;
 
         public WindowsDeviceWatcher(ServiceWindow hwnd)
         {
-            service = hwnd;
-            service.DeviceWatcherHandler = DeviceWatcherHandler;
+            hwnd.DeviceWatcherHandler = DeviceWatcherHandler;
         }
         
-        public override void Start()
+        public void Start()
         {
             /*
             try
@@ -68,14 +63,15 @@ namespace Files.Windows.Services.Watchers
             }*/
         }
 
-        public override void Stop()
+        public void Stop()
         {
-            if(_shellNotifyId != 0)
-                NativeApi.SHChangeNotifyDeregister(_shellNotifyId);
+            //if(_shellNotifyId != 0)
+            //    NativeApi.SHChangeNotifyDeregister(_shellNotifyId);
         }
 
-        public override event EventHandler<DeviceChangedEventArgs> OnDeviceChanged;
+        public event EventHandler<DeviceChangedEventArgs> OnDeviceChanged;
 
+        // TODO: Refactor this method.
         private IntPtr? DeviceWatcherHandler(MessageDefinitions msg, IntPtr wParam, IntPtr lParam)
         {
             switch (msg)

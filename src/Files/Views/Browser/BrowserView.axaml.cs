@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Selection;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Files.Models.Actions;
 using Files.Services;
 using Files.ViewModels;
 using Files.ViewModels.Browser;
@@ -45,34 +46,57 @@ namespace Files.Views.Browser
                 e.TemplateKey = "Image";
         }
 
-        private void BrowserViewContextMenu_OnDataContextChanged(object sender, EventArgs e)
+        private void SetContextMenu(ContextMenu menu,
+            BrowserContentViewModelBase content)
+        {
+            var parameter = new BrowserActionParameterModel
+            {
+                BrowserViewModel = content
+            };
+
+            if (content.Selection.SelectedItem is ItemViewModelBase selectedItem)
+            {
+                parameter.SelectedItem = selectedItem;
+            }
+            
+            if (content.Selection.SelectedItems is IReadOnlyList<ItemViewModelBase> selectedItems)
+            {
+                parameter.SelectedItems = selectedItems;
+            }
+            
+            var menus = ContextMenuBackend.Instance.GetContextMenu(content);
+            
+            foreach (var item in menus)
+            {
+                item.CommandParameter = parameter;
+            }
+            menu.Items = ContextMenuBackend.Instance.GetContextMenu(content);
+        }
+        
+        private void BrowserViewContextMenu_OnMenuOpened(object sender, RoutedEventArgs e)
         {
             if (sender is not ContextMenu menu)
                 return;
 
-            if (menu.DataContext is not ItemViewModelBase vm)
+            if (menu.DataContext is not BrowserContentViewModelBase contentVm)
                 return;
             
-            SetContextMenuOnSelectedItems(menu, vm);
+            SetContextMenu(menu, contentVm);
         }
-
-        private void SetContextMenuOnUnselectedState(ContextMenu menu,
-            BrowserContentViewModelBase content)
+        
+        private void BrowserViewContextMenu_OnMenuClosed(object sender, RoutedEventArgs e)
         {
-            menu.Items = ContextMenuBackend.Instance.GetContextMenu(content);
+            if (sender is not ContextMenu menu)
+                return;
+
+            menu.Items = null;
         }
 
+        /*
         private void SetContextMenuOnSelectedItems(ContextMenu menu, ItemViewModelBase vm)
         {
-            var menus = ContextMenuBackend.Instance.GetContextMenu(vm);
             var parameter = GetSelectedItemOrItems(_currentItems.Selection);
-            
-            foreach (var model in menus)
-            {
-                model.CommandParameter = parameter;
-            }
-            
-            menu.Items = menus;
+            menu.Items = ContextMenuBackend.Instance.GetContextMenu(vm, parameter);
         }
 
         private object? GetSelectedItemOrItems(object value)
@@ -89,6 +113,7 @@ namespace Files.Views.Browser
 
             return null;
         }
+        */
 
         private void SelectingItemRepeater_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -164,5 +189,7 @@ namespace Files.Views.Browser
             _toolbarScrollDisposables.Clear();
             _toolbarScrollDisposables = null;
         }
+
+        
     }
 }

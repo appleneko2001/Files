@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
@@ -45,36 +44,17 @@ namespace Files.ViewModels.Browser
             _parent = parent;
             _content = new ObservableCollection<ItemViewModelBase>();
 
+            // ReSharper disable once VirtualMemberCallInConstructor
             BindEvents();
         }
 
-        public abstract void LoadContent(Uri uri, CancellationToken _cancellationToken = default);
+        public abstract void LoadContent(Uri uri, CancellationToken cancellationToken = default);
 
-        protected void AddItem(ItemViewModelBase item) => Content.SortAdd(_comparer, item);
+        //protected void AddItem(ItemViewModelBase item) => Content.SortAdd(_comparer, item);
 
         protected void AddItemOnUiThread(ItemViewModelBase item)
         {
-            Dispatcher.UIThread.InvokeAsync(delegate
-            {
-                AddItem(item);
-            }, DispatcherPriority.Background).Wait();
-            
-            // Avalonia Input system will be frozen if not adding Thread.Sleep
-            Thread.Sleep(1);
-        }
-        
-        protected void AddItemsOnUiThread(IEnumerable<ItemViewModelBase> items)
-        {
-            Dispatcher.UIThread.InvokeAsync(delegate
-            {
-                foreach (var item in items)
-                {
-                    AddItem(item);
-                }
-            }, DispatcherPriority.Background).Wait();
-            
-            // Avalonia Input system will be frozen if not adding Thread.Sleep
-            Thread.Sleep(1);
+            Content.SortAddOnUiThread(_comparer, item);
         }
         
         protected void AddItemsOnUiThread(IEnumerable items)
@@ -84,7 +64,7 @@ namespace Files.ViewModels.Browser
                 foreach (var item in items)
                 {
                     if(item is ItemViewModelBase i)
-                        AddItem(i);
+                        Content.SortAdd(_comparer, i);
                 }
             }, DispatcherPriority.Background).Wait();
             

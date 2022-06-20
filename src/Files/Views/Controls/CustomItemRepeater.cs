@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
@@ -9,9 +8,9 @@ using Avalonia.Controls.Selection;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 using Files.ViewModels.Browser;
 using Files.Views.Controls.Events;
+// ReSharper disable ConvertTypeCheckPatternToNullCheck
 
 namespace Files.Views.Controls
 {
@@ -67,6 +66,9 @@ namespace Files.Views.Controls
             }
 
             var prop = e.GetCurrentPoint(child).Properties;
+            
+            var leftMousePress = prop.IsLeftButtonPressed;
+            var rightMousePress = prop.IsRightButtonPressed;
 
             if (child is not ContentControl)
             {
@@ -74,7 +76,7 @@ namespace Files.Views.Controls
                 var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control);
 
                 // Is multiselect
-                if (shift && !Selection.SingleSelect && prop.IsLeftButtonPressed)
+                if (shift && !Selection.SingleSelect && leftMousePress)
                 {
                     var itemsCast = new List<object>(Items.Cast<object>());
                     
@@ -90,6 +92,9 @@ namespace Files.Views.Controls
                     long startPos = -1, endPos = -1;
 
                     long index = 0;
+                    
+                    Selection.BeginBatchUpdate();
+                    
                     foreach (var o in itemsCast)
                     {
                         if (ReferenceEquals(o, startObject))
@@ -113,59 +118,89 @@ namespace Files.Views.Controls
                             Selection.SelectRange((int)startPos, (int)endPos);
                         break;
                     }
+                    
+                    Selection.EndBatchUpdate();
                 }
                 else
                 {
-                    // Single select
-
-                    bool IsSelected(IVisual visual) => Selection.SelectedItems.Contains(child.DataContext);
-                    
-                    if (!ctrl && prop.IsLeftButtonPressed)
+                    if (ctrl)
                     {
-                        Selection.Clear();
-                
-                        Selection.SelectedItem = child.DataContext;
-                    }
-                    else if (!IsSelected(child) && prop.IsRightButtonPressed || !prop.IsRightButtonPressed)
-                    {
-                        // keep multiselect and pick more by clicking 
-                        /*
-                        var itemsCast = new List<object>(Items.Cast<object>());
-
-                        var index = 0;
-                        foreach (var target in itemsCast.Select(o => 
-                                     ReferenceEquals(o, child.DataContext) ? index : -1))
+                        if (leftMousePress || rightMousePress)
                         {
-                            index++;
-                            
-                            if(target == -1)
-                                continue;
+                            var items = new List<object?>(Items.Cast<object?>());
 
-                            var isSelected = Selection.IsSelected(target);
+                            var index = 0;
                             
-                            if(isSelected)
-                                Selection.Deselect(target);
-                            else
-                                Selection.Select(target);
-                        }*/
-                        Selection.SelectedItem = child.DataContext;
+                            Selection.BeginBatchUpdate();
+                            
+                            foreach (var t in items.Select(o => ReferenceEquals(o, child.DataContext) ? index : -1))
+                            {
+                                index++;
+
+                                if (t == -1)
+                                    continue;
+                            
+                                var isSelected = Selection.IsSelected(t);
+                            
+                                if(isSelected)
+                                    Selection.Deselect(t);
+                                else
+                                    Selection.Select(t);
+                            }
+                            
+                            Selection.EndBatchUpdate();
+                        }
+                    }
+                    else
+                    {
+                        if (leftMousePress || rightMousePress)
+                        {
+                            if(!rightMousePress)
+                                Selection.Clear();
+
+                            /*
+                            var index = -1;
+                            //var outer = false;
+                            foreach (var o in Items)
+                            {
+                                index++;
+
+                                if (o != child.DataContext)
+                                    continue;
+                                
+                                var isSelected = Selection.IsSelected(index);
+
+                                //if(isSelected)
+                                //    out
+                                Selection.Select(index);
+                            }
+                            
+                            //if(rightMousePress && !anySelected)
+                                */
+                            Selection.SelectedItem = child.DataContext;
+                        }
                     }
                 }
             }
+
+            if (!rightMousePress)
+            {
+                base.OnPointerPressed(e);
+                return;
+            }
+
+            if (ContextMenu is not ContextMenu menu)
+            {
+                base.OnPointerPressed(e);
+                return;
+            }
+
+            menu.PlacementAnchor = PopupAnchor.AllMask;
+            menu.PlacementGravity = PopupGravity.Bottom;
+            menu.PlacementTarget = child as Control;
+            //menu.DataContext = child.DataContext;
             
             base.OnPointerPressed(e);
-
-            if (!prop.IsRightButtonPressed)
-                return;
-            
-            if(ContextMenu is not ContextMenu menu)
-                return;
-
-            menu.PlacementAnchor = PopupAnchor.None;
-            menu.PlacementGravity = PopupGravity.None;
-            menu.PlacementTarget = child as Control;
-            menu.DataContext = Selection.SelectedItem;
-            menu.Open();
         }
 
         private void OnDoubleTapped(object sender, RoutedEventArgs e)
@@ -192,7 +227,7 @@ namespace Files.Views.Controls
             while (true)
             {
                 if (target == null)
-                    throw new ArgumentNullException(nameof(target));
+                    return null;
 
                 if (!Equals(target.Parent, this))
                     target = target.Parent as Visual;

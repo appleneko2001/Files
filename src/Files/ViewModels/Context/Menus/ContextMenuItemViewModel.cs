@@ -5,10 +5,12 @@ namespace Files.ViewModels.Context.Menus
 {
     public class ContextMenuItemViewModel : ContextMenuItemViewModelBase
     {
-        private static readonly ContextMenuItemViewModel _separator = new("-");
-        public static ContextMenuItemViewModel Separator => _separator;
+        public static readonly ContextMenuItemViewModel Separator = new("-");
         
-        public ContextMenuItemViewModel(string header, IconViewModelBase? icon = null, ICommand command = null, KeyGesture? keyGesture = null) : base(command)
+        public ContextMenuItemViewModel(string header,
+            IconViewModelBase? icon = null,
+            ICommand? command = null,
+            KeyGesture? keyGesture = null)
         {
             _header = header;
             _keyGesture = keyGesture;

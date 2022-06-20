@@ -12,12 +12,11 @@ using Avalonia.Input;
 using Files.Adb;
 using Files.Adb.Extensions;
 using Files.Adb.Models;
-using Files.Adb.Models.Sync;
-using Files.Adb.Operations;
 using Files.Models.Android.Storages;
+using Files.Services.Android.Sync;
 using Files.ViewModels;
-using Files.ViewModels.Browser.Files.Android;
 using Files.ViewModels.Context.Menus;
+using Files.ViewModels.Context.Menus.Presets;
 using Material.Icons;
 using ContextMenuItem = Files.ViewModels.Context.Menus.ContextMenuItemViewModel;
 
@@ -25,7 +24,7 @@ namespace Files.Services.Android
 {
     public class AndroidDebugBackend
     {
-        private static AndroidDebugBackend _instance;
+        private static AndroidDebugBackend? _instance;
 
         public static AndroidDebugBackend Instance =>
             _instance ?? throw new NullReferenceException("AndroidDebugBackend is not initialized.");
@@ -42,7 +41,9 @@ namespace Files.Services.Android
             _adbPath ?? throw new ArgumentNullException(nameof(AdbPath),
                 "Adb executable path is not set. You can set it in environment variable ADB_EXECUTABLE.");
 
-        public IEnumerable<string> Devices => _devices;
+        public IEnumerable<KeyValuePair<string, string>> Devices => _devices;
+
+        public AndroidSyncCommands? SyncBackend => _syncBackend;
 
         public event NotifyCollectionChangedEventHandler UpdateDevicesEvent
         {
@@ -52,15 +53,19 @@ namespace Files.Services.Android
 
         private readonly string? _adbPath;
 
-        private readonly ObservableCollection<string> _devices;
-        private CancellationTokenSource _shutdownCancellationTokenSource;
+        private readonly ObservableCollection<KeyValuePair<string, string>> _devices;
+        private readonly CancellationTokenSource _shutdownCancellationTokenSource;
         private AdbClient? _client;
+        private AndroidSyncCommands? _syncBackend;
         private const int DefaultPort = 5037;
-
 
         private AndroidDebugBackend(FilesApp app)
         {
-            _devices = new ObservableCollection<string>();
+            _syncBackend = new AndroidSyncCommands(this);
+            
+            _shutdownCancellationTokenSource = new CancellationTokenSource();
+            
+            _devices = new ObservableCollection<KeyValuePair<string, string>>();
             app.ApplicationInitializationCompleted += OnApplicationInitializationCompleted;
 
             _adbPath = Environment.GetEnvironmentVariable("ADB_EXECUTABLE");
@@ -80,34 +85,16 @@ namespace Files.Services.Android
                 Encoding = Encoding.UTF8
             };
 
-            _shutdownCancellationTokenSource = new CancellationTokenSource();
-
             InitTrackDevicesTask(_shutdownCancellationTokenSource.Token);
 
+            //ContextMenuBackend
+            //    .RegisterContextMenuItems(InitiateFolderContextMenu());
             ContextMenuBackend
-                .RegisterContextMenuItems<AdbFileSystemItemViewModel>(InitiateFolderContextMenu());
-            ContextMenuBackend
-                .RegisterContextMenuItems<AdbFileSystemItemViewModel>(InitiateContextMenuForAdbService());
+                .RegisterContextMenuItems(InitiateContextMenuForAdbService());
 
             app.ApplicationShutdown += OnApplicationShutdown;
         }
 
-/*
-        public async IAsyncEnumerable<AdbDeviceModel> GetDevicesFullListAsync()
-        {
-            using var adbStream = _client?.CreateStream();
-
-            if (adbStream == null)
-                yield break;
-
-            foreach (var model in adbStream
-                         .GetDevicesFullList()
-                         .ToDevicesList())
-            {
-                yield return model;
-            }
-        }
-        */
         public async IAsyncEnumerable<string> GetDevicesAsync()
         {
             using var adbStream = _client?.CreateStream();
@@ -147,7 +134,7 @@ namespace Files.Services.Android
                 {
                     c = null;
 
-                    var read = reader!.Read();
+                    var read = reader.Read();
                     if (read == -1)
                         return false;
 
@@ -262,55 +249,56 @@ namespace Files.Services.Android
                 return model;
             }
 
-            using (var adbStream = _client?.CreateStream())
+            using var adbStream = _client?.CreateStream();
+            if (adbStream == null)
+                yield break;
+
+            foreach (var model in adbStream
+                         .SetDevice(conn)
+                         .Shell(args)
+                         .ProcessAndToList(Parser, true))
             {
-                if (adbStream == null)
-                    yield break;
+                if (model == null)
+                    continue;
 
-                foreach (var model in adbStream
-                             .SetDevice(conn)
-                             .Shell(args)
-                             .ProcessAndToList(Parser, true))
-                {
-                    if (model == null)
-                        continue;
-
-                    yield return model;
-                }
+                yield return model;
             }
         }
 
-        // TODO: not working
-        public async IAsyncEnumerable<AdbListFilesItemModel?> GetListFilesViaSyncAsync(AdbConnection conn, string path)
+        public async IAsyncEnumerable<string> WalkDirectoryTreeAsync(AdbConnection conn, string path)
         {
-            using (var adbStream = _client?.CreateStream())
-            {
-                if (adbStream == null)
-                    yield break;
+            using var adbStream = _client?.CreateStream();
+            
+            // ReSharper disable once UseNullPropagation
+            if(Equals(adbStream, null))
+                yield break;
 
-                await foreach (var item in adbStream
-                                   .SetDevice(conn)
-                                   .UseSyncFeature()
-                                   .UseOperation(new AdbGetFilesListOperation())
-                                   .WithParameter("remotePath", path)
-                                   .PerformOperation())
-                {
-                    if (item == null)
-                        continue;
-
-                    if (item.Result is Exception e)
-                        throw e;
-
-                    if (item.Result is not AdbFileEntry entry)
-                        continue;
-
-                    var model = new AdbListFilesItemModel();
-                    model.Apply(entry);
-
-                    yield return new AdbListFilesItemModel();
-                }
-            }
+            await foreach (var element in adbStream
+                               .SetDevice(conn)
+                               .Execute($"find \"{path}\" -type f")
+                               .ToEnumerableAsync(true))
+                yield return element;
         }
+
+        public Stream? GetFileStreamViaShell(AdbConnection conn, string file)
+        {
+            var adbStream = _client?.CreateStream();
+            
+            // ReSharper disable once UseNullPropagation
+            if(Equals(adbStream, null))
+                return null;
+
+            //var guid = Guid.NewGuid().ToString("N");
+            //var inject = "; !!{guid}_result_code=$?";
+
+            // TODO: Know result code after run and remove inject code while reading
+            return adbStream
+                .SetDevice(conn)
+                .Execute($"cat \"{file}\"")
+                .GetReadOnlyStream();
+        }
+
+        public AdbStream? GetAdbStream() => _client?.CreateStream();
 
         private IEnumerable<ContextMenuItemViewModelBase> InitiateFolderContextMenu()
         {
@@ -319,19 +307,21 @@ namespace Files.Services.Android
             var list = new List<ContextMenuItemViewModelBase>
             {
                 new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"),
-                    command: commands.OpenFolderInCurrentViewCommand),
+                    command: OpenFolderContextMenuAction.Instance.Command),
                 //new ContextMenuItemViewModel("Open folder in new tab"),
-                new ContextMenuItem("Open folder in new window", command: commands.OpenFolderInNewWindowCommand)
+                //new ContextMenuItem("Open folder in new window", command: commands.OpenFolderInNewWindowCommand)
             };
 
             return list;
         }
 
-        private IEnumerable<ContextMenuItemViewModelBase> InitiateContextMenuForAdbService()
+        private IReadOnlyList<ContextMenuItemViewModelBase> InitiateContextMenuForAdbService()
         {
             var list = new List<ContextMenuItemViewModelBase>
             {
-                new ContextMenuItem("Pull", new MaterialIconViewModel(MaterialIconKind.Android))
+                new ContextMenuItem("Pull",
+                    new MaterialIconViewModel(MaterialIconKind.Android),
+                    AndroidCommandsBackend.PullCommand)
             };
 
             return list;
@@ -346,7 +336,7 @@ namespace Files.Services.Android
             if (_client == null)
                 throw new Exception("!ADB Client instance is null");
 
-            if (_client!.IsRunning())
+            if (!_client!.IsRunning())
             {
                 // ADB is not running. Try to start it.
                 if (_adbPath == null)
@@ -376,6 +366,7 @@ namespace Files.Services.Android
             {
                 using var reader = new StringReader(data);
 
+                // ReSharper disable once MoveVariableDeclarationInsideLoopCondition
                 string? line;
 
                 var list = new List<string>();
@@ -388,15 +379,16 @@ namespace Files.Services.Android
                     //var status = split[1];
                 }
 
-                foreach (var device in list
-                             .Where(device => !_devices.Contains(device)))
+                foreach (var devices in list
+                             .Select(d => _devices.Where(a => a.Key != d)))
                 {
-                    _devices.Add(device);
+                    foreach(var device in devices)
+                        _devices.Add(device);
                 }
 
                 foreach (var device in _devices)
                 {
-                    if(list.Contains(device))
+                    if(list.Contains(device.Key))
                         continue;
 
                     _devices.Remove(device);

@@ -1,7 +1,9 @@
 ﻿using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
+using Files.Services.Platform.Interfaces;
 using Files.Windows.Services;
+using Files.Windows.Services.Platform;
 
 namespace Files.Windows
 {
@@ -22,23 +24,42 @@ namespace Files.Windows
                         UseDeferredRendering = true,
                         EnableMultitouch = true
                     })
-                    .AfterSetup(delegate(AppBuilder appBuilder)
+                    .AfterSetup(delegate
                     {
-                        PostSetup(appBuilder, cancellationToken);
+                        PostSetup(cancellationToken);
                     });
 
             builder.StartWithClassicDesktopLifetime(args, ShutdownMode.OnExplicitShutdown);
         }
 
-        private void PostSetup(AppBuilder builder, CancellationToken cancellationToken)
+        private void PostSetup(CancellationToken cancellationToken)
         {
-            _windowsService = new WindowsService(cancellationToken);
-            
+            var service = new WindowsService(cancellationToken);
+            _windowsService = service;
+
+            var apiBridge = new WindowsApiBridge();
+
+            var mutable = AvaloniaLocator.CurrentMutable;
+
+            mutable.Bind<IPlatformSupportDeviceEntries>().ToConstant(apiBridge);
+            mutable.Bind<IPlatformSupportOpenFilePrimaryAction>().ToConstant(apiBridge);
+            mutable.Bind<IPlatformSupportExecuteApplication>().ToConstant(new ExecuteApplicationHandler());
+            mutable.Bind<IPlatformSupportShowMessage>().ToConstant(apiBridge);
+            mutable.Bind<IPlatformSupportShowOpenWithDialog>().ToConstant(new OpenWithApplicationHandler());
+            //mutable.Bind<IPlatformSupportGetIcon>().ToConstant(apiBridge);
+            mutable.Bind<IPlatformSupportNativeExplorer>().ToConstant(apiBridge);
+
+            /*
+             
+             AvaloniaLocator.CurrentMutable
+                .Bind<OperationSystemService>()
+                .ToConstant(service);
             if (builder.Instance is FilesApp app)
             {
                 app.RegisterOSService(_windowsService);
             }
-            
+            */
+
             //VisualLayerManager.
         }
 

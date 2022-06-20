@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+﻿using Files.ViewModels.Browser;
 using MinimalMvvm.ViewModels;
 
 namespace Files.ViewModels.Context.Menus
@@ -17,12 +17,9 @@ namespace Files.ViewModels.Context.Menus
             }
         }
         
-        private ICommand? _command;
-        public ICommand? Command => _command;
-        
-        public ContextMenuItemViewModelBase(ICommand? command)
+        public virtual bool MayExecute(BrowserContentViewModelBase? viewModel)
         {
-            _command = command;
+            return true;
         }
     }
 }

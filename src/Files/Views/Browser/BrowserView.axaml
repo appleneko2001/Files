@@ -11,8 +11,9 @@
                     xmlns:properties="clr-namespace:Files.ViewModels.Browser.Properties"
                     xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
                     xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-                    xmlns:breadcrumb="clr-namespace:Files.ViewModels.Breadcrumb"
                     xmlns:tracker="clr-namespace:Files.ViewModels.Tracker"
+                    xmlns:progress="clr-namespace:Files.ViewModels.Progress"
+                    xmlns:material="clr-namespace:Material.Styles;assembly=Material.Styles"
 
                     x:Class="Files.Views.Browser.BrowserView">
     <!-- Browser view templates -->
@@ -21,7 +22,8 @@
     <!-- ReSharper disable once Xaml.InvalidResourceType -->
     <ContextMenu x:Key="BrowserViewContextMenu"
                  Name="PART_BrowserViewContextMenu"
-                 DataContextChanged="BrowserViewContextMenu_OnDataContextChanged">
+                 MenuOpened="BrowserViewContextMenu_OnMenuOpened"
+                 MenuClosed="BrowserViewContextMenu_OnMenuClosed">
     </ContextMenu>
     
     <ContextMenu x:Key="BrowserViewGetBackListContextMenu"
@@ -60,7 +62,7 @@
                              RecyclePool="{StaticResource BrowserItemRecyclePool}">
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="viewModels:ItemViewModelBase" x:Key="BrowserViewGridItem">
-                <Panel Name="PART_ItemRoot" ContextMenu="{StaticResource BrowserViewContextMenu}">
+                <Panel Name="PART_ItemRoot">
                     <ContentControl Foreground="{DynamicResource PrimaryHueMidBrush}"
                                     Content="{CompiledBinding }">
                         <ContentControl.DataTemplates>
@@ -157,17 +159,21 @@
     <!-- Browser view -->
     <RecyclingElementFactory x:Key="BrowserViewTemplate">
         <RecyclingElementFactory.Templates>
-            <DataTemplate DataType="browser:BrowserContentViewModelBase" x:Key="GridView">
+            <DataTemplate DataType="browser:BrowserContentViewModelBase"
+                          x:Key="GridView">
                 <controls:CustomItemRepeater Name="PART_ItemRepeater"
-                                                Margin="16"
-                                                VerticalCacheLength="2"
-                                                HorizontalCacheLength="2"
+                                             Background="Transparent"
+                                             Margin="16"
+                                             VerticalCacheLength="2"
+                                             HorizontalCacheLength="2"
 
-                                                Items="{CompiledBinding Content}"
-                                                ItemTemplate="{StaticResource BrowserViewGridItemFactory}"
+                                             ContextMenu="{StaticResource BrowserViewContextMenu}"
 
-                                                DoubleTappedItemEvent="SelectingItemRepeater_OnDoubleTappedItemEvent"
-                                                AttachedToLogicalTree="SelectingItemRepeater_OnAttachedToLogicalTree">
+                                             Items="{CompiledBinding Content}"
+                                             ItemTemplate="{StaticResource BrowserViewGridItemFactory}"
+
+                                             DoubleTappedItemEvent="SelectingItemRepeater_OnDoubleTappedItemEvent"
+                                             AttachedToLogicalTree="SelectingItemRepeater_OnAttachedToLogicalTree">
                     <controls:CustomItemRepeater.Layout>
                         <UniformGridLayout ItemsJustification="Start" ItemsStretch="Fill"
                                            MinColumnSpacing="16" MinRowSpacing="16" MinItemWidth="240"
@@ -215,7 +221,9 @@
         <RecyclingElementFactory.Templates>
             <DataTemplate DataType="viewModels:BrowserWindowTabViewModel" x:Key="TabViewModel">
                 <DockPanel Margin="16, 8">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,0,16,0"
+                                Spacing="8">
                         <Button Name="NavBackButton"
                                 Classes="Flat"
                                 Width="32" Height="32"
@@ -224,9 +232,9 @@
                                 Content="{icons:MaterialIconExt Kind=ArrowBack, Size=24}"
                                 Command="{Binding GoBackCommand}"
                                 CommandParameter="{Binding }"
-                                
-                                ContextMenu="{StaticResource BrowserViewGetBackListContextMenu}"/>
-                        
+
+                                ContextMenu="{StaticResource BrowserViewGetBackListContextMenu}" />
+
                         <Button Name="NavForwardButton"
                                 Classes="Flat"
                                 Width="32" Height="32"
@@ -236,32 +244,13 @@
                                 Command="{Binding GoForwardCommand}"
                                 CommandParameter="{Binding }" />
                     </StackPanel>
-                    
+
                     <ContentControl Margin="0,0,16,0"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
 
-                                    Content="{Binding BreadcrumbNodeEdit}">
-                        <!-- Recyclable template sucks -->
-                        <ContentControl.ContentTemplate>
-                            <DataTemplate DataType="breadcrumb:BreadcrumbNodeWithIconViewModel">
-                                <Border VerticalAlignment="Center"
-                                        CornerRadius="32" Margin="2,0" BorderThickness="1"
-                                        BorderBrush="{DynamicResource PrimaryHueMidBrush}">
-                                    <Button Classes="Flat" ClipToBounds="True"
-                                            Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
-                                            Command="{Binding ClickCommand}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <icons:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
-                                                                Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
-                                                                Margin="0,0,8,0"/>
-                                            <TextBlock Text="{CompiledBinding Header}"/>
-                                        </StackPanel>
-                                    </Button>
-                                </Border>
-                            </DataTemplate>
-                        </ContentControl.ContentTemplate>
-                    </ContentControl>
+                                    Content="{Binding BreadcrumbNodeEdit}"
+                                    ContentTemplate="{StaticResource BreadcrumbNodeWithIconElementTemplate}"/>
 
                     <Panel Height="26">
                         <TextBox Classes="Solo"
@@ -290,10 +279,10 @@
                         </TextBox>
 
                         <controls1:Scroller Name="PART_BreadcrumbScroller"
-                                           IsEnabled="{Binding !BreadcrumbPath.IsInEditMode}"
-                                           IsVisible="{Binding !BreadcrumbPath.IsInEditMode}"
-                                           AttachedToVisualTree="OnScrollerAttachedToVisualTree"
-                                           DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
+                                            IsEnabled="{Binding !BreadcrumbPath.IsInEditMode}"
+                                            IsVisible="{Binding !BreadcrumbPath.IsInEditMode}"
+                                            AttachedToVisualTree="OnScrollerAttachedToVisualTree"
+                                            DetachedFromVisualTree="OnScrollerDetachedFromVisualTree">
                             <controls1:Scroller.OpacityMask>
                                 <MultiBinding Converter="{StaticResource EdgeGradientOpacityMaskGenerator}"
                                               ConverterParameter="{StaticResource BreadcrumbScrollerEdgeGradientParameter}">
@@ -304,11 +293,11 @@
                                              Path="HorizontalScrollBarValue" />
                                 </MultiBinding>
                             </controls1:Scroller.OpacityMask>
-                            
+
                             <ItemsRepeater Items="{Binding BreadcrumbPath.Part}"
                                            ItemTemplate="{StaticResource BreadcrumbElementTemplate}">
                                 <ItemsRepeater.Layout>
-                                    <StackLayout Spacing="4" Orientation="Horizontal"/>
+                                    <StackLayout Spacing="4" Orientation="Horizontal" />
                                 </ItemsRepeater.Layout>
                             </ItemsRepeater>
                         </controls1:Scroller>

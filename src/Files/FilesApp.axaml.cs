@@ -5,7 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Files.Services;
 using Files.Services.Android;
-using Files.Services.Platform;
+using Files.Services.Platform.Interfaces;
 using Files.Views;
 
 using Material.Colors;
@@ -23,22 +23,20 @@ namespace Files
         public event EventHandler ApplicationShutdown;
         
         // Properties
-        internal PlatformSpecificBridge? PlatformApi => _osService?.ApiBridge;
 
-        internal WindowManagerService WindowManager => _windowManager;
+        internal WindowManagerService WindowManager => 
+            _windowManager ??= new WindowManagerService();
 
         public bool Initialized => _initialized;
 
         // Fields
-        private WindowManagerService _windowManager;
-        private OperationSystemService _osService;
-        private AppBackend _context;
-        private bool _initialized = false;
+        private WindowManagerService? _windowManager;
+        private bool _initialized;
         
         public override void Initialize()
         {
             PreInit();
-            
+
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -58,7 +56,7 @@ namespace Files
             base.OnFrameworkInitializationCompleted();
         }
         
-        public void RegisterOSService(OperationSystemService service)
+        /*public void RegisterOSService(OperationSystemService service)
         {
             if (service == null)
                 return;
@@ -66,9 +64,9 @@ namespace Files
             _osService = service;
 
             _context.BindServices(service);
-        }
+        }*/
 
-        public BrowserWindow CreateBrowserWindow(Uri startUri = null)
+        public BrowserWindow CreateBrowserWindow(Uri? startUri = null)
         {
             var window = new BrowserWindow(startUri);
             WindowManager.RegisterWindow(window);
@@ -79,8 +77,6 @@ namespace Files
         private void PreInit()
         {
             CommandBase.OnErrorHandler += RelayCommandOnExceptionOccurred;
-            
-            _windowManager = new WindowManagerService();
             WindowManager.WhenNoActiveWindowsLeft += WhenNoActiveWindowsLeft;
             
             Resources
@@ -91,28 +87,29 @@ namespace Files
                     PrimaryColor = PrimaryColor.Blue,
                     SecondaryColor = SecondaryColor.Pink
                 });
-
-            _context = AppBackend.Instance;
         }
 
         private void RelayCommandOnExceptionOccurred(object sender, ExecutionFailExceptionArgs e)
         {
-            PlatformApi?.PopupMessageWindow("Error", e.Exception.Message);
+            var service = AvaloniaLocator
+                .Current
+                .GetService<IPlatformSupportShowMessage>();
             
-            switch (e.Exception)
+            service?.PopupMessageWindow("Error", e.Exception.Message);
+
+            e.Handled = e.Exception switch
             {
                 //case UriFormatException:
                 //case NotImplementedException:
-                case not null:
-                    e.Handled = true;
-                    break;
-            }
+                not null => true,
+                _ => e.Handled
+            };
         }
 
         private void PostInit()
         {
             BackgroundTaskBackend.Initiate(this);
-            CommandsBackend.Initiate(this);
+            //CommandsBackend.Initiate(this);
             PreviewManagerBackend.Initiate(this);
             ContextMenuBackend.Initiate(this);
             AndroidDebugBackend.Initiate(this);

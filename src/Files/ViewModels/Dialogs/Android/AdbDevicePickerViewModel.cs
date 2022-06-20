@@ -28,7 +28,7 @@ namespace Files.ViewModels.Dialogs.Android
 
             foreach (var device in _inst.Devices)
             {
-                AddDevice(device);
+                AddDevice(device.Key);
             }
         }
 

@@ -128,9 +128,11 @@ namespace Files.ViewModels
         {
             _ctx?.Cancel();
 
-            _ctx = new CancellationTokenSource();
-            var p = new ProgressViewModel();
+            var cancellationTokenSource = new CancellationTokenSource();
+            var p = new ProgressViewModel(cancellationTokenSource);
             Progress = p;
+            
+            _ctx = cancellationTokenSource;
 
             Task.Factory.StartNew(delegate
             {

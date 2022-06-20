@@ -42,4 +42,22 @@
             </DataTemplate>
         </RecyclingElementFactory.Templates>
     </RecyclingElementFactory>
+    
+    <DataTemplate x:Key="BreadcrumbNodeWithIconElementTemplate"
+                  DataType="breadcrumb:BreadcrumbNodeWithIconViewModel">
+        <Border VerticalAlignment="Center"
+                CornerRadius="32" Margin="2,0" BorderThickness="1"
+                BorderBrush="Transparent">
+            <Button Classes="Flat" ClipToBounds="True"
+                    Height="24" Padding="8, 0" Margin="0" CornerRadius="16"
+                    Command="{Binding ClickCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <icons:MaterialIcon IsVisible="{CompiledBinding IconKind.HasValue}"
+                                        Kind="{CompiledBinding IconKind.Value, FallbackValue=Minus}"
+                                        Margin="0,0,8,0" />
+                    <TextBlock Text="{CompiledBinding Header}" />
+                </StackPanel>
+            </Button>
+        </Border>
+    </DataTemplate>
 </ResourceDictionary>

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Windows.Input;
-using Files.Services;
 using Files.ViewModels.Browser.Files.Interfaces;
+using Files.ViewModels.Context.Menus.Presets;
 
 namespace Files.ViewModels.Browser.Files.Local
 {
@@ -23,6 +23,6 @@ namespace Files.ViewModels.Browser.Files.Local
             // TODO: folder previews
         }
 
-        public override ICommand OnClickCommand => CommandsBackend.Instance.OpenFolderInCurrentViewCommand;
+        public override ICommand OnClickCommand => OpenFolderContextMenuAction.Instance.Command;
     }
 }

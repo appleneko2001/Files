@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Avalonia;
-using Files.Services.Platform;
 using Files.Services.Platform.Interfaces;
 using Files.ViewModels;
 using FileSignatures;
@@ -12,6 +10,9 @@ namespace Files.Services
 {
     public class FileIdentityService
     {
+        private static IPlatformSupportGetIcon? _getIconService;
+        private static IPlatformSupportExecuteApplication? _executeApplicationService;
+        
         private static MaterialIconViewModel _fileIcon;
         private static MaterialIconViewModel _execIcon;
         private static MaterialIconViewModel _videoIcon;
@@ -59,23 +60,19 @@ namespace Files.Services
 
         public static IconViewModelBase GetIconByExtension(string path)
         {
-            if (Application.Current is not FilesApp app)
-                throw new Exception(
-                    "Some strange things happen: " +
-                    "Unable to convert current application instance as FilesApp");
-                
+            _getIconService ??= AvaloniaLocator.Current.GetService<IPlatformSupportGetIcon>();
+            _executeApplicationService ??= AvaloniaLocator.Current.GetService<IPlatformSupportExecuteApplication>();
+            
             // ReSharper disable once ConvertTypeCheckPatternToNullCheck
-            if (app.PlatformApi is not PlatformSpecificBridge osNative)
+            if (_getIconService is null)
                 return GetIconByFormat(Path.GetExtension(path));
                 
-            if (osNative is IPlatformSupportGetIcon getIconApi)
-            {
-                // Still not ready for use :(
-                //if (getIconApi.CanGetIconForFile(path))
-                //    return null;
-            }
+            // Still not ready for use :(
+            //if (getIconApi.CanGetIconForFile(path))
+            //    return null;
                     
-            if (osNative.IsExecutableApplication(path))
+            if (_executeApplicationService is not null && 
+                _executeApplicationService.IsExecutableApplication(path))
                 return _execIcon;
 
             return GetIconByFormat(Path.GetExtension(path));

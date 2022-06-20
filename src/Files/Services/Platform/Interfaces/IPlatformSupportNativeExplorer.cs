@@ -5,5 +5,7 @@
         string NativeExplorerName { get; }
         
         void OpenFolderWithNativeExplorer(string path);
+        
+        bool CanOpenFolderWithNativeExplorer(string path);
     }
 }

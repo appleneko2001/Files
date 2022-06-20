@@ -15,6 +15,7 @@ using Avalonia.Threading;
 using Avalonia.Visuals.Media.Imaging;
 using Files.Extensions;
 using Files.Services;
+using Files.Services.Platform.Interfaces;
 using Files.ViewModels;
 using Material.Styles;
 using Material.Styles.Controls;
@@ -176,7 +177,7 @@ namespace Files.Views
 
             if (bitmap.PixelSize.GreaterThan(new PixelSize(2560, 1440)))
             {
-                AppBackend.Instance.ShowNativeDialog("Warning",
+                AvaloniaLocator.Current.GetService<IPlatformSupportShowMessage>()?.PopupMessageWindow("Warning",
                     "The background picture size is bigger than 2560x1440, the performance impact could issued.");
             }
 

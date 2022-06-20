@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia;
 using Files.Models.Devices;
-using Files.Services.Platform;
+using Files.Models.Messenger;
+using Files.Services.Platform.Interfaces;
 using Files.Services.Watchers;
 using MinimalMvvm.ViewModels;
 
@@ -11,15 +12,15 @@ namespace Files.Services
 {
     public sealed class AppBackend : ViewModelBase
     {
-        private PlatformSpecificBridge? _apiBridge = null;
+        private FilesApp _appInstance;
         private static AppBackend? _instance;
-        private static readonly object _get_instance_lock = new();
+        private static readonly object GetInstanceLock = new();
         
         public static AppBackend Instance
         {
             get
             {
-                lock (_get_instance_lock)
+                lock (GetInstanceLock)
                 {
                     return _instance ??= new AppBackend();
                 }
@@ -30,6 +31,7 @@ namespace Files.Services
         {
             if (Application.Current is FilesApp app)
             {
+                _appInstance = app;
                 app.ApplicationInitializationCompleted += OnApplicationInitializationCompletedHandler;
             }
         }
@@ -41,44 +43,38 @@ namespace Files.Services
             
             app.ApplicationInitializationCompleted -= OnApplicationInitializationCompletedHandler;
             app.ApplicationShutdown += OnApplicationShutdown;
-                
-            _apiBridge = app.PlatformApi;
+            
+            Messenger.Subscribe<OpenFolderInNewWindowRequestModel>(OnReceiveOpenFolderInNewWindowRequest);
+
+            var deviceWatcher = AvaloniaLocator.Current.GetService<IPlatformSupportDeviceWatcherService>();
+
+            if (deviceWatcher == null)
+                return;
+
+            deviceWatcher.OnDeviceChanged += OnDeviceWatcherDetectedChanges;
+            deviceWatcher.Start();
+        }
+
+        private void OnReceiveOpenFolderInNewWindowRequest(OpenFolderInNewWindowRequestModel param)
+        {
+            _appInstance.CreateBrowserWindow(param.FolderUri).Show();
         }
 
         private void OnApplicationShutdown(object sender, EventArgs e)
         {
-            if (_platformService != null)
-            {
-                if (_platformService.DeviceWatcher is DeviceWatcher watcher)
-                {
-                    watcher.OnDeviceChanged -= OnDeviceWatcherDetectedChanges;
-                
-                    watcher.Stop();
-                }
-            }
+            var service = AvaloniaLocator
+                .Current
+                .GetService<IPlatformSupportDeviceWatcherService>();
+
+            if (service == null)
+                return;
+            
+            service.OnDeviceChanged -= OnDeviceWatcherDetectedChanges;
+            service.Stop();
         }
 
         // Events
-        public event EventHandler DeviceCollectionChanged;
-
-        // Fields
-        private OperationSystemService _platformService;
-        
-        // Public methods
-        public void BindServices(OperationSystemService service)
-        {
-            if (_platformService != null)
-                throw new InvalidOperationException("Platform service are bind already. No more needed to bind service.");
-            
-            _platformService = service;
-            
-            if (service.DeviceWatcher is DeviceWatcher watcher)
-            {
-                watcher.OnDeviceChanged += OnDeviceWatcherDetectedChanges;
-                
-                watcher.Start();
-            }
-        }
+        public event EventHandler? DeviceCollectionChanged;
 
         private void OnDeviceWatcherDetectedChanges(object sender, DeviceChangedEventArgs e)
         {
@@ -95,21 +91,18 @@ namespace Files.Services
         /// </summary>
         public IReadOnlyCollection<DeviceModel>? GetAllStorageDeviceCollection()
         {
-            if (_apiBridge == null)
+            var service = AvaloniaLocator.Current.GetService<IPlatformSupportDeviceEntries>();
+            
+            if (service == null)
                 return null;
 
             var result = new Collection<DeviceModel>();
-            foreach (var deviceEntry in _apiBridge.GetDeviceEntries())
+            foreach (var deviceEntry in service.GetDeviceEntries())
             {
                 result.Add(deviceEntry);
             }
 
             return result;
-        }
-
-        public void ShowNativeDialog(string title, string text)
-        {
-            _platformService.ApiBridge?.PopupMessageWindow(title, text);
         }
     }
 }
