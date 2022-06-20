@@ -34,10 +34,10 @@ namespace Files.ViewModels
             }
         }
         
-        private string _displayName;
+        private string? _displayName;
         public string DisplayName
         {
-            get => _displayName;
+            get => _displayName ?? Name;
             protected set
             {
                 _displayName = value;
