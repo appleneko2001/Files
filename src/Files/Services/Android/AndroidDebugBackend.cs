@@ -8,16 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Input;
 using Files.Adb;
 using Files.Adb.Extensions;
 using Files.Adb.Models;
 using Files.Models.Android.Storages;
+using Files.Services.Android.Actions;
 using Files.Services.Android.Sync;
-using Files.ViewModels;
 using Files.ViewModels.Context.Menus;
-using Files.ViewModels.Context.Menus.Presets;
-using Material.Icons;
 using ContextMenuItem = Files.ViewModels.Context.Menus.ContextMenuItemViewModel;
 
 namespace Files.Services.Android
@@ -300,28 +297,11 @@ namespace Files.Services.Android
 
         public AdbStream? GetAdbStream() => _client?.CreateStream();
 
-        private IEnumerable<ContextMenuItemViewModelBase> InitiateFolderContextMenu()
-        {
-            var commands = CommandsBackend.Instance;
-
-            var list = new List<ContextMenuItemViewModelBase>
-            {
-                new ContextMenuItem("Open folder", keyGesture: KeyGesture.Parse("Enter"),
-                    command: OpenFolderContextMenuAction.Instance.Command),
-                //new ContextMenuItemViewModel("Open folder in new tab"),
-                //new ContextMenuItem("Open folder in new window", command: commands.OpenFolderInNewWindowCommand)
-            };
-
-            return list;
-        }
-
         private IReadOnlyList<ContextMenuItemViewModelBase> InitiateContextMenuForAdbService()
         {
             var list = new List<ContextMenuItemViewModelBase>
             {
-                new ContextMenuItem("Pull",
-                    new MaterialIconViewModel(MaterialIconKind.Android),
-                    AndroidCommandsBackend.PullCommand)
+                new PullAdbContextMenuItemAction()
             };
 
             return list;

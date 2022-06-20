@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Files.Adb.Extensions;
 using Files.Adb.Models;
+using Files.Models.Actions;
+using Files.ViewModels;
 using Files.ViewModels.Browser;
 using Files.ViewModels.Browser.Files.Android;
+using Files.ViewModels.Context.Menus;
+using Material.Icons;
 using MinimalMvvm.ViewModels.Commands;
 
-namespace Files.Services.Android
+namespace Files.Services.Android.Actions
 {
-    public class AndroidCommandsBackend
+    public sealed class PullAdbContextMenuItemAction : StandardContextMenuItemViewModel
     {
         private const int OperationBufferSize = 4096;
         
-        private static ICommand _pullCommand = new RelayCommand(OnExecutePullCommand);
+        public PullAdbContextMenuItemAction()
+        {
+            Command = new RelayCommand(OnExecuteCommand);
+            Icon = new MaterialIconViewModel(MaterialIconKind.Android);
+            Header = "Pull";
+        }
 
-        private static async void OnExecutePullCommand(object? obj)
+        private async void OnExecuteCommand(object? obj)
         {
             var app = Application.Current as FilesApp;
 
@@ -27,6 +36,27 @@ namespace Files.Services.Android
 
             switch (obj)
             {
+                case BrowserActionParameterModel parameter:
+                {
+                    var items = new List<ItemViewModelBase>(parameter.SelectedItems ??
+                                                            Array.Empty<ItemViewModelBase>());
+                    
+                    if(items.Count == 0 && parameter.SelectedItem is AdbFileSystemItemViewModel vm)
+                        items.Add(vm);
+                    
+                    foreach (var item in items)
+                    {
+                        if (item is AdbFileSystemItemViewModel vm1)
+                        {
+                            selectedItems.Add(vm1);
+                        }
+                        else
+                        {
+                            throw new InvalidCastException("Some items are not AdbFileSystemItemViewModel");
+                        }
+                    }
+                } break;
+                
                 case AdbFileSystemItemViewModel singleVm:
                     selectedItems.Add(singleVm);
                     break;
@@ -108,7 +138,5 @@ namespace Files.Services.Android
                 }
             }
         }
-
-        public static ICommand PullCommand => _pullCommand;
     }
 }
