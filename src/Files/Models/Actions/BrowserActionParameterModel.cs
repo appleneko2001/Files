@@ -7,7 +7,7 @@ namespace Files.Models.Actions
     public class BrowserActionParameterModel
     {
         public ItemViewModelBase? SelectedItem;
-        public IReadOnlyList<ItemViewModelBase> SelectedItems;
+        public IReadOnlyList<ItemViewModelBase>? SelectedItems;
         public BrowserContentViewModelBase BrowserViewModel;
     }
 }
