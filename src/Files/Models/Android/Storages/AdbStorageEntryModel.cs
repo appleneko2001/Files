@@ -36,12 +36,12 @@ namespace Files.Models.Android.Storages
 
         protected override void UpdateLabel(string l)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         public override void Unmount()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 }
